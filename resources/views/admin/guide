@@ -1,0 +1,714 @@
+1. Dashboard
+┌────────────────────────────────────────────────────────────────────┐
+│ 🩸 COMMUNITY BLOOD DONOR                         🔔 Admin ▼       │
+├──────────────────┬─────────────────────────────────────────────────┤
+│                  │                                                 │
+│ 📊 Dashboard     │  DASHBOARD                                     │
+│                  │                                                 │
+│ 👥 Users         │  ┌──────────┐ ┌──────────┐ ┌──────────┐       │
+│                  │  │  👥 1,250 │ │ 🩸 450   │ │ 🏥 24    │       │
+│ 🩸 Donors        │  │  Users    │ │ Donors   │ │ Requests │       │
+│                  │  └──────────┘ └──────────┘ └──────────┘       │
+│ 🏥 Requests      │                                                 │
+│                  │  ┌──────────┐                                  │
+│ 📅 Appointments  │  │ 🩸 850    │  Total Donations               │
+│                  │  └──────────┘                                  │
+│ 🏢 Centers       │                                                 │
+│                  │  DONATION STATISTICS                           │
+│ 🔔 Notifications │  ┌─────────────────────────────────────────┐   │
+│                  │  │              📈 CHART                  │   │
+│ 📈 Reports       │  │     ╱╲       ╱╲                        │   │
+│                  │  │  ╱╲╱  ╲╱╲ ╱  ╲                       │   │
+│                  │  └─────────────────────────────────────────┘   │
+│ ⚙ Settings       │                                                 │
+│ 🚪 Logout         │  Recent Activities                            │
+│                  │  • New donor registered                         │
+│                  │  • Blood request submitted                      │
+└──────────────────┴─────────────────────────────────────────────────┘
+
+Purpose: Give the admin an overview of the entire system.
+
+2. User Management
+┌────────────────────────────────────────────────────────────────────┐
+│ 🩸 COMMUNITY BLOOD DONOR                         🔔 Admin ▼       │
+├──────────────────┬─────────────────────────────────────────────────┤
+│ 📊 Dashboard     │  USER MANAGEMENT                               │
+│ 👥 Users         │                                                 │
+│ 🩸 Donors        │  🔍 Search user...          [+ Add User]       │
+│ 🏥 Requests      │                                                 │
+│ 📅 Appointments  │  Filter: [All Blood Types ▼] [Status ▼]       │
+│ 🏢 Centers       │                                                 │
+│ 🔔 Notifications │  ┌───────────────────────────────────────────┐ │
+│ 📈 Reports       │  │ Name          Email       Status  Action │ │
+│                  │  ├───────────────────────────────────────────┤ │
+│ ⚙ Settings       │  │ Maria Santos  maria@...   Active  👁 ✏ 🗑│ │
+│ 🚪 Logout         │  │ Juan Cruz     juan@...     Active  👁 ✏ 🗑│ │
+│                  │  │ Ana Reyes     ana@...      Blocked 👁 ✏ 🗑│ │
+│                  │  └───────────────────────────────────────────┘ │
+│                  │                                                 │
+│                  │              < 1  2  3  4 >                    │
+└──────────────────┴─────────────────────────────────────────────────┘
+
+Purpose: Manage all registered users.
+
+Admin can:
+
+View users
+Add users
+Edit users
+Activate/deactivate users
+Delete users
+3. Donor Management
+┌────────────────────────────────────────────────────────────────────┐
+│ 🩸 COMMUNITY BLOOD DONOR                         🔔 Admin ▼       │
+├──────────────────┬─────────────────────────────────────────────────┤
+│ 📊 Dashboard     │  DONOR MANAGEMENT                              │
+│ 👥 Users         │                                                 │
+│ 🩸 Donors        │  🔍 Search donor...        [Export]             │
+│ 🏥 Requests      │                                                 │
+│ 📅 Appointments  │  Filter: [Blood Type ▼] [Availability ▼]      │
+│ 🏢 Centers       │                                                 │
+│ 🔔 Notifications │  ┌───────────────────────────────────────────┐ │
+│ 📈 Reports       │  │ Donor      Blood  Availability   Action  │ │
+│                  │  ├───────────────────────────────────────────┤ │
+│ ⚙ Settings       │  │ Maria      O+     🟢 Available    👁 ✏ │ │
+│ 🚪 Logout         │  │ Juan       A+     🟢 Available    👁 ✏ │ │
+│                  │  │ Ana        B-     🔴 Unavailable  👁 ✏ │ │
+│                  │  └───────────────────────────────────────────┘ │
+│                  │                                                 │
+│                  │ DONOR DETAILS                                  │
+│                  │ ┌───────────────────────────────────────────┐ │
+│                  │ │ Blood Type: O+                             │ │
+│                  │ │ Last Donation: Aug 20, 2026                │ │
+│                  │ │ Status: Available                          │ │
+│                  │ └───────────────────────────────────────────┘ │
+└──────────────────┴─────────────────────────────────────────────────┘
+
+Purpose: Manage donor information and availability.
+
+4. Blood Request Management
+┌────────────────────────────────────────────────────────────────────┐
+│ 🩸 COMMUNITY BLOOD DONOR                         🔔 Admin ▼       │
+├──────────────────┬─────────────────────────────────────────────────┤
+│ 📊 Dashboard     │  BLOOD REQUEST MANAGEMENT                      │
+│ 👥 Users         │                                                 │
+│ 🩸 Donors        │  🔍 Search request...                           │
+│ 🏥 Requests      │                                                 │
+│ 📅 Appointments  │  [All] [Pending] [Approved] [Critical]         │
+│ 🏢 Centers       │                                                 │
+│ 🔔 Notifications │  ┌───────────────────────────────────────────┐ │
+│ 📈 Reports       │  │ Patient   Blood  Units  Urgency  Status  │ │
+│                  │  ├───────────────────────────────────────────┤ │
+│ ⚙ Settings       │  │ John      A+      2    🔴 Critical Pending│ │
+│ 🚪 Logout         │  │ Ella      O-      1    🟠 High     Approved│ │
+│                  │  │ Mark      B+      1    🟡 Normal   Pending │ │
+│                  │  └───────────────────────────────────────────┘ │
+│                  │                                                 │
+│                  │ Request Details                                │
+│                  │ ┌───────────────────────────────────────────┐ │
+│                  │ │ Hospital: City Hospital                   │ │
+│                  │ │ Blood Type: A+                             │ │
+│                  │ │ Units Needed: 2                            │ │
+│                  │ │ Status: Pending                            │ │
+│                  │ │                                             │ │
+│                  │ │       [Approve]       [Reject]              │ │
+│                  │ └───────────────────────────────────────────┘ │
+└──────────────────┴─────────────────────────────────────────────────┘
+
+Purpose: Review and manage requests for blood.
+
+5. Appointment Management
+┌────────────────────────────────────────────────────────────────────┐
+│ 🩸 COMMUNITY BLOOD DONOR                         🔔 Admin ▼       │
+├──────────────────┬─────────────────────────────────────────────────┤
+│ 📊 Dashboard     │  APPOINTMENT MANAGEMENT                        │
+│ 👥 Users         │                                                 │
+│ 🩸 Donors        │  📅 September 2, 2026                          │
+│ 🏥 Requests      │                                                 │
+│ 📅 Appointments  │  [Today] [Upcoming] [Completed] [Cancelled]   │
+│ 🏢 Centers       │                                                 │
+│ 🔔 Notifications │  ┌───────────────────────────────────────────┐ │
+│ 📈 Reports       │  │ Donor       Time       Center     Status │ │
+│                  │  ├───────────────────────────────────────────┤ │
+│ ⚙ Settings       │  │ Maria       9:00 AM    Center A   Pending│ │
+│ 🚪 Logout         │  │ Juan       10:00 AM    Center B   Confirmed│ │
+│                  │  │ Ana        11:00 AM    Center A   Completed│ │
+│                  │  └───────────────────────────────────────────┘ │
+│                  │                                                 │
+│                  │ Appointment Details                            │
+│                  │ [View] [Confirm] [Cancel]                      │
+└──────────────────┴─────────────────────────────────────────────────┘
+
+Purpose: Manage donor schedules and appointments.
+
+6. Donation Center Management
+┌────────────────────────────────────────────────────────────────────┐
+│ 🩸 COMMUNITY BLOOD DONOR                         🔔 Admin ▼       │
+├──────────────────┬─────────────────────────────────────────────────┤
+│ 📊 Dashboard     │  DONATION CENTER MANAGEMENT                    │
+│ 👥 Users         │                                                 │
+│ 🩸 Donors        │  🔍 Search center...       [+ Add Center]      │
+│ 🏥 Requests      │                                                 │
+│ 📅 Appointments  │  ┌───────────────────────────────────────────┐ │
+│ 🏢 Centers       │  │ Center       Location       Status Action│ │
+│ 🔔 Notifications │  ├───────────────────────────────────────────┤ │
+│ 📈 Reports       │  │ Red Cross    Iloilo         🟢 Open  ✏ 🗑│ │
+│                  │  │ City Hosp.   Iloilo         🟢 Open  ✏ 🗑│ │
+│ ⚙ Settings       │  │ Med Center   Pavia          🔴 Closed✏ 🗑│ │
+│ 🚪 Logout         │  └───────────────────────────────────────────┘ │
+│                  │                                                 │
+│                  │ CENTER INFORMATION                             │
+│                  │ ┌───────────────────────────────────────────┐ │
+│                  │ │ Center Name: Red Cross Center              │ │
+│                  │ │ Location: Iloilo City                      │ │
+│                  │ │ Contact: 0912-345-6789                     │ │
+│                  │ │ Hours: 8:00 AM - 5:00 PM                   │ │
+│                  │ │                       [Edit] [Delete]      │ │
+│                  │ └───────────────────────────────────────────┘ │
+└──────────────────┴─────────────────────────────────────────────────┘
+
+Purpose: Manage locations where blood donations take place.
+
+7. Notifications
+┌────────────────────────────────────────────────────────────────────┐
+│ 🩸 COMMUNITY BLOOD DONOR                         🔔 Admin ▼       │
+├──────────────────┬─────────────────────────────────────────────────┤
+│ 📊 Dashboard     │  NOTIFICATIONS                                 │
+│ 👥 Users         │                                                 │
+│ 🩸 Donors        │  [+ Create Notification]                       │
+│ 🏥 Requests      │                                                 │
+│ 📅 Appointments  │  Send To: [All Users ▼]                        │
+│ 🏢 Centers       │                                                 │
+│ 🔔 Notifications │  Title                                         │
+│ 📈 Reports       │  ┌───────────────────────────────────────────┐ │
+│                  │  │ Urgent O- Blood Needed                    │ │
+│ ⚙ Settings       │  └───────────────────────────────────────────┘ │
+│ 🚪 Logout         │                                                 │
+│                  │  Message                                        │
+│                  │  ┌───────────────────────────────────────────┐ │
+│                  │  │ An urgent O- blood request has been       │ │
+│                  │  │ submitted by City Hospital...             │ │
+│                  │  │                                             │ │
+│                  │  └───────────────────────────────────────────┘ │
+│                  │                                                 │
+│                  │               [Cancel] [Send Notification]     │
+│                  │                                                 │
+│                  │ Recent Notifications                            │
+│                  │ • Donation reminder — 10 minutes ago           │
+│                  │ • Urgent blood request — 1 hour ago            │
+└──────────────────┴─────────────────────────────────────────────────┘
+
+Purpose: Admin sends important information to users and donors.
+
+8. Reports & Statistics
+┌────────────────────────────────────────────────────────────────────┐
+│ 🩸 COMMUNITY BLOOD DONOR                         🔔 Admin ▼       │
+├──────────────────┬─────────────────────────────────────────────────┤
+│ 📊 Dashboard     │  REPORTS & STATISTICS                          │
+│ 👥 Users         │                                                 │
+│ 🩸 Donors        │  Date Range: [Sep 1] — [Sep 30]    [Filter]   │
+│ 🏥 Requests      │                                                 │
+│ 📅 Appointments  │  ┌────────────┐ ┌────────────┐ ┌────────────┐│
+│ 🏢 Centers       │  │ Donations  │ │ Donors     │ │ Requests   ││
+│ 🔔 Notifications │  │    850     │ │    450     │ │    120     ││
+│ 📈 Reports       │  └────────────┘ └────────────┘ └────────────┘│
+│                  │                                                 │
+│ ⚙ Settings       │  DONATIONS BY BLOOD TYPE                      │
+│ 🚪 Logout         │  ┌───────────────────────────────────────────┐│
+│                  │  │ A+   ███████████████  120                 ││
+│                  │  │ O+   ██████████████████ 150               ││
+│                  │  │ B+   ██████████ 80                        ││
+│                  │  │ AB+  █████ 40                              ││
+│                  │  └───────────────────────────────────────────┘│
+│                  │                                                 │
+│                  │ [Generate Report]  [Export PDF]  [Export Excel]│
+└──────────────────┴─────────────────────────────────────────────────┘
+
+Purpose: Admin can monitor system performance and generate reports.
+
+Complete Admin Wireframe Structure
+
+Your final 8 functionalities are:
+
+                    ADMIN
+                      │
+                      ▼
+              ┌───────────────┐
+              │    LOGIN      │
+              └───────┬───────┘
+                      │
+                      ▼
+              ┌───────────────┐
+              │   DASHBOARD   │
+              └───────┬───────┘
+                      │
+      ┌───────────────┼────────────────┐
+      │               │                │
+      ▼               ▼                ▼
+   USERS           DONORS           REQUESTS
+      │               │                │
+      └───────────────┼────────────────┘
+                      │
+            ┌─────────┴─────────┐
+            ▼                   ▼
+      APPOINTMENTS           CENTERS
+            │                   │
+            └─────────┬─────────┘
+                      │
+                      ▼
+               NOTIFICATIONS
+                      │
+                      ▼
+             REPORTS & STATISTICS
+Final sidebar
+🩸 COMMUNITY BLOOD DONOR
+
+📊 Dashboard
+👥 User Management
+🩸 Donor Management
+🏥 Blood Requests
+📅 Appointments
+🏢 Donation Centers
+🔔 Notifications
+📈 Reports & Statistics
+
+⚙ Settings
+🚪 Logout
+
+This gives you exactly 8 core admin functionalities, while Settings and Logout remain supporting functions rather than being counted as separate system functionalities.
+
+what about the user side in mobile
+
+Yes. For the mobile user side, I would keep it simpler than the admin panel. Here is a recommended set of 8 user-side mobile functionalities so it matches the overall system structure.
+
+📱 Community Blood Donor — User Mobile Wireframes
+1. 🏠 Home / Dashboard
+┌─────────────────────────────┐
+│ 🩸 Blood Donor        🔔 👤 │
+├─────────────────────────────┤
+│                             │
+│ Hello, Emman! 👋            │
+│ Ready to save a life today? │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │     YOUR BLOOD TYPE     │ │
+│ │          O+             │ │
+│ │    🟢 Donor Available   │ │
+│ └─────────────────────────┘ │
+│                             │
+│ 🚨 URGENT REQUEST            │
+│ ┌─────────────────────────┐ │
+│ │ A+ Blood Needed         │ │
+│ │ 2 Units • City Hospital │ │
+│ │ 🔴 Critical             │ │
+│ │              [Help Now] │ │
+│ └─────────────────────────┘ │
+│                             │
+│ QUICK ACTIONS                │
+│ ┌─────────┐ ┌─────────┐    │
+│ │ 🩸      │ │ 🔍      │    │
+│ │ Donate  │ │ Find    │    │
+│ └─────────┘ └─────────┘    │
+│                             │
+│ ┌─────────┐ ┌─────────┐    │
+│ │ 🏥      │ │ 📋      │    │
+│ │ Request │ │ History │    │
+│ └─────────┘ └─────────┘    │
+│                             │
+├─────────────────────────────┤
+│ 🏠 Home  🔍  🩸  📋  👤   │
+└─────────────────────────────┘
+2. 🔍 Find Blood
+┌─────────────────────────────┐
+│ ←       FIND BLOOD          │
+├─────────────────────────────┤
+│                             │
+│ Search Blood Request        │
+│ ┌─────────────────────────┐ │
+│ │ 🔍 Search...            │ │
+│ └─────────────────────────┘ │
+│                             │
+│ Blood Type                  │
+│ ┌─────────────────────────┐ │
+│ │ All Types            ▼  │ │
+│ └─────────────────────────┘ │
+│                             │
+│ Location                    │
+│ ┌─────────────────────────┐ │
+│ │ 📍 Iloilo City          │ │
+│ └─────────────────────────┘ │
+│                             │
+│ BLOOD REQUESTS               │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │ 🔴 CRITICAL             │ │
+│ │ A+ • 2 Units            │ │
+│ │ City Hospital           │ │
+│ │ Iloilo City             │ │
+│ │             [Donate]    │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │ 🟠 HIGH                 │ │
+│ │ O- • 1 Unit             │ │
+│ │ Medical Center          │ │
+│ │             [Donate]    │ │
+│ └─────────────────────────┘ │
+│                             │
+├─────────────────────────────┤
+│ 🏠  🔍 Search  🩸  📋  👤 │
+└─────────────────────────────┘
+3. 🩸 Donate Blood
+┌─────────────────────────────┐
+│ ←       DONATE BLOOD        │
+├─────────────────────────────┤
+│                             │
+│ Donate Blood ❤️             │
+│                             │
+│ ELIGIBILITY CHECK            │
+│                             │
+│ ☑ Healthy today             │
+│ ☑ Meets age requirement     │
+│ ☑ Meets weight requirement  │
+│ ☑ No recent illness         │
+│                             │
+│ Donation Center              │
+│ ┌─────────────────────────┐ │
+│ │ Select Center         ▼ │ │
+│ └─────────────────────────┘ │
+│                             │
+│ Select Date                 │
+│ ┌──────┐ ┌──────┐ ┌──────┐ │
+│ │ Sep 3│ │ Sep 4│ │ Sep 5│ │
+│ │ Thu  │ │ Fri ✓│ │ Sat  │ │
+│ └──────┘ └──────┘ └──────┘ │
+│                             │
+│ Select Time                 │
+│ ┌─────────────────────────┐ │
+│ │ 10:00 AM             ▼  │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │   SCHEDULE DONATION     │ │
+│ └─────────────────────────┘ │
+│                             │
+├─────────────────────────────┤
+│ 🏠  🔍  🩸 Donate  📋  👤 │
+└─────────────────────────────┘
+4. 👥 Find Donor
+┌─────────────────────────────┐
+│ ←        FIND DONOR         │
+├─────────────────────────────┤
+│                             │
+│ Blood Type                  │
+│ ┌─────────────────────────┐ │
+│ │ O+                   ▼  │ │
+│ └─────────────────────────┘ │
+│                             │
+│ Location                    │
+│ ┌─────────────────────────┐ │
+│ │ 📍 Iloilo City          │ │
+│ └─────────────────────────┘ │
+│                             │
+│ Distance                    │
+│ ┌─────────────────────────┐ │
+│ │ Within 10 km         ▼  │ │
+│ └─────────────────────────┘ │
+│                             │
+│ AVAILABLE DONORS             │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │ 👤 Maria Santos         │ │
+│ │    O+                   │ │
+│ │    🟢 Available         │ │
+│ │    📍 1.2 km away      │ │
+│ │              [Contact] │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │ 👤 Juan Cruz            │ │
+│ │    O+                   │ │
+│ │    🟢 Available         │ │
+│ │    📍 2.5 km away      │ │
+│ │              [Contact] │ │
+│ └─────────────────────────┘ │
+│                             │
+├─────────────────────────────┤
+│ 🏠  🔍  🩸  👥  👤       │
+└─────────────────────────────┘
+5. 🏥 Blood Request
+
+This is where a user who needs blood can submit a request.
+
+┌─────────────────────────────┐
+│ ←      BLOOD REQUEST        │
+├─────────────────────────────┤
+│                             │
+│ Request Blood 🩸            │
+│                             │
+│ Patient Name                │
+│ ┌─────────────────────────┐ │
+│ │ Enter patient name      │ │
+│ └─────────────────────────┘ │
+│                             │
+│ Blood Type                  │
+│ ┌─────────────────────────┐ │
+│ │ Select blood type    ▼  │ │
+│ └─────────────────────────┘ │
+│                             │
+│ Units Needed                │
+│ ┌─────────────────────────┐ │
+│ │ 2                       │ │
+│ └─────────────────────────┘ │
+│                             │
+│ Hospital / Location         │
+│ ┌─────────────────────────┐ │
+│ │ City Hospital            │ │
+│ └─────────────────────────┘ │
+│                             │
+│ Urgency                     │
+│ ○ Normal                    │
+│ ○ High                      │
+│ ● Critical                 │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │     SUBMIT REQUEST      │ │
+│ └─────────────────────────┘ │
+│                             │
+├─────────────────────────────┤
+│ 🏠  🔍  🩸  📋  👤       │
+└─────────────────────────────┘
+6. 📋 My Donations / History
+┌─────────────────────────────┐
+│ ←       MY HISTORY         │
+├─────────────────────────────┤
+│                             │
+│ Donation History 🩸         │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │ 🩸 Blood Donation       │ │
+│ │ O+                      │ │
+│ │ Aug 20, 2026            │ │
+│ │ City Hospital           │ │
+│ │ 🟢 Completed            │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │ 🩸 Blood Donation       │ │
+│ │ O+                      │ │
+│ │ Jul 15, 2026            │ │
+│ │ Red Cross Center        │ │
+│ │ 🟢 Completed            │ │
+│ └─────────────────────────┘ │
+│                             │
+│ MY REQUESTS                 │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │ A+ • 2 Units            │ │
+│ │ City Hospital           │ │
+│ │ 🟡 Pending              │ │
+│ └─────────────────────────┘ │
+│                             │
+├─────────────────────────────┤
+│ 🏠  🔍  🩸  📋  👤       │
+└─────────────────────────────┘
+7. 🔔 Notifications
+┌─────────────────────────────┐
+│ ←       NOTIFICATIONS       │
+├─────────────────────────────┤
+│                             │
+│ Today                       │
+│                             │
+│ 🔴 Urgent Blood Request     │
+│    O- blood needed at       │
+│    City Hospital            │
+│    10 minutes ago           │
+│                             │
+│ ──────────────────────────  │
+│                             │
+│ 📅 Appointment Reminder     │
+│    Your donation is         │
+│    tomorrow at 10:00 AM     │
+│    2 hours ago              │
+│                             │
+│ ──────────────────────────  │
+│                             │
+│ ❤️ Thank You!               │
+│    Your recent donation     │
+│    helped save a life.      │
+│    Yesterday                │
+│                             │
+├─────────────────────────────┤
+│ 🏠  🔍  🩸  📋  👤       │
+└─────────────────────────────┘
+8. 👤 Profile
+┌─────────────────────────────┐
+│ ←          PROFILE          │
+├─────────────────────────────┤
+│                             │
+│            👤               │
+│       Maria Santos          │
+│            O+               │
+│       🟢 Active Donor       │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │ ✏️ Edit Profile       → │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ACCOUNT                     │
+│                             │
+│ 👤 Personal Information  → │
+│ ────────────────────────── │
+│ 🩸 Blood Type             → │
+│ ────────────────────────── │
+│ 📍 Location               → │
+│ ────────────────────────── │
+│ 📞 Contact Information    → │
+│                             │
+│ SETTINGS                    │
+│                             │
+│ 🔔 Notification Settings → │
+│ ⚙️ App Settings           → │
+│ ❓ Help & Support         → │
+│                             │
+│ ┌─────────────────────────┐ │
+│ │        LOG OUT          │ │
+│ └─────────────────────────┘ │
+│                             │
+├─────────────────────────────┤
+│ 🏠  🔍  🩸  📋  👤       │
+└─────────────────────────────┘
+📱 Final User Mobile Navigation
+
+I recommend using 5 bottom-navigation buttons:
+
+┌─────────────────────────────────┐
+│                                 │
+│         APP CONTENT             │
+│                                 │
+├─────────────────────────────────┤
+│ 🏠       🔍       🩸      📋  👤│
+│ Home    Search   Donate  History│
+│                              Me │
+└─────────────────────────────────┘
+
+The 8 main user functionalities are therefore:
+
+Home / Dashboard
+Find Blood
+Donate Blood
+Find Donor
+Blood Request
+Donation & Request History
+Notifications
+Profile
+
+This gives you a clean mobile-first user side, while the admin side can remain a desktop dashboard with the 8 admin functionalities we designed earlier.
+
+what about the drawer?
+
+Yes — for the mobile user side, a Navigation Drawer is a good idea. It lets you keep the bottom navigation simple while putting the less frequently used features inside the drawer.
+
+📱 User Mobile — Navigation Drawer
+
+When the user taps the ☰ menu, the drawer can slide in from the left:
+
+┌──────────────────────────────┐
+│                              │
+│   🩸                         │
+│   COMMUNITY                  │
+│   BLOOD DONOR                │
+│                              │
+│   ┌────────────────────────┐ │
+│   │ 👤  Maria Santos       │ │
+│   │     Blood Type: O+     │ │
+│   └────────────────────────┘ │
+│                              │
+│   🏠  Home                   │
+│                              │
+│   🔍  Find Blood             │
+│                              │
+│   🩸  Donate Blood           │
+│                              │
+│   👥  Find Donor             │
+│                              │
+│   🏥  Blood Request          │
+│                              │
+│   📋  My History             │
+│                              │
+│   🔔  Notifications     (3) │
+│                              │
+│   👤  My Profile             │
+│                              │
+│   ────────────────────────── │
+│                              │
+│   ⚙️  Settings               │
+│                              │
+│   ❓  Help & Support         │
+│                              │
+│   🚪  Logout                 │
+│                              │
+└──────────────────────────────┘
+🏠 How the main screen looks with the Drawer button
+
+The ☰ button should be in the top-left of your mobile screens:
+
+┌──────────────────────────────┐
+│ ☰   Community Blood Donor 🔔│
+├──────────────────────────────┤
+│                              │
+│ Hello, Maria! 👋             │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │      YOUR BLOOD TYPE     │ │
+│ │            O+            │ │
+│ │     🟢 Available Donor   │ │
+│ └──────────────────────────┘ │
+│                              │
+│ 🚨 URGENT BLOOD REQUEST      │
+│ ┌──────────────────────────┐ │
+│ │ A+ Blood Needed          │ │
+│ │ 2 Units                  │ │
+│ │ City Hospital            │ │
+│ │ 🔴 Critical              │ │
+│ │              [Help Now]  │ │
+│ └──────────────────────────┘ │
+│                              │
+│ QUICK ACTIONS                │
+│                              │
+│ ┌─────────┐  ┌─────────┐   │
+│ │ 🩸      │  │ 🔍      │   │
+│ │ Donate  │  │ Find    │   │
+│ └─────────┘  └─────────┘   │
+│                              │
+├──────────────────────────────┤
+│ 🏠 Home  🔍  🩸  📋  👤   │
+└──────────────────────────────┘
+Recommended structure
+
+Don't put everything in the bottom navigation.
+
+Use the bottom navigation for the 5 most important actions:
+
+🏠 Home
+🔍 Find Blood
+🩸 Donate
+📋 History
+👤 Profile
+
+And use the drawer for all available functions:
+
+☰ DRAWER
+│
+├── 🏠 Home
+├── 🔍 Find Blood
+├── 🩸 Donate Blood
+├── 👥 Find Donor
+├── 🏥 Blood Request
+├── 📋 My History
+├── 🔔 Notifications
+├── 👤 My Profile
+│
+├── ⚙️ Settings
+├── ❓ Help & Support
+└── 🚪 Logout
