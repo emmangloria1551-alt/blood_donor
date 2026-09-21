@@ -10,6 +10,12 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    /*
+    |--------------------------------------------------------------------------
+    | MASS ASSIGNMENT
+    |--------------------------------------------------------------------------
+    */
+
     protected $fillable = [
         'name',
         'email',
@@ -19,13 +25,30 @@ class User extends Authenticatable
         'status',
     ];
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | HIDDEN
+    |--------------------------------------------------------------------------
+    */
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    public function donor()
-{
-    return $this->hasOne(Donor::class);
-}
+
+    /*
+    |--------------------------------------------------------------------------
+    | CASTS
+    |--------------------------------------------------------------------------
+    */
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 }

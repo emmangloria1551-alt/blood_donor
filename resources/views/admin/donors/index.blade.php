@@ -7,19 +7,15 @@
     <!-- PAGE HEADER -->
     <div class="page-header">
 
-        <div class="page-header-left">
-
-            <div class="page-title">
-                <div class="title-icon">
-                    <i class="bi bi-heart-pulse-fill"></i>
-                </div>
-
-                <div>
-                    <h1>Donor Management</h1>
-                    <p>Manage donor information, blood types, and availability.</p>
-                </div>
+        <div class="page-title">
+            <div class="title-icon">
+                <i class="bi bi-heart-pulse-fill"></i>
             </div>
 
+            <div>
+                <h1>Donor Management</h1>
+                <p>Manage registered blood donors and their information.</p>
+            </div>
         </div>
 
     </div>
@@ -28,6 +24,7 @@
     <!-- STATISTICS -->
     <div class="donor-stats">
 
+        <!-- TOTAL DONORS -->
         <div class="donor-stat-card">
 
             <div class="stat-icon red">
@@ -36,17 +33,21 @@
 
             <div>
                 <div class="stat-label">Total Donors</div>
-                <div class="stat-number">450</div>
+
+                <div class="stat-number">
+                    {{ $totalDonors }}
+                </div>
 
                 <div class="stat-info">
-                    <i class="bi bi-arrow-up"></i>
-                    8.4% this month
+                    <i class="bi bi-database"></i>
+                    Registered donors
                 </div>
             </div>
 
         </div>
 
 
+        <!-- ACTIVE DONORS -->
         <div class="donor-stat-card">
 
             <div class="stat-icon green">
@@ -54,37 +55,45 @@
             </div>
 
             <div>
-                <div class="stat-label">Available Donors</div>
-                <div class="stat-number">328</div>
+                <div class="stat-label">Active Donors</div>
+
+                <div class="stat-number">
+                    {{ $activeDonors }}
+                </div>
 
                 <div class="stat-info">
                     <i class="bi bi-check-circle"></i>
-                    Ready to donate
+                    Currently active
                 </div>
             </div>
 
         </div>
 
 
+        <!-- INACTIVE DONORS -->
         <div class="donor-stat-card">
 
             <div class="stat-icon orange">
-                <i class="bi bi-clock-fill"></i>
+                <i class="bi bi-pause-circle-fill"></i>
             </div>
 
             <div>
-                <div class="stat-label">Unavailable</div>
-                <div class="stat-number">122</div>
+                <div class="stat-label">Inactive Donors</div>
+
+                <div class="stat-number">
+                    {{ $inactiveDonors }}
+                </div>
 
                 <div class="stat-info orange-text">
                     <i class="bi bi-exclamation-circle"></i>
-                    Requires waiting
+                    Currently inactive
                 </div>
             </div>
 
         </div>
 
 
+        <!-- TOTAL BLOOD TYPES -->
         <div class="donor-stat-card">
 
             <div class="stat-icon purple">
@@ -92,12 +101,15 @@
             </div>
 
             <div>
-                <div class="stat-label">Total Donations</div>
-                <div class="stat-number">850</div>
+                <div class="stat-label">Blood Types</div>
 
-                <div class="stat-info">
-                    <i class="bi bi-arrow-up"></i>
-                    Total completed
+                <div class="stat-number">
+                    {{ $donors->pluck('blood_type')->unique()->count() }}
+                </div>
+
+                <div class="stat-info purple-text">
+                    <i class="bi bi-droplet"></i>
+                    Registered types
                 </div>
             </div>
 
@@ -109,29 +121,40 @@
     <!-- DONOR LIST -->
     <div class="donor-card">
 
+        <!-- CARD HEADER -->
         <div class="donor-card-header">
 
             <div>
                 <h2>All Donors</h2>
-                <p>View and manage registered blood donors.</p>
+
+                <p>
+                    View and manage registered blood donors.
+                </p>
             </div>
 
             <span class="donor-count">
-                450 Donors
+                {{ $donors->total() }} Donors
             </span>
 
         </div>
 
 
         <!-- SEARCH AND FILTER -->
-        <div class="donor-toolbar">
+        <form
+            method="GET"
+            action="{{ route('admin.donors') }}"
+            class="donor-toolbar"
+        >
 
+            <!-- SEARCH -->
             <div class="donor-search">
 
                 <i class="bi bi-search"></i>
 
                 <input
                     type="text"
+                    name="search"
+                    value="{{ request('search') }}"
                     placeholder="Search donor by name or email..."
                     autocomplete="off"
                 >
@@ -139,30 +162,101 @@
             </div>
 
 
-            <select class="donor-filter">
+            <!-- BLOOD TYPE -->
+            <select
+                name="blood_type"
+                class="donor-filter"
+            >
 
-                <option>All Blood Types</option>
-                <option>A+</option>
-                <option>A-</option>
-                <option>B+</option>
-                <option>B-</option>
-                <option>AB+</option>
-                <option>AB-</option>
-                <option>O+</option>
-                <option>O-</option>
+                <option value="">
+                    All Blood Types
+                </option>
+
+                <option value="A+" {{ request('blood_type') == 'A+' ? 'selected' : '' }}>
+                    A+
+                </option>
+
+                <option value="A-" {{ request('blood_type') == 'A-' ? 'selected' : '' }}>
+                    A-
+                </option>
+
+                <option value="B+" {{ request('blood_type') == 'B+' ? 'selected' : '' }}>
+                    B+
+                </option>
+
+                <option value="B-" {{ request('blood_type') == 'B-' ? 'selected' : '' }}>
+                    B-
+                </option>
+
+                <option value="AB+" {{ request('blood_type') == 'AB+' ? 'selected' : '' }}>
+                    AB+
+                </option>
+
+                <option value="AB-" {{ request('blood_type') == 'AB-' ? 'selected' : '' }}>
+                    AB-
+                </option>
+
+                <option value="O+" {{ request('blood_type') == 'O+' ? 'selected' : '' }}>
+                    O+
+                </option>
+
+                <option value="O-" {{ request('blood_type') == 'O-' ? 'selected' : '' }}>
+                    O-
+                </option>
 
             </select>
 
 
-            <select class="donor-filter">
+            <!-- STATUS -->
+            <select
+                name="status"
+                class="donor-filter"
+            >
 
-                <option>All Availability</option>
-                <option>Available</option>
-                <option>Unavailable</option>
+                <option value="">
+                    All Status
+                </option>
+
+                <option
+                    value="active"
+                    {{ request('status') == 'active' ? 'selected' : '' }}
+                >
+                    Active
+                </option>
+
+                <option
+                    value="inactive"
+                    {{ request('status') == 'inactive' ? 'selected' : '' }}
+                >
+                    Inactive
+                </option>
 
             </select>
 
-        </div>
+
+            <!-- SEARCH BUTTON -->
+            <button
+                type="submit"
+                class="donor-search-button"
+            >
+                <i class="bi bi-search"></i>
+                Search
+            </button>
+
+
+            <!-- CLEAR -->
+            @if(request()->hasAny(['search', 'blood_type', 'status']))
+
+                <a
+                    href="{{ route('admin.donors') }}"
+                    class="donor-clear-button"
+                >
+                    Clear
+                </a>
+
+            @endif
+
+        </form>
 
 
         <!-- TABLE -->
@@ -175,9 +269,10 @@
                     <tr>
                         <th>DONOR</th>
                         <th>BLOOD TYPE</th>
-                        <th>LAST DONATION</th>
-                        <th>AVAILABILITY</th>
-                        <th>ACTION</th>
+                        <th>PHONE</th>
+                        <th>ADDRESS</th>
+                        <th>STATUS</th>
+                        <th>REGISTERED</th>
                     </tr>
 
                 </thead>
@@ -196,18 +291,26 @@
 
                                     <div class="donor-avatar">
 
-                                        {{ strtoupper(substr($donor->user->name, 0, 2)) }}
+                                        {{
+                                            strtoupper(
+                                                substr(
+                                                    $donor->user->name ?? 'U',
+                                                    0,
+                                                    1
+                                                )
+                                            )
+                                        }}
 
                                     </div>
 
                                     <div>
 
                                         <div class="donor-name">
-                                            {{ $donor->user->name }}
+                                            {{ $donor->user->name ?? 'Unknown User' }}
                                         </div>
 
                                         <div class="donor-email">
-                                            {{ $donor->user->email }}
+                                            {{ $donor->user->email ?? 'No email' }}
                                         </div>
 
                                     </div>
@@ -227,32 +330,33 @@
                             </td>
 
 
-                            <!-- LAST DONATION -->
+                            <!-- PHONE -->
                             <td>
-
-                                {{ $donor->last_donation
-                                    ? $donor->last_donation->format('M d, Y')
-                                    : 'No donation yet'
-                                }}
-
+                                {{ $donor->phone ?? 'N/A' }}
                             </td>
 
 
-                            <!-- AVAILABILITY -->
+                            <!-- ADDRESS -->
+                            <td>
+                                {{ $donor->address ?? 'N/A' }}
+                            </td>
+
+
+                            <!-- STATUS -->
                             <td>
 
-                                @if($donor->availability === 'available')
+                                @if($donor->is_active)
 
-                                    <span class="availability available">
+                                    <span class="status-badge active">
                                         <span></span>
-                                        Available
+                                        Active
                                     </span>
 
                                 @else
 
-                                    <span class="availability unavailable">
+                                    <span class="status-badge inactive">
                                         <span></span>
-                                        Unavailable
+                                        Inactive
                                     </span>
 
                                 @endif
@@ -260,28 +364,10 @@
                             </td>
 
 
-                            <!-- ACTION -->
+                            <!-- REGISTERED -->
                             <td>
 
-                                <div class="action-buttons">
-
-                                    <button
-                                        type="button"
-                                        class="action-view"
-                                        title="View donor"
-                                    >
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        class="action-edit"
-                                        title="Edit donor"
-                                    >
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-
-                                </div>
+                                {{ $donor->created_at?->format('M d, Y') }}
 
                             </td>
 
@@ -291,18 +377,23 @@
 
                         <tr>
 
-                            <td colspan="5">
+                            <td
+                                colspan="6"
+                                class="empty-cell"
+                            >
 
                                 <div class="empty-state">
 
                                     <div class="empty-icon">
-                                        <i class="bi bi-droplet"></i>
+                                        <i class="bi bi-person-x"></i>
                                     </div>
 
-                                    <strong>No donors found</strong>
+                                    <strong>
+                                        No donors found
+                                    </strong>
 
                                     <p>
-                                        There are currently no registered donors.
+                                        Try changing your search or filters.
                                     </p>
 
                                 </div>
@@ -321,121 +412,53 @@
 
 
         <!-- PAGINATION -->
-        <div class="donor-pagination">
+        @if($donors->hasPages())
 
-            <span>
-                Showing 1–4 of 450 donors
-            </span>
+            <div class="donor-pagination">
 
-            <div class="pagination-buttons">
+                <div class="pagination-info">
 
-                <button type="button">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
+                    Showing
+                    <strong>{{ $donors->firstItem() }}</strong>
+                    to
+                    <strong>{{ $donors->lastItem() }}</strong>
+                    of
+                    <strong>{{ $donors->total() }}</strong>
+                    donors
 
-                <button type="button" class="active-page">
-                    1
-                </button>
-
-                <button type="button">
-                    2
-                </button>
-
-                <button type="button">
-                    3
-                </button>
-
-                <button type="button">
-                    4
-                </button>
-
-                <button type="button">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- DONOR DETAILS -->
-    <div class="donor-details-card">
-
-        <div class="details-header">
-
-            <div class="details-icon">
-                <i class="bi bi-person-heart"></i>
-            </div>
-
-            <div>
-                <h2>Donor Details</h2>
-                <p>Selected donor information</p>
-            </div>
-
-        </div>
-
-
-        <div class="details-content">
-
-            <div class="selected-donor">
-
-                <div class="large-avatar">
-                    JP
                 </div>
 
-                <div>
+                <div class="pagination-links">
 
-                    <h3>Josami Polestico</h3>
-
-                    <p>
-                        josami@gmail.com
-                    </p>
-
-                    <span class="availability available">
-                        <span></span>
-                        Available
-                    </span>
+                    {{ $donors->withQueryString()->links() }}
 
                 </div>
 
             </div>
 
+        @else
 
-            <div class="detail-item">
+            @if($donors->total() > 0)
 
-                <span>Blood Type</span>
+                <div class="donor-pagination">
 
-                <strong class="detail-blood">
-                    O+
-                </strong>
+                    <div class="pagination-info">
 
-            </div>
+                        Showing
+                        <strong>{{ $donors->firstItem() }}</strong>
+                        to
+                        <strong>{{ $donors->lastItem() }}</strong>
+                        of
+                        <strong>{{ $donors->total() }}</strong>
+                        donors
 
+                    </div>
 
-            <div class="detail-item">
+                </div>
 
-                <span>Last Donation</span>
+            @endif
 
-                <strong>
-                    August 20, 2026
-                </strong>
-
-            </div>
-
-
-            <div class="detail-item">
-
-                <span>Status</span>
-
-                <strong class="status-available">
-                    Available
-                </strong>
-
-            </div>
-
-        </div>
+        @endif
 
     </div>
 
@@ -458,17 +481,17 @@
    PAGE HEADER
 ========================================= */
 
-.page-header {
+.donor-page .page-header {
     margin-bottom: 25px;
 }
 
-.page-title {
+.donor-page .page-title {
     display: flex;
     align-items: center;
     gap: 14px;
 }
 
-.title-icon {
+.donor-page .title-icon {
     width: 48px;
     height: 48px;
 
@@ -484,7 +507,7 @@
     font-size: 22px;
 }
 
-.page-title h1 {
+.donor-page .page-title h1 {
     margin: 0;
 
     color: #172033;
@@ -493,7 +516,7 @@
     font-weight: 700;
 }
 
-.page-title p {
+.donor-page .page-title p {
     margin: 5px 0 0;
 
     color: #718096;
@@ -506,7 +529,7 @@
    STATISTICS
 ========================================= */
 
-.donor-stats {
+.donor-page .donor-stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 18px;
@@ -514,7 +537,7 @@
     margin-bottom: 22px;
 }
 
-.donor-stat-card {
+.donor-page .donor-stat-card {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -531,13 +554,13 @@
     transition: 0.2s;
 }
 
-.donor-stat-card:hover {
+.donor-page .donor-stat-card:hover {
     transform: translateY(-2px);
 
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
 }
 
-.stat-icon {
+.donor-page .stat-icon {
     width: 50px;
     height: 50px;
 
@@ -552,39 +575,39 @@
     font-size: 21px;
 }
 
-.stat-icon.red {
+.donor-page .stat-icon.red {
     background: #fff0f2;
     color: #c00024;
 }
 
-.stat-icon.green {
+.donor-page .stat-icon.green {
     background: #ecfdf3;
     color: #079455;
 }
 
-.stat-icon.orange {
+.donor-page .stat-icon.orange {
     background: #fff7ed;
     color: #ea580c;
 }
 
-.stat-icon.purple {
+.donor-page .stat-icon.purple {
     background: #f5f3ff;
     color: #7c3aed;
 }
 
-.stat-label {
+.donor-page .stat-label {
     color: #718096;
     font-size: 12px;
     margin-bottom: 3px;
 }
 
-.stat-number {
+.donor-page .stat-number {
     color: #101828;
     font-size: 26px;
     font-weight: 700;
 }
 
-.stat-info {
+.donor-page .stat-info {
     margin-top: 3px;
 
     color: #079455;
@@ -593,8 +616,12 @@
     font-weight: 500;
 }
 
-.orange-text {
+.donor-page .orange-text {
     color: #ea580c;
+}
+
+.donor-page .purple-text {
+    color: #7c3aed;
 }
 
 
@@ -602,7 +629,7 @@
    DONOR CARD
 ========================================= */
 
-.donor-card {
+.donor-page .donor-card {
     background: #ffffff;
 
     border: 1px solid #e7eaf0;
@@ -613,7 +640,7 @@
     overflow: hidden;
 }
 
-.donor-card-header {
+.donor-page .donor-card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -623,7 +650,7 @@
     border-bottom: 1px solid #eef0f4;
 }
 
-.donor-card-header h2 {
+.donor-page .donor-card-header h2 {
     margin: 0;
 
     color: #172033;
@@ -632,7 +659,7 @@
     font-weight: 700;
 }
 
-.donor-card-header p {
+.donor-page .donor-card-header p {
     margin: 5px 0 0;
 
     color: #718096;
@@ -640,11 +667,10 @@
     font-size: 12px;
 }
 
-.donor-count {
+.donor-page .donor-count {
     padding: 7px 12px;
 
     background: #f5f6f8;
-
     color: #667085;
 
     border-radius: 7px;
@@ -658,7 +684,7 @@
    SEARCH TOOLBAR
 ========================================= */
 
-.donor-toolbar {
+.donor-page .donor-toolbar {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -670,13 +696,13 @@
     border-bottom: 1px solid #eef0f4;
 }
 
-.donor-search {
+.donor-page .donor-search {
     position: relative;
 
     width: 350px;
 }
 
-.donor-search i {
+.donor-page .donor-search i {
     position: absolute;
 
     left: 13px;
@@ -687,9 +713,11 @@
     color: #98a2b3;
 
     font-size: 14px;
+
+    pointer-events: none;
 }
 
-.donor-search input {
+.donor-page .donor-search input {
     width: 100%;
     height: 42px;
 
@@ -711,17 +739,17 @@
     transition: 0.2s;
 }
 
-.donor-search input::placeholder {
+.donor-page .donor-search input::placeholder {
     color: #98a2b3;
 }
 
-.donor-search input:focus {
+.donor-page .donor-search input:focus {
     border-color: #a9001f;
 
     box-shadow: 0 0 0 3px rgba(169, 0, 31, 0.07);
 }
 
-.donor-filter {
+.donor-page .donor-filter {
     width: 165px;
     height: 42px;
 
@@ -741,10 +769,72 @@
     cursor: pointer;
 }
 
-.donor-filter:focus {
+.donor-page .donor-filter:focus {
     border-color: #a9001f;
 
     box-shadow: 0 0 0 3px rgba(169, 0, 31, 0.07);
+}
+
+
+/* SEARCH BUTTON */
+
+.donor-page .donor-search-button {
+    height: 42px;
+
+    padding: 0 17px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    border: 1px solid #a9001f;
+    border-radius: 8px;
+
+    background: #a9001f;
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.donor-page .donor-search-button:hover {
+    background: #8f001a;
+    border-color: #8f001a;
+}
+
+
+/* CLEAR BUTTON */
+
+.donor-page .donor-clear-button {
+    height: 42px;
+
+    padding: 0 14px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #d9dee7;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #475467;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    text-decoration: none;
+}
+
+.donor-page .donor-clear-button:hover {
+    background: #f8f9fb;
+    color: #344054;
 }
 
 
@@ -752,19 +842,19 @@
    TABLE
 ========================================= */
 
-.table-wrapper {
+.donor-page .table-wrapper {
     width: 100%;
 
     overflow-x: auto;
 }
 
-.donor-table {
+.donor-page .donor-table {
     width: 100%;
 
     border-collapse: collapse;
 }
 
-.donor-table th {
+.donor-page .donor-table th {
     padding: 13px 20px;
 
     background: #f8f9fb;
@@ -777,9 +867,11 @@
     font-weight: 700;
 
     letter-spacing: 0.5px;
+
+    white-space: nowrap;
 }
 
-.donor-table td {
+.donor-page .donor-table td {
     padding: 15px 20px;
 
     border-bottom: 1px solid #eef0f4;
@@ -787,13 +879,15 @@
     color: #475467;
 
     font-size: 13px;
+
+    vertical-align: middle;
 }
 
-.donor-table tbody tr {
+.donor-page .donor-table tbody tr {
     transition: 0.15s;
 }
 
-.donor-table tbody tr:hover {
+.donor-page .donor-table tbody tr:hover {
     background: #fcfcfd;
 }
 
@@ -802,13 +896,14 @@
    DONOR PROFILE
 ========================================= */
 
-.donor-profile {
+.donor-page .donor-profile {
     display: flex;
     align-items: center;
+
     gap: 11px;
 }
 
-.donor-avatar {
+.donor-page .donor-avatar {
     width: 39px;
     height: 39px;
 
@@ -827,14 +922,14 @@
     font-weight: 700;
 }
 
-.donor-name {
+.donor-page .donor-name {
     color: #172033;
 
     font-size: 13px;
     font-weight: 600;
 }
 
-.donor-email {
+.donor-page .donor-email {
     margin-top: 3px;
 
     color: #98a2b3;
@@ -847,7 +942,7 @@
    BLOOD BADGE
 ========================================= */
 
-.blood-badge {
+.donor-page .blood-badge {
     display: inline-flex;
 
     align-items: center;
@@ -869,83 +964,47 @@
 
 
 /* =========================================
-   AVAILABILITY
+   STATUS
 ========================================= */
 
-.availability {
+.donor-page .status-badge {
     display: inline-flex;
 
     align-items: center;
+
     gap: 7px;
 
-    font-size: 12px;
+    padding: 6px 9px;
+
+    border-radius: 7px;
+
+    font-size: 11px;
     font-weight: 600;
 }
 
-.availability span {
-    width: 7px;
-    height: 7px;
+.donor-page .status-badge span {
+    width: 6px;
+    height: 6px;
 
     border-radius: 50%;
 }
 
-.availability.available {
+.donor-page .status-badge.active {
+    background: #ecfdf3;
     color: #079455;
 }
 
-.availability.available span {
+.donor-page .status-badge.active span {
     background: #12b76a;
 }
 
-.availability.unavailable {
+.donor-page .status-badge.inactive {
+    background: #fff1f0;
     color: #d92d20;
 }
 
-.availability.unavailable span {
+.donor-page .status-badge.inactive span {
     background: #f04438;
-}
-
-
-/* =========================================
-   ACTION BUTTONS
-========================================= */
-
-.action-buttons {
-    display: flex;
-    gap: 6px;
-}
-
-.action-buttons button {
-    width: 32px;
-    height: 32px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 7px;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-.action-view {
-    background: #f2f4f7;
-    color: #475467;
-
-    border: 1px solid #e4e7ec;
-}
-
-.action-edit {
-    background: #fff0f2;
-    color: #a9001f;
-
-    border: 1px solid #ffd6dc;
-}
-
-.action-buttons button:hover {
-    transform: translateY(-1px);
 }
 
 
@@ -953,13 +1012,17 @@
    EMPTY STATE
 ========================================= */
 
-.empty-state {
-    padding: 45px 20px;
+.donor-page .empty-cell {
+    padding: 0 !important;
+}
+
+.donor-page .empty-state {
+    padding: 50px 20px;
 
     text-align: center;
 }
 
-.empty-icon {
+.donor-page .empty-icon {
     width: 50px;
     height: 50px;
 
@@ -977,13 +1040,13 @@
     font-size: 22px;
 }
 
-.empty-state strong {
+.donor-page .empty-state strong {
     color: #344054;
 
     font-size: 14px;
 }
 
-.empty-state p {
+.donor-page .empty-state p {
     margin: 5px 0 0;
 
     color: #98a2b3;
@@ -996,8 +1059,9 @@
    PAGINATION
 ========================================= */
 
-.donor-pagination {
+.donor-page .donor-pagination {
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
@@ -1005,180 +1069,57 @@
 
     color: #667085;
 
-    font-size: 11px;
+    font-size: 12px;
 }
 
-.pagination-buttons {
-    display: flex;
-    gap: 4px;
+.donor-page .pagination-info strong {
+    color: #344054;
 }
 
-.pagination-buttons button {
-    width: 32px;
-    height: 32px;
-
+.donor-page .pagination-links nav {
     display: flex;
+}
+
+.donor-page .pagination-links svg {
+    width: 18px;
+    height: 18px;
+}
+
+.donor-page .pagination-links a,
+.donor-page .pagination-links span {
+    display: inline-flex;
+
     align-items: center;
     justify-content: center;
 
-    background: #ffffff;
+    min-width: 32px;
+    height: 32px;
+
+    margin-left: 4px;
+
+    padding: 0 8px;
 
     border: 1px solid #e4e7ec;
     border-radius: 7px;
+
+    background: #ffffff;
 
     color: #475467;
 
     font-size: 12px;
 
-    cursor: pointer;
+    text-decoration: none;
 }
 
-.pagination-buttons button:hover,
-.pagination-buttons .active-page {
-    background: #a9001f;
+.donor-page .pagination-links a:hover {
+    background: #f8f9fb;
+}
 
+.donor-page .pagination-links span[aria-current="page"] {
+    background: #a9001f;
     border-color: #a9001f;
 
     color: #ffffff;
-}
-
-
-/* =========================================
-   DONOR DETAILS
-========================================= */
-
-.donor-details-card {
-    margin-top: 22px;
-
-    padding: 24px;
-
-    background: #ffffff;
-
-    border: 1px solid #e7eaf0;
-    border-radius: 16px;
-
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.035);
-}
-
-.details-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    margin-bottom: 22px;
-}
-
-.details-icon {
-    width: 43px;
-    height: 43px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #fff0f2;
-    color: #a9001f;
-
-    border-radius: 11px;
-
-    font-size: 19px;
-}
-
-.details-header h2 {
-    margin: 0;
-
-    color: #172033;
-
-    font-size: 18px;
-}
-
-.details-header p {
-    margin: 4px 0 0;
-
-    color: #98a2b3;
-
-    font-size: 11px;
-}
-
-.details-content {
-    display: grid;
-
-    grid-template-columns: 1.5fr 1fr 1fr 1fr;
-
-    gap: 20px;
-
-    align-items: center;
-}
-
-.selected-donor {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-}
-
-.large-avatar {
-    width: 54px;
-    height: 54px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #fff0f2;
-    color: #a9001f;
-
-    border-radius: 50%;
-
-    font-size: 15px;
-    font-weight: 700;
-}
-
-.selected-donor h3 {
-    margin: 0;
-
-    color: #172033;
-
-    font-size: 14px;
-}
-
-.selected-donor p {
-    margin: 4px 0 7px;
-
-    color: #98a2b3;
-
-    font-size: 11px;
-}
-
-.detail-item {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-
-    padding-left: 20px;
-
-    border-left: 1px solid #eaecf0;
-}
-
-.detail-item span {
-    color: #98a2b3;
-
-    font-size: 11px;
-}
-
-.detail-item strong {
-    color: #172033;
-
-    font-size: 13px;
-}
-
-.detail-blood {
-    color: #a9001f !important;
-
-    font-size: 19px !important;
-}
-
-.status-available {
-    color: #079455 !important;
 }
 
 
@@ -1188,12 +1129,12 @@
 
 @media (max-width: 1100px) {
 
-    .donor-stats {
+    .donor-page .donor-stats {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .details-content {
-        grid-template-columns: repeat(2, 1fr);
+    .donor-page .donor-toolbar {
+        flex-wrap: wrap;
     }
 
 }
@@ -1201,37 +1142,37 @@
 
 @media (max-width: 750px) {
 
-    .donor-stats {
+    .donor-page .donor-stats {
         grid-template-columns: 1fr;
     }
 
-    .donor-toolbar {
+    .donor-page .donor-toolbar {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .donor-search {
+    .donor-page .donor-search {
         width: 100%;
     }
 
-    .donor-filter {
+    .donor-page .donor-filter {
         width: 100%;
     }
 
-    .donor-card-header {
+    .donor-page .donor-search-button,
+    .donor-page .donor-clear-button {
+        width: 100%;
+    }
+
+    .donor-page .donor-card-header {
         align-items: flex-start;
         gap: 10px;
     }
 
-    .details-content {
-        grid-template-columns: 1fr;
-    }
-
-    .detail-item {
-        padding: 15px 0 0;
-
-        border-left: none;
-        border-top: 1px solid #eaecf0;
+    .donor-page .donor-pagination {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
 
 }
@@ -1239,14 +1180,12 @@
 
 @media (max-width: 500px) {
 
-    .page-title h1 {
+    .donor-page .page-title h1 {
         font-size: 22px;
     }
 
-    .donor-pagination {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
+    .donor-page .page-title p {
+        font-size: 12px;
     }
 
 }

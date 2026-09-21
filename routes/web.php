@@ -1,131 +1,182 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\UserController;
+
 use App\Http\Controllers\Admin\DonorController;
 use App\Http\Controllers\Admin\AdminAuthController;
- 
-
-// ===============================
-// ADMIN DASHBOARD
-// ===============================
-
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\BloodRequestController;
+use App\Http\Controllers\Admin\AppointmentController;
+use App\Http\Controllers\Admin\DonationCenterController;
 
 
-// ===============================
-// USER MANAGEMENT
-// ===============================
 
-Route::get('/admin/users', function () {
-    return view('admin.users.index');
-})->name('admin.users');
-
-Route::get('/admin/users/create', [UserController::class, 'create'])
-    ->name('admin.users.create');
-
-Route::post('/admin/users', [UserController::class, 'store'])
-    ->name('admin.users.store');
-
-
-// ===============================
-// DONOR MANAGEMENT
-// ===============================
-
-Route::get('/admin/donors', [DonorController::class, 'index'])
-    ->name('admin.donors');
-
-
-// ===============================
-// BLOOD REQUESTS
-// ===============================
-
-Route::get('/admin/requests', function () {
-    return view('admin.requests.index');
-})->name('admin.requests');
-
-
-// ===============================
-// APPOINTMENTS
-// ===============================
-
-Route::get('/admin/appointments', function () {
-    return view('admin.appointments.index');
-})->name('admin.appointments');
-
-
-// ===============================
-// DONATION CENTERS
-// ===============================
-
-Route::get('/admin/centers', function () {
-    return view('admin.centers.index');
-})->name('admin.centers');
-
-
-// ===============================
-// NOTIFICATIONS
-// ===============================
-
-Route::get('/admin/notifications', function () {
-    return view('admin.notifications.index');
-})->name('admin.notifications');
-
-
-// ===============================
-// REPORTS
-// ===============================
-
-Route::get('/admin/reports', function () {
-    return view('admin.reports.index');
-})->name('admin.reports');
-
-
-// ===============================
-// SETTINGS
-// ===============================
-
-Route::get('/admin/settings', function () {
-    return view('admin.settings.index');
-})->name('admin.settings');
-
-
-  
- /*
+/*
 |--------------------------------------------------------------------------
 | ADMIN LOGIN
 |--------------------------------------------------------------------------
 */
 
+// Show admin login page
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])
     ->name('admin.login');
 
+    Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
+
+// Process admin login
 Route::post('/admin/login', [AdminAuthController::class, 'login'])
     ->name('admin.login.submit');
 
-Route::post('/admin/logout', [AdminAuthController::class, 'logout'])
+// Admin logout
+Route::post('/logout', [AdminAuthController::class, 'logout'])
     ->name('admin.logout');
 
-    /*
+
+/*
 |--------------------------------------------------------------------------
-| ADMIN DASHBOARD
+| ADMIN PANEL
 |--------------------------------------------------------------------------
 */
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
-
-// ===============================
-// ADMIN PANEL
-// ===============================
-
 Route::middleware('auth')->prefix('admin')->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('admin.dashboard');
+
+    /*
+    |--------------------------------------------------------------------------
+    | USER MANAGEMENT
+    |--------------------------------------------------------------------------
+    */
+
+Route::get('/users', [UserController::class, 'index'])
+    ->name('admin.users');
+
+Route::get('/users/create', [UserController::class, 'create'])
+    ->name('admin.users.create');
+
+Route::post('/users', [UserController::class, 'store'])
+    ->name('admin.users.store');
+
+Route::get('/users/{user}', [UserController::class, 'show'])
+    ->name('admin.users.show');
+
+Route::get('/users/{user}/edit', [UserController::class, 'edit'])
+    ->name('admin.users.edit');
+
+Route::put('/users/{user}', [UserController::class, 'update'])
+    ->name('admin.users.update');
+
+Route::delete('/users/{user}', [UserController::class, 'destroy'])
+    ->name('admin.users.destroy');
+
+    /*
+    |--------------------------------------------------------------------------
+    | DONOR MANAGEMENT
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/donors', [DonorController::class, 'index'])
+        ->name('admin.donors');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | BLOOD REQUESTS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/requests', [BloodRequestController::class, 'index'])
+    ->name('admin.requests');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | APPOINTMENTS
+    |--------------------------------------------------------------------------
+    */
+
+      Route::get('/appointments', [AppointmentController::class, 'index'])
+    ->name('admin.appointments');
+
+Route::get('/appointments/{appointment}', [AppointmentController::class, 'show'])
+    ->name('admin.appointments.show');
+
+Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy'])
+    ->name('admin.appointments.destroy');
+
+    Route::patch(
+    '/appointments/{appointment}/status',
+    [AppointmentController::class, 'updateStatus']
+)->name('admin.appointments.status');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DONATION CENTERS
+    |--------------------------------------------------------------------------
+    */
+
+      Route::get('/centers', [DonationCenterController::class, 'index'])
+    ->name('admin.centers');
+
+Route::get('/centers/create', [DonationCenterController::class, 'create'])
+    ->name('admin.centers.create');
+
+Route::post('/centers', [DonationCenterController::class, 'store'])
+    ->name('admin.centers.store');
+
+Route::get('/centers/{center}', [DonationCenterController::class, 'show'])
+    ->name('admin.centers.show');
+
+Route::get('/centers/{center}/edit', [DonationCenterController::class, 'edit'])
+    ->name('admin.centers.edit');
+
+Route::put('/centers/{center}', [DonationCenterController::class, 'update'])
+    ->name('admin.centers.update');
+
+Route::delete('/centers/{center}', [DonationCenterController::class, 'destroy'])
+    ->name('admin.centers.destroy');
+
+    /*
+    |--------------------------------------------------------------------------
+    | NOTIFICATIONS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/notifications', function () {
+        return view('admin.notifications.index');
+    })->name('admin.notifications');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | REPORTS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/reports', function () {
+        return view('admin.reports.index');
+    })->name('admin.reports');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SETTINGS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/settings', function () {
+        return view('admin.settings.index');
+    })->name('admin.settings');
 
 });

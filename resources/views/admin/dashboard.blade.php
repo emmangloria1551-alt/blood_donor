@@ -31,10 +31,10 @@
             </div>
 
             <div class="stat-number">
-                1,250
+                {{ number_format($totalUsers) }}
             </div>
 
-            <div class="stat-label">
+            <div class="stat-title">
                 Total Users
             </div>
 
@@ -57,10 +57,10 @@
             </div>
 
             <div class="stat-number">
-                450
+                {{ number_format($totalDonors) }}
             </div>
 
-            <div class="stat-label">
+            <div class="stat-title">
                 Total Donors
             </div>
 
@@ -86,7 +86,7 @@
                 24
             </div>
 
-            <div class="stat-label">
+            <div class="stat-title">
                 Blood Requests
             </div>
 
@@ -112,7 +112,7 @@
                 850
             </div>
 
-            <div class="stat-label">
+            <div class="stat-title">
                 Total Donations
             </div>
 
@@ -245,14 +245,12 @@
 
                     <!-- MONTHS -->
                     <div class="chart-labels">
-
                         <span>Apr</span>
                         <span>May</span>
                         <span>Jun</span>
                         <span>Jul</span>
                         <span>Aug</span>
                         <span>Sep</span>
-
                     </div>
 
                 </div>
@@ -504,7 +502,7 @@
     color: #202124;
 }
 
-.stat-label {
+.stat-title {
     margin-top: 4px;
     font-size: 14px;
     font-weight: 600;

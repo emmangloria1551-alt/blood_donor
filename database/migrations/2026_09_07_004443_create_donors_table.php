@@ -6,34 +6,27 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-     public function up(): void
-{
-    Schema::create('donors', function (Blueprint $table) {
-        $table->id();
+    public function up(): void
+    {
+        Schema::create('donors', function (Blueprint $table) {
+            $table->id();
 
-        $table->foreignId('user_id')
-              ->constrained()
-              ->cascadeOnDelete();
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
-        $table->string('blood_type', 5);
+            $table->string('blood_type');
+            $table->date('date_of_birth')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
 
-        $table->date('last_donation')->nullable();
+            $table->boolean('is_active')->default(true);
 
-        $table->enum('availability', [
-            'available',
-            'unavailable'
-        ])->default('available');
+            $table->timestamps();
+        });
+    }
 
-        $table->timestamps();
-    });
-}
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('donors');

@@ -4,27 +4,23 @@
 
 @section('content')
 
-<div class="donation-center-page">
+<div class="centers-page">
 
-    {{-- =========================
-        PAGE HEADER
-    ========================= --}}
-    <div class="dc-header">
+    {{-- PAGE HEADER --}}
+    <div class="page-header">
 
-        <div class="dc-header-left">
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-hospital-fill"></i>
+                Donation Centers
+            </h1>
 
-            <div class="dc-header-icon">
-                <i class="bi bi-building-fill"></i>
-            </div>
-
-            <div>
-                <h1>Donation Centers</h1>
-                <p>Manage locations where blood donations take place.</p>
-            </div>
-
+            <p class="page-subtitle">
+                Manage and monitor all blood donation centers.
+            </p>
         </div>
 
-        <a href="#" class="dc-add-btn">
+        <a href="{{ route('admin.centers.create') }}" class="add-center-btn">
             <i class="bi bi-plus-lg"></i>
             Add Center
         </a>
@@ -32,1112 +28,1137 @@
     </div>
 
 
-    {{-- =========================
-        STATISTICS
-    ========================= --}}
-    <div class="dc-stats">
+    {{-- SUCCESS MESSAGE --}}
+    @if(session('success'))
+        <div class="success-alert">
+            <i class="bi bi-check-circle-fill"></i>
 
-        <div class="dc-stat-card">
-            <div class="dc-stat-icon red">
-                <i class="bi bi-building-fill"></i>
+            <span>
+                {{ session('success') }}
+            </span>
+        </div>
+    @endif
+
+
+    {{-- VALIDATION ERRORS --}}
+    @if($errors->any())
+        <div class="error-alert">
+
+            <div class="error-title">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                Please fix the following errors:
+            </div>
+
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+
+        </div>
+    @endif
+
+
+    {{-- STATISTICS --}}
+    <div class="stats-grid">
+
+        {{-- TOTAL --}}
+        <div class="stat-card">
+
+            <div class="stat-icon total-icon">
+                <i class="bi bi-hospital"></i>
             </div>
 
             <div>
-                <span>Total Centers</span>
-                <strong>3</strong>
+                <div class="stat-label">
+                    Total Centers
+                </div>
+
+                <div class="stat-number">
+                    {{ $totalCenters }}
+                </div>
             </div>
+
         </div>
 
 
-        <div class="dc-stat-card">
-            <div class="dc-stat-icon green">
-                <i class="bi bi-check-circle-fill"></i>
+        {{-- OPEN --}}
+        <div class="stat-card">
+
+            <div class="stat-icon open-icon">
+                <i class="bi bi-check-circle"></i>
             </div>
 
             <div>
-                <span>Open Centers</span>
-                <strong>2</strong>
+                <div class="stat-label">
+                    Open Centers
+                </div>
+
+                <div class="stat-number">
+                    {{ $openCenters }}
+                </div>
             </div>
+
         </div>
 
 
-        <div class="dc-stat-card">
-            <div class="dc-stat-icon orange">
-                <i class="bi bi-clock-fill"></i>
+        {{-- CLOSED --}}
+        <div class="stat-card">
+
+            <div class="stat-icon closed-icon">
+                <i class="bi bi-x-circle"></i>
             </div>
 
             <div>
-                <span>Closed Centers</span>
-                <strong>1</strong>
-            </div>
-        </div>
+                <div class="stat-label">
+                    Closed Centers
+                </div>
 
-
-        <div class="dc-stat-card">
-            <div class="dc-stat-icon blue">
-                <i class="bi bi-droplet-fill"></i>
+                <div class="stat-number">
+                    {{ $closedCenters }}
+                </div>
             </div>
 
-            <div>
-                <span>Donations Today</span>
-                <strong>18</strong>
-            </div>
         </div>
 
     </div>
 
 
-    {{-- =========================
-        MAIN CARD
-    ========================= --}}
-    <div class="dc-card">
+    {{-- SEARCH AND FILTER --}}
+    <div class="filter-card">
 
-        {{-- CARD TITLE --}}
-        <div class="dc-card-header">
+        <form
+            action="{{ route('admin.centers') }}"
+            method="GET"
+            class="filter-form"
+        >
 
-            <div>
-                <h2>All Donation Centers</h2>
-                <p>View and manage registered donation locations.</p>
-            </div>
-
-            <span class="dc-count">
-                3 Centers
-            </span>
-
-        </div>
-
-
-        {{-- =========================
-            SEARCH AREA
-        ========================= --}}
-        <div class="dc-search-area">
-
-            {{-- NORMAL SEARCH BAR --}}
-            <div class="dc-search">
+            {{-- SEARCH --}}
+            <div class="search-wrapper">
 
                 <i class="bi bi-search"></i>
 
                 <input
                     type="text"
-                    id="centerSearch"
-                    placeholder="Search center..."
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Search centers by name, location, or contact..."
                 >
 
             </div>
 
 
-            {{-- LOCATION FILTER --}}
-            <select id="locationFilter" class="dc-filter">
-
-                <option value="">All Locations</option>
-                <option value="Iloilo City">Iloilo City</option>
-                <option value="Pavia">Pavia</option>
-
-            </select>
-
-
-            {{-- STATUS FILTER --}}
-            <select id="statusFilter" class="dc-filter">
-
-                <option value="">All Status</option>
-                <option value="Open">Open</option>
-                <option value="Closed">Closed</option>
-
-            </select>
-
-        </div>
-
-
-        {{-- =========================
-            TABLE
-        ========================= --}}
-        <div class="dc-table-wrapper">
-
-            <table class="dc-table" id="centerTable">
-
-                <thead>
-                    <tr>
-                        <th>Center</th>
-                        <th>Location</th>
-                        <th>Contact</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {{-- CENTER 1 --}}
-                    <tr>
-
-                        <td>
-
-                            <div class="dc-center-info">
-
-                                <div class="dc-center-icon">
-                                    <i class="bi bi-building-fill"></i>
-                                </div>
-
-                                <div>
-                                    <strong>Red Cross Center</strong>
-                                    <span>Blood Donation Center</span>
-                                </div>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="dc-location">
-
-                                <i class="bi bi-geo-alt-fill"></i>
-
-                                <span>Iloilo City</span>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-                            0912-345-6789
-                        </td>
-
-
-                        <td>
-
-                            <span class="dc-status open">
-
-                                <span></span>
-
-                                Open
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="dc-actions">
-
-                                <button
-                                    type="button"
-                                    class="dc-action edit"
-                                    title="Edit"
-                                >
-                                    <i class="bi bi-pencil-fill"></i>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="dc-action delete"
-                                    title="Delete"
-                                >
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-
-                    {{-- CENTER 2 --}}
-                    <tr>
-
-                        <td>
-
-                            <div class="dc-center-info">
-
-                                <div class="dc-center-icon">
-                                    <i class="bi bi-hospital-fill"></i>
-                                </div>
-
-                                <div>
-                                    <strong>City Hospital</strong>
-                                    <span>Hospital Donation Unit</span>
-                                </div>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="dc-location">
-
-                                <i class="bi bi-geo-alt-fill"></i>
-
-                                <span>Iloilo City</span>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-                            0913-456-7890
-                        </td>
-
-
-                        <td>
-
-                            <span class="dc-status open">
-
-                                <span></span>
-
-                                Open
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="dc-actions">
-
-                                <button
-                                    type="button"
-                                    class="dc-action edit"
-                                    title="Edit"
-                                >
-                                    <i class="bi bi-pencil-fill"></i>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="dc-action delete"
-                                    title="Delete"
-                                >
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-
-                    {{-- CENTER 3 --}}
-                    <tr>
-
-                        <td>
-
-                            <div class="dc-center-info">
-
-                                <div class="dc-center-icon">
-                                    <i class="bi bi-hospital-fill"></i>
-                                </div>
-
-                                <div>
-                                    <strong>Medical Center</strong>
-                                    <span>Blood Donation Unit</span>
-                                </div>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="dc-location">
-
-                                <i class="bi bi-geo-alt-fill"></i>
-
-                                <span>Pavia</span>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-                            0914-567-8901
-                        </td>
-
-
-                        <td>
-
-                            <span class="dc-status closed">
-
-                                <span></span>
-
-                                Closed
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="dc-actions">
-
-                                <button
-                                    type="button"
-                                    class="dc-action edit"
-                                    title="Edit"
-                                >
-                                    <i class="bi bi-pencil-fill"></i>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="dc-action delete"
-                                    title="Delete"
-                                >
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-
-        {{-- =========================
-            CENTER INFORMATION
-        ========================= --}}
-        <div class="dc-information">
-
-            <div class="dc-information-header">
-
-                <div>
-                    <h3>Center Information</h3>
-                    <p>Selected donation center details.</p>
-                </div>
+            {{-- STATUS --}}
+            <div class="select-wrapper">
+
+                <select name="status">
+
+                    <option value="">
+                        All Status
+                    </option>
+
+                    <option
+                        value="open"
+                        {{ request('status') === 'open' ? 'selected' : '' }}
+                    >
+                        Open
+                    </option>
+
+                    <option
+                        value="closed"
+                        {{ request('status') === 'closed' ? 'selected' : '' }}
+                    >
+                        Closed
+                    </option>
+
+                </select>
 
             </div>
 
 
-            <div class="dc-information-box">
-
-                <div class="dc-information-top">
-
-                    <div class="dc-information-icon">
-                        <i class="bi bi-building-fill"></i>
-                    </div>
-
-                    <div>
-                        <h4>Red Cross Center</h4>
-                        <p>Blood Donation Center</p>
-                    </div>
-
-                </div>
+            {{-- SEARCH BUTTON --}}
+            <button type="submit" class="search-btn">
+                <i class="bi bi-search"></i>
+                Search
+            </button>
 
 
-                <div class="dc-information-grid">
+            {{-- RESET --}}
+            @if(request()->filled('search') || request()->filled('status'))
 
-                    <div>
-                        <span>Location</span>
-                        <strong>Iloilo City</strong>
-                    </div>
+                <a
+                    href="{{ route('admin.centers') }}"
+                    class="reset-btn"
+                >
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    Reset
+                </a>
 
-                    <div>
-                        <span>Contact</span>
-                        <strong>0912-345-6789</strong>
-                    </div>
+            @endif
 
-                    <div>
-                        <span>Operating Hours</span>
-                        <strong>8:00 AM - 5:00 PM</strong>
-                    </div>
+        </form>
 
-                    <div>
-                        <span>Status</span>
-
-                        <strong>
-
-                            <span class="dc-status open">
-                                <span></span>
-                                Open
-                            </span>
-
-                        </strong>
-
-                    </div>
-
-                </div>
+    </div>
 
 
-                <div class="dc-information-actions">
+    {{-- CENTERS TABLE --}}
+    <div class="table-card">
 
-                    <button type="button" class="dc-delete-btn">
-                        <i class="bi bi-trash"></i>
-                        Delete
-                    </button>
+        <div class="table-header">
 
-                    <button type="button" class="dc-edit-btn">
-                        <i class="bi bi-pencil"></i>
-                        Edit Center
-                    </button>
+            <div>
+                <h2>
+                    Donation Center List
+                </h2>
 
-                </div>
-
+                <p>
+                    {{ $centers->total() }}
+                    {{ $centers->total() === 1 ? 'center' : 'centers' }}
+                    found
+                </p>
             </div>
 
         </div>
+
+
+        @if($centers->count() > 0)
+
+            <div class="table-responsive">
+
+                <table class="centers-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Center
+                            </th>
+
+                            <th>
+                                Location
+                            </th>
+
+                            <th>
+                                Contact
+                            </th>
+
+                            <th>
+                                Operating Hours
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @foreach($centers as $center)
+
+                            <tr>
+
+                                {{-- CENTER --}}
+                                <td>
+
+                                    <div class="center-info">
+
+                                        <div class="center-avatar">
+                                            <i class="bi bi-hospital-fill"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <div class="center-name">
+                                                {{ $center->name }}
+                                            </div>
+
+                                            @if($center->description)
+
+                                                <div class="center-description">
+                                                    {{ \Illuminate\Support\Str::limit($center->description, 50) }}
+                                                </div>
+
+                                            @endif
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                {{-- LOCATION --}}
+                                <td>
+
+                                    <div class="location-info">
+
+                                        <i class="bi bi-geo-alt-fill"></i>
+
+                                        <span>
+                                            {{ $center->location }}
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                {{-- CONTACT --}}
+                                <td>
+
+                                    @if($center->contact_number)
+
+                                        <div class="contact-info">
+
+                                            <i class="bi bi-telephone-fill"></i>
+
+                                            <span>
+                                                {{ $center->contact_number }}
+                                            </span>
+
+                                        </div>
+
+                                    @else
+
+                                        <span class="not-provided">
+                                            Not provided
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- HOURS --}}
+                                <td>
+
+                                    @if($center->opening_time && $center->closing_time)
+
+                                        <div class="hours-info">
+
+                                            <i class="bi bi-clock-fill"></i>
+
+                                            <span>
+                                                {{ \Carbon\Carbon::parse($center->opening_time)->format('h:i A') }}
+                                                -
+                                                {{ \Carbon\Carbon::parse($center->closing_time)->format('h:i A') }}
+                                            </span>
+
+                                        </div>
+
+                                    @else
+
+                                        <span class="not-provided">
+                                            Not provided
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- STATUS --}}
+                                <td>
+
+                                    @if($center->status === 'open')
+
+                                        <span class="status-badge status-open">
+
+                                            <i class="bi bi-check-circle-fill"></i>
+
+                                            Open
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="status-badge status-closed">
+
+                                            <i class="bi bi-x-circle-fill"></i>
+
+                                            Closed
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- ACTIONS --}}
+                                <td>
+
+                                    <div class="action-buttons">
+
+                                        {{-- VIEW --}}
+                                        <a
+                                            href="{{ route('admin.centers.show', $center) }}"
+                                            class="action-btn view-btn"
+                                            title="View Center"
+                                        >
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+
+                                        {{-- EDIT --}}
+                                        <a
+                                            href="{{ route('admin.centers.edit', $center) }}"
+                                            class="action-btn edit-btn"
+                                            title="Edit Center"
+                                        >
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+
+                                        {{-- DELETE --}}
+                                        <form
+                                            action="{{ route('admin.centers.destroy', $center) }}"
+                                            method="POST"
+                                            class="delete-form"
+                                            onsubmit="return confirm('Are you sure you want to delete {{ $center->name }}?');"
+                                        >
+
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button
+                                                type="submit"
+                                                class="action-btn delete-btn"
+                                                title="Delete Center"
+                                            >
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @endforeach
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            {{-- PAGINATION --}}
+            @if($centers->hasPages())
+
+                <div class="pagination-wrapper">
+
+                    {{ $centers->links() }}
+
+                </div>
+
+            @endif
+
+
+        @else
+
+            {{-- EMPTY STATE --}}
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    <i class="bi bi-hospital"></i>
+                </div>
+
+                <h3>
+                    No Donation Centers Found
+                </h3>
+
+                <p>
+                    There are currently no donation centers matching your search.
+                </p>
+
+                @if(request()->filled('search') || request()->filled('status'))
+
+                    <a
+                        href="{{ route('admin.centers') }}"
+                        class="empty-reset-btn"
+                    >
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                        Clear Filters
+                    </a>
+
+                @else
+
+                    <a
+                        href="{{ route('admin.centers.create') }}"
+                        class="empty-add-btn"
+                    >
+                        <i class="bi bi-plus-lg"></i>
+                        Add Donation Center
+                    </a>
+
+                @endif
+
+            </div>
+
+        @endif
 
     </div>
 
 </div>
 
 
-{{-- =========================
-    PAGE CSS
-========================= --}}
 <style>
 
-    .donation-center-page {
+/* =========================================
+   DONATION CENTERS PAGE
+========================================= */
+
+.centers-page {
+    width: 100%;
+}
+
+
+/* =========================================
+   PAGE HEADER
+========================================= */
+
+.centers-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.centers-page .page-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #222;
+}
+
+.centers-page .page-title i {
+    color: #dc3545;
+    margin-right: 8px;
+}
+
+.centers-page .page-subtitle {
+    margin: 7px 0 0;
+    color: #777;
+    font-size: 14px;
+}
+
+
+/* =========================================
+   ADD CENTER BUTTON
+========================================= */
+
+.centers-page .add-center-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 17px;
+    border-radius: 8px;
+    background: #dc3545;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.centers-page .add-center-btn:hover {
+    background: #bb2d3b;
+    color: #fff;
+}
+
+
+/* =========================================
+   ALERTS
+========================================= */
+
+.centers-page .success-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    margin-bottom: 20px;
+    border-radius: 9px;
+    background: #eaf7ef;
+    border: 1px solid #b7e4c7;
+    color: #146c43;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.centers-page .success-alert i {
+    font-size: 17px;
+}
+
+.centers-page .error-alert {
+    margin-bottom: 20px;
+    padding: 15px 18px;
+    border-radius: 9px;
+    background: #fff0f1;
+    border: 1px solid #f5c2c7;
+    color: #842029;
+}
+
+.centers-page .error-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.centers-page .error-title i {
+    margin-right: 5px;
+}
+
+.centers-page .error-alert ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+
+/* =========================================
+   STATISTICS
+========================================= */
+
+.centers-page .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.centers-page .stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.centers-page .stat-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+.centers-page .total-icon {
+    background: #f1f3f5;
+    color: #495057;
+}
+
+.centers-page .open-icon {
+    background: #e8f7ee;
+    color: #198754;
+}
+
+.centers-page .closed-icon {
+    background: #fff0f1;
+    color: #dc3545;
+}
+
+.centers-page .stat-label {
+    margin-bottom: 3px;
+    color: #777;
+    font-size: 13px;
+}
+
+.centers-page .stat-number {
+    color: #222;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   FILTER
+========================================= */
+
+.centers-page .filter-card {
+    margin-bottom: 22px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+}
+
+.centers-page .filter-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.centers-page .search-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.centers-page .search-wrapper i {
+    position: absolute;
+    top: 50%;
+    left: 13px;
+    transform: translateY(-50%);
+    color: #999;
+    pointer-events: none;
+}
+
+.centers-page .search-wrapper input {
+    width: 100%;
+    height: 42px;
+    padding: 0 14px 0 38px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    color: #333;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.centers-page .search-wrapper input:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.08);
+}
+
+.centers-page .select-wrapper select {
+    height: 42px;
+    min-width: 145px;
+    padding: 0 35px 0 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    color: #333;
+    outline: none;
+    font-size: 14px;
+}
+
+.centers-page .select-wrapper select:focus {
+    border-color: #dc3545;
+}
+
+.centers-page .search-btn,
+.centers-page .reset-btn {
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.centers-page .search-btn {
+    border: none;
+    background: #dc3545;
+    color: #fff;
+}
+
+.centers-page .search-btn:hover {
+    background: #bb2d3b;
+}
+
+.centers-page .reset-btn {
+    background: #f1f1f1;
+    color: #444;
+}
+
+.centers-page .reset-btn:hover {
+    background: #e2e2e2;
+    color: #222;
+}
+
+
+/* =========================================
+   TABLE CARD
+========================================= */
+
+.centers-page .table-card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+.centers-page .table-header {
+    padding: 20px 22px;
+    border-bottom: 1px solid #eee;
+}
+
+.centers-page .table-header h2 {
+    margin: 0;
+    color: #222;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.centers-page .table-header p {
+    margin: 5px 0 0;
+    color: #888;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   TABLE
+========================================= */
+
+.centers-page .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.centers-page .centers-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
+.centers-page .centers-table th {
+    padding: 13px 18px;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+    color: #666;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.centers-page .centers-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #444;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.centers-page .centers-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.centers-page .centers-table tbody tr:hover {
+    background: #fcfcfc;
+}
+
+
+/* =========================================
+   CENTER INFORMATION
+========================================= */
+
+.centers-page .center-info {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 200px;
+}
+
+.centers-page .center-avatar {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: #fff0f1;
+    color: #dc3545;
+    font-size: 17px;
+}
+
+.centers-page .center-name {
+    color: #222;
+    font-weight: 700;
+}
+
+.centers-page .center-description {
+    max-width: 180px;
+    margin-top: 3px;
+    color: #999;
+    font-size: 12px;
+}
+
+
+/* =========================================
+   LOCATION
+========================================= */
+
+.centers-page .location-info,
+.centers-page .contact-info,
+.centers-page .hours-info {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.centers-page .location-info i,
+.centers-page .contact-info i,
+.centers-page .hours-info i {
+    color: #dc3545;
+    font-size: 13px;
+}
+
+.centers-page .location-info span,
+.centers-page .contact-info span,
+.centers-page .hours-info span {
+    white-space: nowrap;
+}
+
+.centers-page .not-provided {
+    color: #999;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.centers-page .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.centers-page .status-open {
+    background: #e8f7ee;
+    color: #198754;
+}
+
+.centers-page .status-closed {
+    background: #fff0f1;
+    color: #dc3545;
+}
+
+
+/* =========================================
+   ACTION BUTTONS
+========================================= */
+
+.centers-page .action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.centers-page .delete-form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.centers-page .action-btn {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 7px;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s ease;
+}
+
+.centers-page .view-btn {
+    color: #0d6efd;
+}
+
+.centers-page .view-btn:hover {
+    background: #eaf2ff;
+    border-color: #0d6efd;
+}
+
+.centers-page .edit-btn {
+    color: #dc3545;
+}
+
+.centers-page .edit-btn:hover {
+    background: #fff0f1;
+    border-color: #dc3545;
+}
+
+.centers-page .delete-btn {
+    color: #dc3545;
+}
+
+.centers-page .delete-btn:hover {
+    background: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+.centers-page .pagination-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    padding: 18px 22px;
+    border-top: 1px solid #eee;
+}
+
+.centers-page .pagination-wrapper nav {
+    margin: 0;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.centers-page .empty-state {
+    padding: 60px 25px;
+    text-align: center;
+}
+
+.centers-page .empty-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fff0f1;
+    color: #dc3545;
+    font-size: 26px;
+}
+
+.centers-page .empty-state h3 {
+    margin: 0 0 7px;
+    color: #333;
+    font-size: 18px;
+}
+
+.centers-page .empty-state p {
+    margin: 0 0 18px;
+    color: #888;
+    font-size: 14px;
+}
+
+.centers-page .empty-add-btn,
+.centers-page .empty-reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.centers-page .empty-add-btn {
+    background: #dc3545;
+    color: #fff;
+}
+
+.centers-page .empty-add-btn:hover {
+    background: #bb2d3b;
+    color: #fff;
+}
+
+.centers-page .empty-reset-btn {
+    background: #f1f1f1;
+    color: #444;
+}
+
+.centers-page .empty-reset-btn:hover {
+    background: #e2e2e2;
+    color: #222;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .centers-page .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .centers-page .filter-form {
+        flex-wrap: wrap;
+    }
+
+    .centers-page .search-wrapper {
+        flex: 1 1 100%;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .centers-page .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .centers-page .add-center-btn {
         width: 100%;
-        padding: 5px 0;
-    }
-
-
-    /* HEADER */
-
-    .dc-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        margin-bottom: 25px;
-    }
-
-    .dc-header-left {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
-
-    .dc-header-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 14px;
-        background: #fff1f2;
-        color: #dc2626;
-        display: flex;
-        align-items: center;
         justify-content: center;
-        font-size: 23px;
-        flex-shrink: 0;
     }
 
-    .dc-header h1 {
-        margin: 0;
-        color: #101828;
-        font-size: 28px;
-        font-weight: 700;
+    .centers-page .filter-form {
+        flex-direction: column;
+        align-items: stretch;
     }
 
-    .dc-header p {
-        margin: 5px 0 0;
-        color: #667085;
-        font-size: 14px;
-    }
-
-    .dc-add-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 11px 17px;
-        border-radius: 9px;
-        background: #dc2626;
-        color: white;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 600;
-        transition: .2s;
-    }
-
-    .dc-add-btn:hover {
-        background: #b91c1c;
-        color: white;
-    }
-
-
-    /* STATISTICS */
-
-    .dc-stats {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        margin-bottom: 24px;
-    }
-
-    .dc-stat-card {
-        min-height: 105px;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        background: white;
-        border: 1px solid #eaecf0;
-        border-radius: 14px;
-        box-shadow: 0 3px 12px rgba(16, 24, 40, .04);
-    }
-
-    .dc-stat-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 11px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 19px;
-        flex-shrink: 0;
-    }
-
-    .dc-stat-icon.red {
-        background: #fff1f2;
-        color: #dc2626;
-    }
-
-    .dc-stat-icon.green {
-        background: #ecfdf3;
-        color: #039855;
-    }
-
-    .dc-stat-icon.orange {
-        background: #fff7ed;
-        color: #ea580c;
-    }
-
-    .dc-stat-icon.blue {
-        background: #eff6ff;
-        color: #2563eb;
-    }
-
-    .dc-stat-card span {
-        display: block;
-        color: #667085;
-        font-size: 12px;
-        margin-bottom: 4px;
-    }
-
-    .dc-stat-card strong {
-        display: block;
-        color: #101828;
-        font-size: 24px;
-    }
-
-
-    /* MAIN CARD */
-
-    .dc-card {
-        background: white;
-        border: 1px solid #eaecf0;
-        border-radius: 15px;
-        box-shadow: 0 3px 15px rgba(16, 24, 40, .04);
-        overflow: hidden;
-    }
-
-
-    /* CARD HEADER */
-
-    .dc-card-header {
-        padding: 22px 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid #eaecf0;
-    }
-
-    .dc-card-header h2 {
-        margin: 0;
-        color: #101828;
-        font-size: 18px;
-        font-weight: 700;
-    }
-
-    .dc-card-header p {
-        margin: 5px 0 0;
-        color: #667085;
-        font-size: 12px;
-    }
-
-    .dc-count {
-        padding: 6px 11px;
-        border-radius: 7px;
-        background: #f8f9fb;
-        border: 1px solid #eaecf0;
-        color: #667085;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-
-    /* =========================
-       NORMAL SEARCH BAR
-    ========================= */
-
-    .dc-search-area {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 18px 24px;
-        background: #ffffff;
-        border-bottom: 1px solid #eaecf0;
-    }
-
-    .dc-search {
-        position: relative;
-        width: 320px;
-    }
-
-    .dc-search i {
-        position: absolute;
-        left: 13px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #98a2b3;
-        font-size: 14px;
-        pointer-events: none;
-    }
-
-    .dc-search input {
+    .centers-page .search-wrapper,
+    .centers-page .select-wrapper,
+    .centers-page .search-btn,
+    .centers-page .reset-btn {
         width: 100%;
-        height: 40px;
-        padding: 0 12px 0 38px;
-        border: 1px solid #d0d5dd;
-        border-radius: 8px;
-        background: white;
-        color: #344054;
-        font-size: 13px;
-        outline: none;
     }
 
-    .dc-search input::placeholder {
-        color: #98a2b3;
-    }
-
-    .dc-search input:focus {
-        border-color: #dc2626;
-        box-shadow: 0 0 0 3px rgba(220, 38, 38, .08);
-    }
-
-    .dc-filter {
-        width: 160px;
-        height: 40px;
-        padding: 0 12px;
-        border: 1px solid #d0d5dd;
-        border-radius: 8px;
-        background: white;
-        color: #344054;
-        font-size: 13px;
-        outline: none;
-        cursor: pointer;
-    }
-
-    .dc-filter:focus {
-        border-color: #dc2626;
-    }
-
-
-    /* TABLE */
-
-    .dc-table-wrapper {
+    .centers-page .select-wrapper select {
         width: 100%;
-        overflow-x: auto;
     }
 
-    .dc-table {
-        width: 100%;
-        min-width: 750px;
-        border-collapse: collapse;
-    }
-
-    .dc-table th {
-        padding: 13px 20px;
-        background: #f8f9fb;
-        border-bottom: 1px solid #eaecf0;
-        color: #667085;
-        text-align: left;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-
-    .dc-table td {
-        padding: 16px 20px;
-        border-bottom: 1px solid #f0f1f3;
-        color: #475467;
-        font-size: 13px;
-        vertical-align: middle;
-    }
-
-    .dc-table tbody tr:hover {
-        background: #fffafa;
-    }
-
-
-    /* CENTER */
-
-    .dc-center-info {
-        display: flex;
-        align-items: center;
-        gap: 11px;
-    }
-
-    .dc-center-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 9px;
-        background: #fff1f2;
-        color: #dc2626;
-        display: flex;
-        align-items: center;
+    .centers-page .search-btn,
+    .centers-page .reset-btn {
         justify-content: center;
-        flex-shrink: 0;
     }
 
-    .dc-center-info strong {
-        display: block;
-        color: #101828;
-        font-size: 13px;
-        font-weight: 650;
-    }
-
-    .dc-center-info span {
-        display: block;
-        margin-top: 3px;
-        color: #98a2b3;
-        font-size: 11px;
-    }
-
-
-    /* LOCATION */
-
-    .dc-location {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-    }
-
-    .dc-location i {
-        color: #dc2626;
-        font-size: 13px;
-    }
-
-
-    /* STATUS */
-
-    .dc-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 9px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
-    }
-
-    .dc-status > span {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: currentColor;
-    }
-
-    .dc-status.open {
-        background: #ecfdf3;
-        color: #027a48;
-    }
-
-    .dc-status.closed {
-        background: #fff1f2;
-        color: #b42318;
-    }
-
-
-    /* ACTIONS */
-
-    .dc-actions {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .dc-action {
-        width: 32px;
-        height: 32px;
-        border: 1px solid #eaecf0;
-        border-radius: 7px;
-        background: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: .2s;
-    }
-
-    .dc-action.edit {
-        color: #2563eb;
-    }
-
-    .dc-action.edit:hover {
-        background: #eff6ff;
-    }
-
-    .dc-action.delete {
-        color: #dc2626;
-    }
-
-    .dc-action.delete:hover {
-        background: #fff1f2;
-    }
-
-
-    /* INFORMATION */
-
-    .dc-information {
-        padding: 24px;
-    }
-
-    .dc-information-header {
-        margin-bottom: 14px;
-    }
-
-    .dc-information-header h3 {
-        margin: 0;
-        color: #101828;
-        font-size: 17px;
-        font-weight: 700;
-    }
-
-    .dc-information-header p {
-        margin: 4px 0 0;
-        color: #98a2b3;
-        font-size: 12px;
-    }
-
-    .dc-information-box {
-        padding: 20px;
-        border: 1px solid #eaecf0;
-        border-radius: 12px;
-        background: #fcfcfd;
-    }
-
-    .dc-information-top {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 20px;
-    }
-
-    .dc-information-icon {
-        width: 46px;
-        height: 46px;
-        border-radius: 10px;
-        background: #fff1f2;
-        color: #dc2626;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 19px;
-    }
-
-    .dc-information-top h4 {
-        margin: 0;
-        color: #101828;
-        font-size: 15px;
-    }
-
-    .dc-information-top p {
-        margin: 3px 0 0;
-        color: #667085;
-        font-size: 11px;
-    }
-
-    .dc-information-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 18px;
-    }
-
-    .dc-information-grid span {
-        display: block;
-        margin-bottom: 5px;
-        color: #98a2b3;
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-
-    .dc-information-grid strong {
-        color: #101828;
-        font-size: 13px;
-    }
-
-    .dc-information-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-        margin-top: 20px;
-    }
-
-    .dc-delete-btn,
-    .dc-edit-btn {
-        padding: 9px 15px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    .dc-delete-btn {
-        border: 1px solid #fda4af;
-        background: white;
-        color: #dc2626;
-    }
-
-    .dc-edit-btn {
-        border: none;
-        background: #dc2626;
-        color: white;
-    }
-
-    .dc-edit-btn:hover {
-        background: #b91c1c;
-    }
-
-
-    /* RESPONSIVE */
-
-    @media (max-width: 1100px) {
-
-        .dc-stats {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .dc-information-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-    }
-
-
-    @media (max-width: 700px) {
-
-        .dc-header {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-
-        .dc-add-btn {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .dc-stats {
-            grid-template-columns: 1fr;
-        }
-
-        .dc-card-header {
-            align-items: flex-start;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .dc-search-area {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .dc-search {
-            width: 100%;
-        }
-
-        .dc-filter {
-            width: 100%;
-        }
-
-        .dc-information-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .dc-information-actions {
-            flex-direction: column;
-        }
-
-        .dc-delete-btn,
-        .dc-edit-btn {
-            width: 100%;
-        }
-
-    }
+}
 
 </style>
-
-
-{{-- =========================
-    SEARCH FUNCTION
-========================= --}}
-<script>
-
-document.addEventListener('DOMContentLoaded', function () {
-
-    const search = document.getElementById('centerSearch');
-    const locationFilter = document.getElementById('locationFilter');
-    const statusFilter = document.getElementById('statusFilter');
-    const rows = document.querySelectorAll('#centerTable tbody tr');
-
-    function filterCenters() {
-
-        const searchValue = search.value.toLowerCase();
-        const locationValue = locationFilter.value.toLowerCase();
-        const statusValue = statusFilter.value.toLowerCase();
-
-        rows.forEach(function (row) {
-
-            const text = row.textContent.toLowerCase();
-
-            const matchesSearch =
-                text.includes(searchValue);
-
-            const matchesLocation =
-                !locationValue ||
-                text.includes(locationValue);
-
-            const matchesStatus =
-                !statusValue ||
-                text.includes(statusValue);
-
-            if (
-                matchesSearch &&
-                matchesLocation &&
-                matchesStatus
-            ) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-
-        });
-
-    }
-
-    search.addEventListener('input', filterCenters);
-    locationFilter.addEventListener('change', filterCenters);
-    statusFilter.addEventListener('change', filterCenters);
-
-});
-
-</script>
 
 @endsection

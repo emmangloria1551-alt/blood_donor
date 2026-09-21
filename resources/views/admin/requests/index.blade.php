@@ -1,853 +1,640 @@
 @extends('admin.layouts.app')
 
+@section('title', 'Blood Request Management')
+
 @section('content')
 
 <style>
-    /* =========================================================
-       COMMUNITY BLOOD DONOR
-       BLOOD REQUEST MANAGEMENT
-       ========================================================= */
-
-    .blood-request-page {
-        width: 100%;
-        max-width: 1500px;
-        margin: 0 auto;
+    .request-page {
+        padding: 28px;
+        background: #f6f7fb;
+        min-height: calc(100vh - 70px);
     }
 
-    /* =========================
-       PAGE HEADER
-       ========================= */
+    .request-page * {
+        box-sizing: border-box;
+    }
 
-    .br-page-header {
+    /* HEADER */
+    .request-header {
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        gap: 20px;
-        margin-bottom: 28px;
+        align-items: center;
+        margin-bottom: 25px;
     }
 
-    .br-title-wrap {
+    .request-title-area {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 14px;
     }
 
-    .br-title-icon {
-        width: 58px;
-        height: 58px;
+    .request-title-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: #fff0f1;
+        color: #dc3545;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 16px;
-        background: #fff0f2;
-        color: #c8102e;
-        font-size: 25px;
-        flex-shrink: 0;
+        font-size: 24px;
     }
 
-    .br-title-wrap h1 {
+    .request-title {
         margin: 0;
-        color: #172b4d;
-        font-size: 30px;
-        font-weight: 750;
-        letter-spacing: -0.5px;
+        font-size: 26px;
+        font-weight: 700;
+        color: #1f2937;
     }
 
-    .br-title-wrap p {
-        margin: 5px 0 0;
-        color: #718096;
+    .request-subtitle {
+        margin: 4px 0 0;
+        color: #6b7280;
         font-size: 14px;
     }
 
-    /* =========================
-       STATISTICS
-       ========================= */
-
-    .br-stats {
+    /* STAT CARDS */
+    .request-stats {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 18px;
         margin-bottom: 24px;
     }
 
-    .br-stat-card {
-        min-height: 112px;
+    .request-stat {
+        background: #ffffff;
+        border: 1px solid #eceef2;
+        border-radius: 14px;
+        padding: 20px;
         display: flex;
         align-items: center;
         gap: 15px;
-        padding: 20px;
-        background: #ffffff;
-        border: 1px solid #eaecf0;
-        border-radius: 16px;
-        box-shadow: 0 3px 12px rgba(16, 24, 40, 0.04);
-        transition: 0.2s ease;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.035);
+        transition: .2s ease;
     }
 
-    .br-stat-card:hover {
+    .request-stat:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 22px rgba(16, 24, 40, 0.07);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
     }
 
-    .br-stat-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 13px;
+    .request-stat-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 21px;
+        font-size: 20px;
         flex-shrink: 0;
     }
 
-    .br-stat-icon.red {
-        background: #fff0f2;
-        color: #c8102e;
+    .icon-red {
+        background: #fff0f1;
+        color: #dc3545;
     }
 
-    .br-stat-icon.orange {
-        background: #fff7ed;
-        color: #ea580c;
+    .icon-yellow {
+        background: #fff8df;
+        color: #d39e00;
     }
 
-    .br-stat-icon.green {
-        background: #ecfdf3;
-        color: #039855;
+    .icon-green {
+        background: #eaf8f0;
+        color: #198754;
     }
 
-    .br-stat-icon.blue {
-        background: #eff6ff;
-        color: #2563eb;
+    .icon-blue {
+        background: #edf4ff;
+        color: #0d6efd;
     }
 
-    .br-stat-label {
-        color: #667085;
+    .request-stat-label {
         font-size: 13px;
-        margin-bottom: 4px;
+        color: #6b7280;
+        margin-bottom: 3px;
     }
 
-    .br-stat-number {
-        color: #172b4d;
+    .request-stat-value {
         font-size: 25px;
-        font-weight: 750;
-    }
-
-    /* =========================
-       MAIN CARD
-       ========================= */
-
-    .br-main-card {
-        background: #ffffff;
-        border: 1px solid #eaecf0;
-        border-radius: 18px;
-        overflow: hidden;
-        box-shadow: 0 4px 18px rgba(16, 24, 40, 0.04);
-    }
-
-    .br-card-top {
-        padding: 24px 26px 0;
-    }
-
-    .br-card-title h2 {
-        margin: 0;
-        color: #172b4d;
-        font-size: 20px;
+        line-height: 1;
         font-weight: 700;
+        color: #1f2937;
     }
 
-    .br-card-title p {
-        margin: 5px 0 0;
-        color: #8a98aa;
-        font-size: 13px;
+    /* MAIN CARD */
+    .request-card {
+        background: #ffffff;
+        border: 1px solid #e8eaf0;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.035);
     }
 
-    /* =========================
-       FILTER AREA
-       ========================= */
-
-    .br-filters {
-        display: grid;
-        grid-template-columns: minmax(240px, 1fr) 180px 180px;
-        gap: 12px;
-        margin-top: 22px;
-        margin-bottom: 18px;
-    }
-
-    .br-search {
-        height: 48px;
+    /* TOOLBAR */
+    .request-toolbar {
+        padding: 18px 20px;
+        border-bottom: 1px solid #eceef2;
         display: flex;
         align-items: center;
-        padding: 0 15px;
-        background: #ffffff;
-        border: 1px solid #d9dee8;
-        border-radius: 11px;
-        transition: 0.2s ease;
+        justify-content: space-between;
+        gap: 15px;
+        flex-wrap: wrap;
     }
 
-    .br-search:focus-within {
-        border-color: #c8102e;
-        box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.08);
-    }
-
-    .br-search i {
-        color: #98a2b3;
-        font-size: 17px;
-        margin-right: 10px;
-        flex-shrink: 0;
-    }
-
-    .br-search input {
+    .request-search-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         width: 100%;
-        height: 100%;
-        border: none !important;
-        outline: none !important;
-        background: transparent !important;
-        box-shadow: none !important;
-        color: #344054;
+        flex-wrap: wrap;
+    }
+
+    .request-search {
+        position: relative;
+        flex: 1;
+        min-width: 260px;
+    }
+
+    .request-search i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+    }
+
+    .request-search input {
+        width: 100%;
+        height: 43px;
+        border: 1px solid #dfe2e8;
+        border-radius: 9px;
+        padding: 0 15px 0 40px;
         font-size: 14px;
+        outline: none;
+        color: #374151;
+        background: #fff;
+        transition: .2s;
     }
 
-    .br-search input::placeholder {
-        color: #98a2b3;
+    .request-search input:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, .08);
     }
 
-    .br-select {
-        width: 100%;
-        height: 48px;
-        padding: 0 14px;
-        border: 1px solid #d9dee8;
-        border-radius: 11px;
-        background: #ffffff;
-        color: #344054;
+    .request-filter {
+        height: 43px;
+        min-width: 150px;
+        border: 1px solid #dfe2e8;
+        border-radius: 9px;
+        padding: 0 13px;
+        background: #fff;
+        color: #374151;
         font-size: 14px;
         outline: none;
         cursor: pointer;
     }
 
-    .br-select:focus {
-        border-color: #c8102e;
-        box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.08);
+    .request-filter:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, .08);
     }
 
-    /* =========================
-       STATUS TABS
-       ========================= */
-
-    .br-tabs {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        overflow-x: auto;
-        padding-bottom: 18px;
-    }
-
-    .br-tab {
-        height: 40px;
-        padding: 0 17px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        border: 1px solid #e4e7ec;
-        border-radius: 10px;
-        background: #ffffff;
-        color: #667085;
-        font-size: 13px;
+    .request-search-btn {
+        height: 43px;
+        padding: 0 18px;
+        border: none;
+        border-radius: 9px;
+        background: #dc3545;
+        color: #fff;
+        font-size: 14px;
         font-weight: 600;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: 0.2s ease;
-    }
-
-    .br-tab:hover {
-        background: #f9fafb;
-        border-color: #d0d5dd;
-    }
-
-    .br-tab.active {
-        background: #fff0f2;
-        border-color: #f4a1ad;
-        color: #c8102e;
-    }
-
-    .br-tab .tab-count {
-        min-width: 21px;
-        height: 21px;
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-        padding: 0 5px;
-        border-radius: 20px;
-        background: #f2f4f7;
-        color: #667085;
-        font-size: 11px;
+        gap: 7px;
+        cursor: pointer;
+        transition: .2s;
     }
 
-    .br-tab.active .tab-count {
-        background: #c8102e;
-        color: #ffffff;
+    .request-search-btn:hover {
+        background: #c82333;
     }
 
-    /* =========================
-       TABLE
-       ========================= */
+    .request-reset-btn {
+        height: 43px;
+        padding: 0 15px;
+        border: 1px solid #dfe2e8;
+        border-radius: 9px;
+        background: #fff;
+        color: #6b7280;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 14px;
+        transition: .2s;
+    }
 
-    .br-table-wrapper {
-        width: 100%;
+    .request-reset-btn:hover {
+        background: #f8f9fa;
+        color: #374151;
+    }
+
+    /* TABS */
+    .request-tabs {
+        padding: 0 20px;
+        border-bottom: 1px solid #eceef2;
+        display: flex;
+        gap: 5px;
         overflow-x: auto;
-        border-top: 1px solid #eaecf0;
     }
 
-    .br-table {
+    .request-tab {
+        position: relative;
+        padding: 15px 14px;
+        color: #6b7280;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .request-tab:hover {
+        color: #dc3545;
+    }
+
+    .request-tab.active {
+        color: #dc3545;
+    }
+
+    .request-tab.active::after {
+        content: "";
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        bottom: -1px;
+        height: 2px;
+        background: #dc3545;
+        border-radius: 5px 5px 0 0;
+    }
+
+    /* TABLE */
+    .request-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .request-table {
         width: 100%;
-        min-width: 800px;
         border-collapse: collapse;
+        min-width: 950px;
     }
 
-    .br-table thead {
-        background: #f8fafc;
-    }
-
-    .br-table th {
-        height: 50px;
-        padding: 0 22px;
-        text-align: left;
-        color: #667085;
-        font-size: 12px;
+    .request-table th {
+        background: #fafbfc;
+        color: #6b7280;
+        font-size: 11px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.4px;
-        white-space: nowrap;
+        letter-spacing: .5px;
+        padding: 14px 20px;
+        text-align: left;
+        border-bottom: 1px solid #eceef2;
     }
 
-    .br-table td {
-        height: 82px;
-        padding: 0 22px;
-        color: #344054;
+    .request-table td {
+        padding: 17px 20px;
+        border-bottom: 1px solid #f0f1f4;
+        color: #374151;
         font-size: 14px;
-        border-top: 1px solid #f0f2f5;
         vertical-align: middle;
     }
 
-    .br-table tbody tr {
-        transition: 0.15s ease;
+    .request-table tbody tr {
+        transition: .15s;
     }
 
-    .br-table tbody tr:hover {
-        background: #fcfcfd;
+    .request-table tbody tr:hover {
+        background: #fffafb;
     }
 
-    /* =========================
-       PATIENT
-       ========================= */
-
-    .br-patient {
+    /* PATIENT */
+    .patient-info {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 11px;
     }
 
-    .br-avatar {
-        width: 42px;
-        height: 42px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        border-radius: 12px;
-        background: #fff0f2;
-        color: #c8102e;
-        font-size: 12px;
-        font-weight: 750;
-    }
-
-    .br-patient-name {
-        color: #172b4d;
-        font-size: 14px;
-        font-weight: 700;
-    }
-
-    .br-hospital {
-        margin-top: 3px;
-        color: #98a2b3;
-        font-size: 12px;
-    }
-
-    /* =========================
-       BLOOD TYPE
-       ========================= */
-
-    .br-blood {
-        min-width: 48px;
-        height: 34px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 10px;
-        background: #fff0f2;
-        color: #c8102e;
-        border-radius: 9px;
-        font-size: 13px;
-        font-weight: 750;
-    }
-
-    /* =========================
-       UNITS
-       ========================= */
-
-    .br-units {
-        color: #172b4d;
-        font-weight: 700;
-    }
-
-    .br-units small {
-        color: #98a2b3;
-        font-weight: 500;
-        margin-left: 3px;
-    }
-
-    /* =========================
-       URGENCY
-       ========================= */
-
-    .br-urgency {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        font-size: 13px;
-        font-weight: 650;
-    }
-
-    .br-urgency-dot {
-        width: 8px;
-        height: 8px;
+    .patient-avatar {
+        width: 38px;
+        height: 38px;
         border-radius: 50%;
+        background: #fff0f1;
+        color: #dc3545;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 13px;
         flex-shrink: 0;
     }
 
-    .br-urgency.critical {
-        color: #c8102e;
+    .patient-name {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 2px;
     }
 
-    .br-urgency.critical .br-urgency-dot {
-        background: #c8102e;
-        box-shadow: 0 0 0 3px #ffe4e8;
+    .patient-email {
+        font-size: 12px;
+        color: #9ca3af;
     }
 
-    .br-urgency.high {
-        color: #d97706;
+    /* BLOOD TYPE */
+    .blood-type {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 48px;
+        height: 31px;
+        padding: 0 9px;
+        border-radius: 8px;
+        background: #fff0f1;
+        color: #dc3545;
+        font-weight: 700;
+        font-size: 13px;
     }
 
-    .br-urgency.high .br-urgency-dot {
-        background: #f59e0b;
+    /* UNITS */
+    .units-value {
+        font-weight: 600;
+        color: #374151;
     }
 
-    .br-urgency.normal {
-        color: #667085;
+    /* HOSPITAL */
+    .hospital-name {
+        color: #374151;
+        font-weight: 500;
     }
 
-    .br-urgency.normal .br-urgency-dot {
-        background: #98a2b3;
+    .hospital-notes {
+        color: #9ca3af;
+        font-size: 12px;
+        max-width: 190px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 3px;
     }
 
-    .br-urgency.moderate {
-        color: #2563eb;
-    }
-
-    .br-urgency.moderate .br-urgency-dot {
-        background: #3b82f6;
-    }
-
-    /* =========================
-       STATUS
-       ========================= */
-
-    .br-status {
+    /* STATUS */
+    .status-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
         padding: 6px 11px;
         border-radius: 20px;
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 700;
+        text-transform: capitalize;
     }
 
-    .br-status-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
+    .status-pending {
+        background: #fff7df;
+        color: #a87500;
     }
 
-    .br-status.pending {
-        background: #fff7ed;
-        color: #c2410c;
+    .status-approved {
+        background: #eaf8f0;
+        color: #198754;
     }
 
-    .br-status.pending .br-status-dot {
-        background: #f59e0b;
+    .status-rejected {
+        background: #fff0f1;
+        color: #dc3545;
     }
 
-    .br-status.approved {
-        background: #ecfdf3;
-        color: #027a48;
+    .status-default {
+        background: #f1f3f5;
+        color: #6b7280;
     }
 
-    .br-status.approved .br-status-dot {
-        background: #12b76a;
+    /* DATE */
+    .request-date {
+        color: #374151;
+        font-weight: 500;
+        white-space: nowrap;
     }
 
-    .br-status.rejected {
-        background: #fef3f2;
-        color: #b42318;
+    .request-time {
+        color: #9ca3af;
+        font-size: 12px;
+        margin-top: 2px;
     }
 
-    .br-status.rejected .br-status-dot {
-        background: #f04438;
-    }
-
-    /* =========================
-       ACTION BUTTONS
-       ========================= */
-
-    .br-actions {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-    }
-
-    .br-action {
+    /* ACTION */
+    .request-view-btn {
         width: 35px;
         height: 35px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid #eaecf0;
-        border-radius: 9px;
-        background: #ffffff;
-        color: #667085;
-        cursor: pointer;
-        transition: 0.2s ease;
-    }
-
-    .br-action:hover {
-        transform: translateY(-1px);
-        background: #f9fafb;
-        border-color: #d0d5dd;
-    }
-
-    .br-action.view:hover {
-        color: #344054;
-    }
-
-    .br-action.approve {
-        color: #039855;
-    }
-
-    .br-action.approve:hover {
-        background: #ecfdf3;
-        border-color: #a6f4c5;
-    }
-
-    .br-action.reject {
-        color: #c8102e;
-    }
-
-    .br-action.reject:hover {
-        background: #fff0f2;
-        border-color: #fda4af;
-    }
-
-    /* =========================
-       DETAILS
-       ========================= */
-
-    .br-details {
-        padding: 25px 26px;
-        border-top: 1px solid #eaecf0;
-        background: #ffffff;
-    }
-
-    .br-details-heading {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        margin-bottom: 15px;
-    }
-
-    .br-details-heading h3 {
-        margin: 0;
-        color: #172b4d;
-        font-size: 17px;
-        font-weight: 700;
-    }
-
-    .br-details-heading p {
-        margin: 4px 0 0;
-        color: #98a2b3;
-        font-size: 12px;
-    }
-
-    .br-details-box {
-        padding: 20px;
-        background: #fcfcfd;
-        border: 1px solid #eaecf0;
-        border-radius: 13px;
-    }
-
-    .br-details-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-    }
-
-    .br-detail-item span {
-        display: block;
-        margin-bottom: 6px;
-        color: #98a2b3;
-        font-size: 10px;
-        font-weight: 750;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-    }
-
-    .br-detail-item strong {
-        color: #172b4d;
-        font-size: 14px;
-        font-weight: 650;
-    }
-
-    .br-detail-blood {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 42px;
-        height: 30px;
-        padding: 0 9px;
+        border: 1px solid #e1e4e9;
         border-radius: 8px;
-        background: #fff0f2;
-        color: #c8102e !important;
-        font-size: 12px !important;
-    }
-
-    .br-critical-text {
-        color: #c8102e !important;
-    }
-
-    .br-details-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 9px;
-        margin-top: 20px;
-    }
-
-    .br-btn {
-        height: 40px;
-        padding: 0 17px;
+        background: #fff;
+        color: #6b7280;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 7px;
-        border-radius: 9px;
+        transition: .2s;
+    }
+
+    .request-view-btn:hover {
+        color: #dc3545;
+        border-color: #dc3545;
+        background: #fff5f5;
+    }
+
+    /* EMPTY */
+    .request-empty {
+        padding: 70px 20px;
+        text-align: center;
+    }
+
+    .request-empty-icon {
+        width: 65px;
+        height: 65px;
+        margin: 0 auto 15px;
+        border-radius: 50%;
+        background: #f3f4f6;
+        color: #9ca3af;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 27px;
+    }
+
+    .request-empty-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 5px;
+    }
+
+    .request-empty-text {
         font-size: 13px;
-        font-weight: 650;
-        cursor: pointer;
-        transition: 0.2s ease;
+        color: #9ca3af;
     }
 
-    .br-btn-reject {
-        background: #ffffff;
-        border: 1px solid #fda4af;
-        color: #c8102e;
-    }
-
-    .br-btn-reject:hover {
-        background: #fff0f2;
-    }
-
-    .br-btn-approve {
-        background: #c8102e;
-        border: 1px solid #c8102e;
-        color: #ffffff;
-    }
-
-    .br-btn-approve:hover {
-        background: #a50f27;
-        border-color: #a50f27;
-    }
-
-    /* =========================
-       FOOTER
-       ========================= */
-
-    .br-footer {
+    /* FOOTER */
+    .request-footer {
+        padding: 16px 20px;
+        border-top: 1px solid #eceef2;
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        padding: 16px 26px;
-        border-top: 1px solid #eaecf0;
-    }
-
-    .br-footer-text {
-        color: #98a2b3;
-        font-size: 12px;
-    }
-
-    .br-pagination {
-        display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 15px;
+        flex-wrap: wrap;
     }
 
-    .br-page-btn {
-        min-width: 32px;
-        height: 32px;
-        padding: 0 8px;
+    .request-count {
+        color: #6b7280;
+        font-size: 13px;
+    }
+
+    .request-pagination .pagination {
+        margin: 0;
+    }
+
+    .request-pagination .page-link {
+        color: #dc3545;
+        border-color: #e5e7eb;
+    }
+
+    .request-pagination .page-item.active .page-link {
+        background: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+    }
+
+    /* MODAL */
+    .request-modal-header {
+        border-bottom: 1px solid #eee;
+    }
+
+    .request-modal-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: #fff0f1;
+        color: #dc3545;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid #eaecf0;
-        border-radius: 8px;
-        background: #ffffff;
-        color: #667085;
-        font-size: 12px;
-        text-decoration: none;
-        cursor: pointer;
+        margin-right: 10px;
     }
 
-    .br-page-btn:hover {
-        background: #f9fafb;
+    .detail-box {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 13px;
+        height: 100%;
     }
 
-    .br-page-btn.active {
-        background: #c8102e;
-        border-color: #c8102e;
-        color: #ffffff;
+    .detail-label {
+        font-size: 11px;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        margin-bottom: 4px;
     }
 
-    /* =========================
-       RESPONSIVE
-       ========================= */
+    .detail-value {
+        color: #374151;
+        font-weight: 600;
+        font-size: 14px;
+    }
 
-    @media (max-width: 1200px) {
+    .notes-box {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.6;
+    }
 
-        .br-stats {
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+        .request-stats {
             grid-template-columns: repeat(2, 1fr);
         }
-
-        .br-filters {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .br-search {
-            grid-column: 1 / -1;
-        }
-
-        .br-details-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 768px) {
+        .request-page {
+            padding: 18px;
+        }
 
-        .br-page-header {
+        .request-header {
             align-items: flex-start;
         }
 
-        .br-title-wrap h1 {
-            font-size: 25px;
-        }
-
-        .br-filters {
-            grid-template-columns: 1fr;
-        }
-
-        .br-search {
-            grid-column: auto;
-        }
-
-        .br-details-grid {
-            grid-template-columns: 1fr 1fr;
-        }
-    }
-
-    @media (max-width: 600px) {
-
-        .br-stats {
-            grid-template-columns: 1fr;
-        }
-
-        .br-title-icon {
-            width: 48px;
-            height: 48px;
-            font-size: 20px;
-        }
-
-        .br-title-wrap h1 {
+        .request-title {
             font-size: 22px;
         }
 
-        .br-title-wrap p {
-            font-size: 12px;
+        .request-search {
+            min-width: 100%;
         }
 
-        .br-card-top {
-            padding: 20px 18px 0;
+        .request-filter {
+            flex: 1;
         }
 
-        .br-table th,
-        .br-table td {
-            padding-left: 15px;
-            padding-right: 15px;
+        .request-search-btn,
+        .request-reset-btn {
+            flex: 1;
+            justify-content: center;
         }
+    }
 
-        .br-details {
-            padding: 20px 18px;
-        }
-
-        .br-details-grid {
+    @media (max-width: 576px) {
+        .request-stats {
             grid-template-columns: 1fr;
         }
 
-        .br-details-heading {
-            align-items: flex-start;
-            flex-direction: column;
+        .request-title-icon {
+            width: 45px;
+            height: 45px;
         }
 
-        .br-details-actions {
-            flex-direction: column;
+        .request-toolbar {
+            padding: 15px;
         }
 
-        .br-btn {
-            width: 100%;
-        }
-
-        .br-footer {
-            align-items: flex-start;
-            flex-direction: column;
-            gap: 12px;
+        .request-tabs {
+            padding: 0 15px;
         }
     }
 </style>
 
 
-<div class="blood-request-page">
+<div class="request-page">
 
-    {{-- =====================================================
-         PAGE HEADER
-         ===================================================== --}}
-    <div class="br-page-header">
+    {{-- HEADER --}}
+    <div class="request-header">
 
-        <div class="br-title-wrap">
+        <div class="request-title-area">
 
-            <div class="br-title-icon">
-                <i class="bi bi-droplet-fill"></i>
+            <div class="request-title-icon">
+                <i class="bi bi-droplet-half"></i>
             </div>
 
             <div>
-                <h1>Blood Request Management</h1>
+                <h1 class="request-title">
+                    Blood Request Management
+                </h1>
 
-                <p>
-                    Review, approve, and manage blood requests.
+                <p class="request-subtitle">
+                    Review and manage blood requests from your database.
                 </p>
             </div>
 
@@ -856,85 +643,79 @@
     </div>
 
 
-    {{-- =====================================================
-         STATISTICS
-         ===================================================== --}}
-    <div class="br-stats">
+    {{-- STATISTICS --}}
+    <div class="request-stats">
 
-        {{-- Total --}}
-        <div class="br-stat-card">
+        <div class="request-stat">
 
-            <div class="br-stat-icon red">
-                <i class="bi bi-droplet-fill"></i>
+            <div class="request-stat-icon icon-red">
+                <i class="bi bi-clipboard2-pulse"></i>
             </div>
 
             <div>
-                <div class="br-stat-label">
+                <div class="request-stat-label">
                     Total Requests
                 </div>
 
-                <div class="br-stat-number">
-                    24
+                <div class="request-stat-value">
+                    {{ number_format($totalRequests) }}
                 </div>
             </div>
 
         </div>
 
 
-        {{-- Pending --}}
-        <div class="br-stat-card">
+        <div class="request-stat">
 
-            <div class="br-stat-icon orange">
-                <i class="bi bi-clock-fill"></i>
+            <div class="request-stat-icon icon-yellow">
+                <i class="bi bi-clock-history"></i>
             </div>
 
             <div>
-                <div class="br-stat-label">
+                <div class="request-stat-label">
                     Pending
                 </div>
 
-                <div class="br-stat-number">
-                    12
+                <div class="request-stat-value">
+                    {{ number_format($pendingRequests) }}
                 </div>
             </div>
 
         </div>
 
 
-        {{-- Approved --}}
-        <div class="br-stat-card">
+        <div class="request-stat">
 
-            <div class="br-stat-icon green">
-                <i class="bi bi-check-circle-fill"></i>
+            <div class="request-stat-icon icon-green">
+                <i class="bi bi-check-circle"></i>
             </div>
 
             <div>
-                <div class="br-stat-label">
+                <div class="request-stat-label">
                     Approved
                 </div>
 
-                <div class="br-stat-number">
-                    9
+                <div class="request-stat-value">
+                    {{ number_format($approvedRequests) }}
                 </div>
             </div>
 
         </div>
 
 
-        {{-- Critical --}}
-        <div class="br-stat-card">
+        <div class="request-stat">
 
-            <div class="br-stat-icon blue">
-                <i class="bi bi-exclamation-triangle-fill"></i>
+            <div class="request-stat-icon icon-blue">
+                <i class="bi bi-box-seam"></i>
             </div>
 
             <div>
-                <div class="br-stat-label">
-                    Critical
+                <div class="request-stat-label">
+                    Blood Units
                 </div>
 
-                <div class="br-stat-number">
-                    3
+                <div class="request-stat-value">
+                    {{ number_format($totalUnits) }}
                 </div>
             </div>
 
@@ -943,32 +724,19 @@
     </div>
 
 
-    {{-- =====================================================
-         MAIN CARD
-         ===================================================== --}}
-    <div class="br-main-card">
+    {{-- MAIN CARD --}}
+    <div class="request-card">
 
-        {{-- CARD HEADER --}}
-        <div class="br-card-top">
+        {{-- SEARCH --}}
+        <div class="request-toolbar">
 
-            <div class="br-card-title">
+            <form
+                action="{{ route('admin.requests') }}"
+                method="GET"
+                class="request-search-form"
+            >
 
-                <h2>Blood Requests</h2>
-
-                <p>
-                    View and manage submitted requests from patients and hospitals.
-                </p>
-
-            </div>
-
-
-            {{-- =================================================
-                 SEARCH + FILTERS
-                 ================================================= --}}
-            <div class="br-filters">
-
-                {{-- Search --}}
-                <div class="br-search">
+                <div class="request-search">
 
                     <i class="bi bi-search"></i>
 
@@ -982,1021 +750,578 @@
                 </div>
 
 
-                {{-- Blood Type --}}
                 <select
                     name="blood_type"
-                    class="br-select"
+                    class="request-filter"
                 >
-
                     <option value="">
                         All Blood Types
                     </option>
 
-                    <option value="A+">
-                        A+
-                    </option>
+                    @foreach(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as $type)
 
-                    <option value="A-">
-                        A-
-                    </option>
+                        <option
+                            value="{{ $type }}"
+                            {{ request('blood_type') === $type ? 'selected' : '' }}
+                        >
+                            {{ $type }}
+                        </option>
 
-                    <option value="B+">
-                        B+
-                    </option>
-
-                    <option value="B-">
-                        B-
-                    </option>
-
-                    <option value="AB+">
-                        AB+
-                    </option>
-
-                    <option value="AB-">
-                        AB-
-                    </option>
-
-                    <option value="O+">
-                        O+
-                    </option>
-
-                    <option value="O-">
-                        O-
-                    </option>
+                    @endforeach
 
                 </select>
 
 
-                {{-- Urgency --}}
                 <select
-                    name="urgency"
-                    class="br-select"
+                    name="status"
+                    class="request-filter"
                 >
-
                     <option value="">
-                        All Urgency
+                        All Statuses
                     </option>
 
-                    <option value="Critical">
-                        Critical
-                    </option>
+                    @php
+                        $statuses = \App\Models\BloodRequest::query()
+                            ->select('status')
+                            ->whereNotNull('status')
+                            ->distinct()
+                            ->orderBy('status')
+                            ->pluck('status');
+                    @endphp
 
-                    <option value="High">
-                        High
-                    </option>
+                    @foreach($statuses as $status)
 
-                    <option value="Normal">
-                        Normal
-                    </option>
+                        <option
+                            value="{{ $status }}"
+                            {{ request('status') === $status ? 'selected' : '' }}
+                        >
+                            {{ ucfirst($status) }}
+                        </option>
 
-                    <option value="Moderate">
-                        Moderate
-                    </option>
+                    @endforeach
 
                 </select>
 
-            </div>
 
-
-            {{-- =================================================
-                 STATUS TABS
-                 ================================================= --}}
-            <div class="br-tabs">
-
-                <button type="button" class="br-tab active">
-
-                    All
-
-                    <span class="tab-count">
-                        24
-                    </span>
-
+                <button
+                    type="submit"
+                    class="request-search-btn"
+                >
+                    <i class="bi bi-search"></i>
+                    Search
                 </button>
 
 
-                <button type="button" class="br-tab">
-
-                    Pending
-
-                    <span class="tab-count">
-                        12
-                    </span>
-
-                </button>
-
-
-                <button type="button" class="br-tab">
-
-                    Approved
-
-                    <span class="tab-count">
-                        9
-                    </span>
-
-                </button>
-
-
-                <button type="button" class="br-tab">
-
-                    Critical
-
-                    <span class="tab-count">
-                        3
-                    </span>
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-        {{-- =====================================================
-             REQUEST TABLE
-             ===================================================== --}}
-        <div class="br-table-wrapper">
-
-            <table class="br-table">
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Patient
-                        </th>
-
-                        <th>
-                            Blood Type
-                        </th>
-
-                        <th>
-                            Units
-                        </th>
-
-                        <th>
-                            Urgency
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
-                        <th>
-                            Action
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                    {{-- =================================================
-                         REQUEST 1
-                         ================================================= --}}
-                    <tr>
-
-                        <td>
-
-                            <div class="br-patient">
-
-                                <div class="br-avatar">
-                                    JH
-                                </div>
-
-                                <div>
-
-                                    <div class="br-patient-name">
-                                        Jhuniel Huiso
-                                    </div>
-
-                                    <div class="br-hospital">
-                                        City Hospital
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-blood">
-                                A+
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-units">
-                                2
-                            </span>
-
-                            <small>units</small>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-urgency critical">
-
-                                <span class="br-urgency-dot"></span>
-
-                                Critical
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-status pending">
-
-                                <span class="br-status-dot"></span>
-
-                                Pending
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="br-actions">
-
-                                <button
-                                    type="button"
-                                    class="br-action view"
-                                    title="View Request"
-                                >
-                                    <i class="bi bi-eye"></i>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="br-action approve"
-                                    title="Approve Request"
-                                >
-                                    <i class="bi bi-check-lg"></i>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="br-action reject"
-                                    title="Reject Request"
-                                >
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-
-                    {{-- =================================================
-                         REQUEST 2
-                         ================================================= --}}
-                    <tr>
-
-                        <td>
-
-                            <div class="br-patient">
-
-                                <div class="br-avatar">
-                                    AJ
-                                </div>
-
-                                <div>
-
-                                    <div class="br-patient-name">
-                                        Anacleto Jotojot
-                                    </div>
-
-                                    <div class="br-hospital">
-                                        General Hospital
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-blood">
-                                O-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-units">
-                                1
-                            </span>
-
-                            <small>unit</small>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-urgency high">
-
-                                <span class="br-urgency-dot"></span>
-
-                                High
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-status approved">
-
-                                <span class="br-status-dot"></span>
-
-                                Approved
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="br-actions">
-
-                                <button
-                                    type="button"
-                                    class="br-action view"
-                                    title="View Request"
-                                >
-                                    <i class="bi bi-eye"></i>
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-
-                    {{-- =================================================
-                         REQUEST 3
-                         ================================================= --}}
-                    <tr>
-
-                        <td>
-
-                            <div class="br-patient">
-
-                                <div class="br-avatar">
-                                    BP
-                                </div>
-
-                                <div>
-
-                                    <div class="br-patient-name">
-                                        Bryle Pat
-                                    </div>
-
-                                    <div class="br-hospital">
-                                        City Medical Center
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-blood">
-                                B+
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-units">
-                                1
-                            </span>
-
-                            <small>unit</small>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-urgency normal">
-
-                                <span class="br-urgency-dot"></span>
-
-                                Normal
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-status pending">
-
-                                <span class="br-status-dot"></span>
-
-                                Pending
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="br-actions">
-
-                                <button
-                                    type="button"
-                                    class="br-action view"
-                                    title="View Request"
-                                >
-                                    <i class="bi bi-eye"></i>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="br-action approve"
-                                    title="Approve Request"
-                                >
-                                    <i class="bi bi-check-lg"></i>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="br-action reject"
-                                    title="Reject Request"
-                                >
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-
-                    {{-- =================================================
-                         REQUEST 4
-                         ================================================= --}}
-                    <tr>
-
-                        <td>
-
-                            <div class="br-patient">
-
-                                <div class="br-avatar">
-                                    JP
-                                </div>
-
-                                <div>
-
-                                    <div class="br-patient-name">
-                                        Josami Polestico
-                                    </div>
-
-                                    <div class="br-hospital">
-                                        Iloilo Medical Center
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-blood">
-                                AB+
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-units">
-                                3
-                            </span>
-
-                            <small>units</small>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-urgency moderate">
-
-                                <span class="br-urgency-dot"></span>
-
-                                Moderate
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="br-status approved">
-
-                                <span class="br-status-dot"></span>
-
-                                Approved
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="br-actions">
-
-                                <button
-                                    type="button"
-                                    class="br-action view"
-                                    title="View Request"
-                                >
-                                    <i class="bi bi-eye"></i>
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-
-        {{-- =====================================================
-             REQUEST DETAILS
-             ===================================================== --}}
-        <div class="br-details">
-
-            <div class="br-details-heading">
-
-                <div>
-
-                    <h3>
-                        Request Details
-                    </h3>
-
-                    <p>
-                        Selected blood request information
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="br-details-box">
-
-                <div class="br-details-grid">
-
-                    <div class="br-detail-item">
-
-                        <span>
-                            Patient
-                        </span>
-
-                        <strong>
-                            John
-                        </strong>
-
-                    </div>
-
-
-                    <div class="br-detail-item">
-
-                        <span>
-                            Hospital
-                        </span>
-
-                        <strong>
-                            City Hospital
-                        </strong>
-
-                    </div>
-
-
-                    <div class="br-detail-item">
-
-                        <span>
-                            Blood Type
-                        </span>
-
-                        <strong class="br-detail-blood">
-                            A+
-                        </strong>
-
-                    </div>
-
-
-                    <div class="br-detail-item">
-
-                        <span>
-                            Units Needed
-                        </span>
-
-                        <strong>
-                            2 Units
-                        </strong>
-
-                    </div>
-
-
-                    <div class="br-detail-item">
-
-                        <span>
-                            Urgency
-                        </span>
-
-                        <strong class="br-critical-text">
-                            ● Critical
-                        </strong>
-
-                    </div>
-
-
-                    <div class="br-detail-item">
-
-                        <span>
-                            Status
-                        </span>
-
-                        <strong>
-
-                            <span class="br-status pending">
-
-                                <span class="br-status-dot"></span>
-
-                                Pending
-
-                            </span>
-
-                        </strong>
-
-                    </div>
-
-
-                    <div class="br-detail-item">
-
-                        <span>
-                            Request Date
-                        </span>
-
-                        <strong>
-                            September 07, 2026
-                        </strong>
-
-                    </div>
-
-
-                    <div class="br-detail-item">
-
-                        <span>
-                            Contact
-                        </span>
-
-                        <strong>
-                            0912 345 6789
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                {{-- ACTIONS --}}
-                <div class="br-details-actions">
-
-                    <button
-                        type="button"
-                        class="br-btn br-btn-reject"
+                @if(request()->hasAny(['search', 'blood_type', 'status']))
+
+                    <a
+                        href="{{ route('admin.requests') }}"
+                        class="request-reset-btn"
                     >
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                        Reset
+                    </a>
 
-                        <i class="bi bi-x-lg"></i>
+                @endif
 
-                        Reject Request
+            </form>
 
-                    </button>
+        </div>
 
 
-                    <button
-                        type="button"
-                        class="br-btn br-btn-approve"
-                    >
+        {{-- STATUS TABS --}}
+        <div class="request-tabs">
 
-                        <i class="bi bi-check-lg"></i>
+            <a
+                href="{{ route('admin.requests') }}"
+                class="request-tab {{ !request('status') ? 'active' : '' }}"
+            >
+                All
+            </a>
 
-                        Approve Request
 
-                    </button>
+            <a
+                href="{{ route('admin.requests', ['status' => 'pending']) }}"
+                class="request-tab {{ request('status') === 'pending' ? 'active' : '' }}"
+            >
+                Pending
+            </a>
+
+
+            <a
+                href="{{ route('admin.requests', ['status' => 'approved']) }}"
+                class="request-tab {{ request('status') === 'approved' ? 'active' : '' }}"
+            >
+                Approved
+            </a>
+
+
+            @if($statuses->contains('rejected'))
+
+                <a
+                    href="{{ route('admin.requests', ['status' => 'rejected']) }}"
+                    class="request-tab {{ request('status') === 'rejected' ? 'active' : '' }}"
+                >
+                    Rejected
+                </a>
+
+            @endif
+
+        </div>
+
+
+        {{-- TABLE --}}
+        <div class="request-table-wrapper">
+
+            @if($requests->count())
+
+                <table class="request-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Patient</th>
+                            <th>Blood Type</th>
+                            <th>Units</th>
+                            <th>Hospital</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @foreach($requests as $requestItem)
+
+                            @php
+
+                                $status = strtolower(
+                                    $requestItem->status ?? 'unknown'
+                                );
+
+                                $statusClass = match($status) {
+
+                                    'pending' =>
+                                        'status-pending',
+
+                                    'approved' =>
+                                        'status-approved',
+
+                                    'rejected' =>
+                                        'status-rejected',
+
+                                    default =>
+                                        'status-default',
+
+                                };
+
+                                $patientName =
+                                    $requestItem->patient_name ?: 'N/A';
+
+                                $initials =
+                                    collect(
+                                        explode(' ', trim($patientName))
+                                    )
+                                    ->filter()
+                                    ->take(2)
+                                    ->map(
+                                        fn($word) =>
+                                            strtoupper(substr($word, 0, 1))
+                                    )
+                                    ->implode('');
+
+                            @endphp
+
+
+                            <tr>
+
+                                {{-- PATIENT --}}
+                                <td>
+
+                                    <div class="patient-info">
+
+                                        <div class="patient-avatar">
+                                            {{ $initials ?: '?' }}
+                                        </div>
+
+                                        <div>
+
+                                            <div class="patient-name">
+                                                {{ $patientName }}
+                                            </div>
+
+                                            @if($requestItem->user)
+
+                                                <div class="patient-email">
+                                                    {{ $requestItem->user->email }}
+                                                </div>
+
+                                            @endif
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                {{-- BLOOD TYPE --}}
+                                <td>
+
+                                    <span class="blood-type">
+                                        {{ $requestItem->blood_type ?: 'N/A' }}
+                                    </span>
+
+                                </td>
+
+
+                                {{-- UNITS --}}
+                                <td>
+
+                                    <span class="units-value">
+
+                                        {{ $requestItem->units_needed }}
+
+                                        {{ $requestItem->units_needed == 1
+                                            ? 'Unit'
+                                            : 'Units'
+                                        }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- HOSPITAL --}}
+                                <td>
+
+                                    <div class="hospital-name">
+                                        {{ $requestItem->hospital ?: 'N/A' }}
+                                    </div>
+
+                                    @if($requestItem->notes)
+
+                                        <div
+                                            class="hospital-notes"
+                                            title="{{ $requestItem->notes }}"
+                                        >
+                                            {{ $requestItem->notes }}
+                                        </div>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- STATUS --}}
+                                <td>
+
+                                    <span class="status-badge {{ $statusClass }}">
+
+                                        @if($status === 'pending')
+
+                                            <i class="bi bi-clock"></i>
+
+                                        @elseif($status === 'approved')
+
+                                            <i class="bi bi-check-circle"></i>
+
+                                        @elseif($status === 'rejected')
+
+                                            <i class="bi bi-x-circle"></i>
+
+                                        @else
+
+                                            <i class="bi bi-info-circle"></i>
+
+                                        @endif
+
+                                        {{ $requestItem->status ?: 'Unknown' }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- DATE --}}
+                                <td>
+
+                                    <div class="request-date">
+                                        {{ $requestItem->created_at?->format('M d, Y') }}
+                                    </div>
+
+                                    <div class="request-time">
+                                        {{ $requestItem->created_at?->format('h:i A') }}
+                                    </div>
+
+                                </td>
+
+
+                                {{-- ACTION --}}
+                                <td>
+
+                                    <button
+                                        type="button"
+                                        class="request-view-btn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#requestModal{{ $requestItem->id }}"
+                                        title="View Request"
+                                    >
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+
+                            {{-- DETAILS MODAL --}}
+                            <div
+                                class="modal fade"
+                                id="requestModal{{ $requestItem->id }}"
+                                tabindex="-1"
+                                aria-hidden="true"
+                            >
+
+                                <div class="modal-dialog modal-dialog-centered">
+
+                                    <div class="modal-content border-0 shadow">
+
+                                        <div class="modal-header request-modal-header">
+
+                                            <div class="d-flex align-items-center">
+
+                                                <div class="request-modal-icon">
+                                                    <i class="bi bi-droplet-half"></i>
+                                                </div>
+
+                                                <div>
+
+                                                    <h5 class="modal-title mb-0">
+                                                        Blood Request
+                                                    </h5>
+
+                                                    <small class="text-muted">
+                                                        Request #{{ $requestItem->id }}
+                                                    </small>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <button
+                                                type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                            ></button>
+
+                                        </div>
+
+
+                                        <div class="modal-body p-4">
+
+                                            <div class="mb-4">
+
+                                                <div class="text-muted small mb-1">
+                                                    Patient
+                                                </div>
+
+                                                <h5 class="mb-0">
+                                                    {{ $requestItem->patient_name ?: 'N/A' }}
+                                                </h5>
+
+                                                @if($requestItem->user)
+
+                                                    <div class="text-muted small mt-1">
+                                                        {{ $requestItem->user->email }}
+                                                    </div>
+
+                                                @endif
+
+                                            </div>
+
+
+                                            <div class="row g-3 mb-3">
+
+                                                <div class="col-6">
+
+                                                    <div class="detail-box">
+
+                                                        <div class="detail-label">
+                                                            Blood Type
+                                                        </div>
+
+                                                        <div class="detail-value text-danger">
+                                                            {{ $requestItem->blood_type ?: 'N/A' }}
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="col-6">
+
+                                                    <div class="detail-box">
+
+                                                        <div class="detail-label">
+                                                            Units Needed
+                                                        </div>
+
+                                                        <div class="detail-value">
+                                                            {{ $requestItem->units_needed }}
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="col-6">
+
+                                                    <div class="detail-box">
+
+                                                        <div class="detail-label">
+                                                            Status
+                                                        </div>
+
+                                                        <div class="detail-value text-capitalize">
+                                                            {{ $requestItem->status ?: 'Unknown' }}
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="col-6">
+
+                                                    <div class="detail-box">
+
+                                                        <div class="detail-label">
+                                                            Date
+                                                        </div>
+
+                                                        <div class="detail-value">
+                                                            {{ $requestItem->created_at?->format('M d, Y') }}
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="detail-box mb-3">
+
+                                                <div class="detail-label">
+                                                    Hospital
+                                                </div>
+
+                                                <div class="detail-value">
+                                                    {{ $requestItem->hospital ?: 'N/A' }}
+                                                </div>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <div class="detail-label mb-2">
+                                                    Notes
+                                                </div>
+
+                                                <div class="notes-box">
+                                                    {{ $requestItem->notes ?: 'No additional notes provided.' }}
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="modal-footer border-top">
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-light px-4"
+                                                data-bs-dismiss="modal"
+                                            >
+                                                Close
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        @endforeach
+
+                    </tbody>
+
+                </table>
+
+            @else
+
+                <div class="request-empty">
+
+                    <div class="request-empty-icon">
+                        <i class="bi bi-inbox"></i>
+                    </div>
+
+                    <div class="request-empty-title">
+                        No blood requests found
+                    </div>
+
+                    <div class="request-empty-text">
+                        Try changing your search or filters.
+                    </div>
+
+                </div>
+
+            @endif
+
+        </div>
+
+
+        {{-- FOOTER --}}
+        @if($requests->count())
+
+            <div class="request-footer">
+
+                <div class="request-count">
+
+                    Showing
+                    <strong>{{ $requests->firstItem() }}</strong>
+                    –
+                    <strong>{{ $requests->lastItem() }}</strong>
+                    of
+                    <strong>{{ $requests->total() }}</strong>
+                    requests
+
+                </div>
+
+
+                <div class="request-pagination">
+
+                    {{ $requests->withQueryString()->links() }}
 
                 </div>
 
             </div>
 
-        </div>
-
-
-        {{-- =====================================================
-             PAGINATION
-             ===================================================== --}}
-        <div class="br-footer">
-
-            <div class="br-footer-text">
-                Showing 1–4 of 24 requests
-            </div>
-
-
-            <div class="br-pagination">
-
-                <button
-                    type="button"
-                    class="br-page-btn"
-                >
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-
-
-                <button
-                    type="button"
-                    class="br-page-btn active"
-                >
-                    1
-                </button>
-
-
-                <button
-                    type="button"
-                    class="br-page-btn"
-                >
-                    2
-                </button>
-
-
-                <button
-                    type="button"
-                    class="br-page-btn"
-                >
-                    3
-                </button>
-
-
-                <button
-                    type="button"
-                    class="br-page-btn"
-                >
-                    4
-                </button>
-
-
-                <button
-                    type="button"
-                    class="br-page-btn"
-                >
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-
-            </div>
-
-        </div>
+        @endif
 
     </div>
 
 </div>
-
-
-{{-- =========================================================
-     SMALL JAVASCRIPT
-     ========================================================= --}}
-<script>
-
-    document.addEventListener('DOMContentLoaded', function () {
-
-        /*
-        |--------------------------------------------------------------------------
-        | STATUS TABS
-        |--------------------------------------------------------------------------
-        */
-
-        const tabs = document.querySelectorAll('.br-tab');
-
-        tabs.forEach(function (tab) {
-
-            tab.addEventListener('click', function () {
-
-                tabs.forEach(function (item) {
-                    item.classList.remove('active');
-                });
-
-                this.classList.add('active');
-
-            });
-
-        });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | VIEW BUTTON
-        |--------------------------------------------------------------------------
-        */
-
-        const viewButtons = document.querySelectorAll('.br-action.view');
-
-        viewButtons.forEach(function (button) {
-
-            button.addEventListener('click', function () {
-
-                const row = this.closest('tr');
-
-                if (!row) {
-                    return;
-                }
-
-                const patient =
-                    row.querySelector('.br-patient-name')?.textContent.trim();
-
-                const hospital =
-                    row.querySelector('.br-hospital')?.textContent.trim();
-
-                const blood =
-                    row.querySelector('.br-blood')?.textContent.trim();
-
-                const units =
-                    row.querySelector('.br-units')?.textContent.trim();
-
-                const urgency =
-                    row.querySelector('.br-urgency')?.textContent.trim();
-
-                const status =
-                    row.querySelector('.br-status')?.textContent.trim();
-
-
-                /*
-                | Update the details panel
-                */
-
-                const details =
-                    document.querySelector('.br-details-box');
-
-                if (!details) {
-                    return;
-                }
-
-                const values =
-                    details.querySelectorAll('.br-detail-item strong');
-
-
-                if (values.length >= 6) {
-
-                    values[0].textContent = patient;
-                    values[1].textContent = hospital;
-
-                    values[2].textContent = blood;
-
-                    values[3].textContent =
-                        units + (units === '1' ? ' Unit' : ' Units');
-
-                    values[4].textContent =
-                        '● ' + urgency;
-
-                    values[5].innerHTML =
-                        '<span class="br-status ' +
-                        (status.toLowerCase().includes('approved')
-                            ? 'approved'
-                            : 'pending') +
-                        '">' +
-                        '<span class="br-status-dot"></span>' +
-                        status +
-                        '</span>';
-
-                }
-
-                /*
-                | Scroll smoothly to details
-                */
-
-                document.querySelector('.br-details')
-                    ?.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-
-            });
-
-        });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | APPROVE BUTTON
-        |--------------------------------------------------------------------------
-        */
-
-        const approveButtons =
-            document.querySelectorAll(
-                '.br-action.approve, .br-btn-approve'
-            );
-
-        approveButtons.forEach(function (button) {
-
-            button.addEventListener('click', function () {
-
-                const confirmed =
-                    confirm(
-                        'Are you sure you want to approve this blood request?'
-                    );
-
-                if (!confirmed) {
-                    return;
-                }
-
-                alert('Blood request approved successfully.');
-
-            });
-
-        });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | REJECT BUTTON
-        |--------------------------------------------------------------------------
-        */
-
-        const rejectButtons =
-            document.querySelectorAll(
-                '.br-action.reject, .br-btn-reject'
-            );
-
-        rejectButtons.forEach(function (button) {
-
-            button.addEventListener('click', function () {
-
-                const confirmed =
-                    confirm(
-                        'Are you sure you want to reject this blood request?'
-                    );
-
-                if (!confirmed) {
-                    return;
-                }
-
-                alert('Blood request rejected.');
-
-            });
-
-        });
-
-    });
-
-</script>
 
 @endsection
