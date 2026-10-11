@@ -4,241 +4,218 @@
 
 @section('content')
 
-<div class="user-form-page">
+<div class="add-user-page">
 
-    <div class="form-header">
-
+    {{-- PAGE HEADER --}}
+    <div class="page-header">
         <div>
-            <h1>
+            <h1 class="page-title">
                 <i class="bi bi-person-plus-fill"></i>
                 Add User
             </h1>
 
-            <p>
+            <p class="page-subtitle">
                 Create a new user account.
             </p>
         </div>
 
-        <a href="{{ route('admin.users') }}" class="back-button">
+        <a href="{{ route('admin.users') }}" class="back-btn">
             <i class="bi bi-arrow-left"></i>
             Back to Users
         </a>
-
     </div>
 
+    {{-- SUCCESS MESSAGE --}}
+    @if(session('success'))
+        <div class="success-alert">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ session('success') }}
+        </div>
+    @endif
 
+    {{-- VALIDATION ERRORS --}}
     @if($errors->any())
-
-        <div class="error-box">
-
-            <strong>Please fix the following:</strong>
+        <div class="error-alert">
+            <div class="error-title">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                Please fix the following errors:
+            </div>
 
             <ul>
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
-
         </div>
-
     @endif
 
-
+    {{-- FORM CARD --}}
     <div class="form-card">
 
-        <form
-            method="POST"
-            action="{{ route('admin.users.store') }}"
-        >
-
+        <form action="{{ route('admin.users.store') }}" method="POST">
             @csrf
 
+            <div class="form-card-header">
+                <h2>User Information</h2>
+                <p>Fields marked with <span class="required-mark">*</span> are required.</p>
+            </div>
 
-            <div class="form-grid">
+            <div class="form-body">
 
-                {{-- NAME --}}
+                {{-- FULL NAME --}}
                 <div class="form-group">
-
-                    <label>
-                        Full Name
+                    <label for="name">
+                        Full Name <span>*</span>
                     </label>
 
                     <input
                         type="text"
+                        id="name"
                         name="name"
                         value="{{ old('name') }}"
                         placeholder="Enter full name"
+                        autocomplete="name"
+                        maxlength="255"
                         required
                     >
 
+                    @error('name')
+                        <small class="field-error">{{ $message }}</small>
+                    @enderror
                 </div>
-
 
                 {{-- EMAIL --}}
                 <div class="form-group">
-
-                    <label>
-                        Email Address
+                    <label for="email">
+                        Email Address <span>*</span>
                     </label>
 
                     <input
                         type="email"
+                        id="email"
                         name="email"
                         value="{{ old('email') }}"
                         placeholder="Enter email address"
+                        autocomplete="email"
+                        maxlength="255"
                         required
                     >
 
+                    @error('email')
+                        <small class="field-error">{{ $message }}</small>
+                    @enderror
                 </div>
-
 
                 {{-- PASSWORD --}}
                 <div class="form-group">
-
-                    <label>
-                        Password
+                    <label for="password">
+                        Password <span>*</span>
                     </label>
 
                     <input
                         type="password"
+                        id="password"
                         name="password"
                         placeholder="Minimum 8 characters"
+                        autocomplete="new-password"
+                        minlength="8"
                         required
                     >
 
+                    @error('password')
+                        <small class="field-error">{{ $message }}</small>
+                    @enderror
                 </div>
-
 
                 {{-- CONFIRM PASSWORD --}}
                 <div class="form-group">
-
-                    <label>
-                        Confirm Password
+                    <label for="password_confirmation">
+                        Confirm Password <span>*</span>
                     </label>
 
                     <input
                         type="password"
+                        id="password_confirmation"
                         name="password_confirmation"
-                        placeholder="Confirm password"
+                        placeholder="Enter password again"
+                        autocomplete="new-password"
+                        minlength="8"
                         required
                     >
-
                 </div>
-
 
                 {{-- BLOOD TYPE --}}
                 <div class="form-group">
+                    <label for="blood_type">Blood Type</label>
 
-                    <label>
-                        Blood Type
-                    </label>
+                    <select id="blood_type" name="blood_type">
+                        <option value="">Select blood type</option>
 
-                    <select name="blood_type">
-
-                        <option value="">
-                            Select blood type
-                        </option>
-
-                        @foreach([
-                            'A+',
-                            'A-',
-                            'B+',
-                            'B-',
-                            'AB+',
-                            'AB-',
-                            'O+',
-                            'O-'
-                        ] as $type)
-
+                        @foreach(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as $type)
                             <option
                                 value="{{ $type }}"
-                                {{ old('blood_type') === $type ? 'selected' : '' }}
+                                @selected(old('blood_type') === $type)
                             >
                                 {{ $type }}
                             </option>
-
                         @endforeach
-
                     </select>
 
+                    @error('blood_type')
+                        <small class="field-error">{{ $message }}</small>
+                    @enderror
                 </div>
 
-
-                {{-- ROLE --}}
+                {{-- CONTACT NUMBER --}}
                 <div class="form-group">
+                    <label for="contact_number">Contact Number</label>
 
-                    <label>
-                        Role
-                    </label>
+                    <input
+                        type="tel"
+                        id="contact_number"
+                        name="contact_number"
+                        value="{{ old('contact_number') }}"
+                        placeholder="e.g. 09123456789"
+                        autocomplete="tel"
+                        maxlength="30"
+                    >
 
-                    <select name="role" required>
-
-                        <option
-                            value="user"
-                            {{ old('role', 'user') === 'user' ? 'selected' : '' }}
-                        >
-                            User
-                        </option>
-
-                        <option
-                            value="admin"
-                            {{ old('role') === 'admin' ? 'selected' : '' }}
-                        >
-                            Administrator
-                        </option>
-
-                    </select>
-
+                    @error('contact_number')
+                        <small class="field-error">{{ $message }}</small>
+                    @enderror
                 </div>
 
+                {{-- ADDRESS --}}
+                <div class="form-group full-width">
+                    <label for="address">Address</label>
 
-                {{-- STATUS --}}
-                <div class="form-group">
+                    <input
+                        type="text"
+                        id="address"
+                        name="address"
+                        value="{{ old('address') }}"
+                        placeholder="Enter complete address"
+                        autocomplete="street-address"
+                        maxlength="255"
+                    >
 
-                    <label>
-                        Status
-                    </label>
-
-                    <select name="status" required>
-
-                        <option
-                            value="active"
-                            {{ old('status', 'active') === 'active' ? 'selected' : '' }}
-                        >
-                            Active
-                        </option>
-
-                        <option
-                            value="blocked"
-                            {{ old('status') === 'blocked' ? 'selected' : '' }}
-                        >
-                            Blocked
-                        </option>
-
-                    </select>
-
+                    @error('address')
+                        <small class="field-error">{{ $message }}</small>
+                    @enderror
                 </div>
 
             </div>
 
-
-            <div class="form-actions">
-
-                <a
-                    href="{{ route('admin.users') }}"
-                    class="cancel-button"
-                >
+            {{-- FORM FOOTER --}}
+            <div class="form-footer">
+                <a href="{{ route('admin.users') }}" class="cancel-btn">
                     Cancel
                 </a>
 
-                <button
-                    type="submit"
-                    class="save-button"
-                >
-                    <i class="bi bi-check-lg"></i>
+                <button type="submit" class="add-btn">
+                    <i class="bi bi-person-plus-fill"></i>
                     Add User
                 </button>
-
             </div>
 
         </form>
@@ -247,149 +224,261 @@
 
 </div>
 
-
 <style>
-
-.user-form-page {
-    padding: 10px 0 40px;
-}
-
-.user-form-page .form-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.user-form-page h1 {
-    margin: 0;
+/* PAGE */
+.add-user-page {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     color: #222;
-    font-size: 25px;
-    font-weight: 600;
 }
 
-.user-form-page h1 i {
-    color: #dc3545;
+.add-user-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
 }
 
-.user-form-page .form-header p {
-    margin: 5px 0 0;
+.add-user-page .page-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #222;
+}
+
+.add-user-page .page-title i {
+    margin-right: 8px;
+    color: #c8102e;
+}
+
+.add-user-page .page-subtitle {
+    margin: 7px 0 0;
     color: #777;
     font-size: 14px;
 }
 
-.user-form-page .back-button {
-    padding: 9px 14px;
+.add-user-page .back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 11px 16px;
     border: 1px solid #ddd;
-    border-radius: 6px;
-    color: #555;
-    background: white;
+    border-radius: 8px;
+    background: #fff;
+    color: #444;
     text-decoration: none;
     font-size: 14px;
+    font-weight: 600;
+    transition: .2s ease;
 }
 
-.user-form-page .error-box {
+.add-user-page .back-btn:hover {
+    background: #f5f5f5;
+}
+
+/* ALERTS */
+.add-user-page .error-alert,
+.add-user-page .success-alert {
     margin-bottom: 20px;
-    padding: 14px;
-    border: 1px solid #f1b5bb;
-    border-radius: 7px;
-    background: #fff1f2;
+    padding: 15px 18px;
+    border-radius: 9px;
+}
+
+.add-user-page .error-alert {
+    background: #fff0f1;
+    border: 1px solid #f5c2c7;
     color: #842029;
-    font-size: 14px;
 }
 
-.user-form-page .error-box ul {
-    margin: 7px 0 0;
+.add-user-page .success-alert {
+    background: #eafaf1;
+    border: 1px solid #b7e4c7;
+    color: #16834b;
 }
 
-.user-form-page .form-card {
-    padding: 25px;
-    background: white;
+.add-user-page .error-title {
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.add-user-page .error-alert ul {
+    margin: 0;
+    padding-left: 22px;
+}
+
+/* FORM CARD */
+.add-user-page .form-card {
+    overflow: hidden;
+    background: #fff;
     border: 1px solid #e5e5e5;
-    border-radius: 8px;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .04);
 }
 
-.user-form-page .form-grid {
+.add-user-page .form-card-header {
+    padding: 24px 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.add-user-page .form-card-header h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.add-user-page .form-card-header p {
+    margin: 7px 0 0;
+    font-size: 13px;
+    color: #777;
+}
+
+.add-user-page .required-mark,
+.add-user-page .form-group label span {
+    color: #c8102e;
+}
+
+/* FORM FIELDS */
+.add-user-page .form-body {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    padding: 28px 30px;
 }
 
-.user-form-page .form-group label {
-    display: block;
-    margin-bottom: 7px;
-    color: #444;
+.add-user-page .form-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.add-user-page .full-width {
+    grid-column: 1 / -1;
+}
+
+.add-user-page .form-group label {
+    margin-bottom: 8px;
+    color: #333;
     font-size: 14px;
     font-weight: 600;
 }
 
-.user-form-page .form-group input,
-.user-form-page .form-group select {
-    width: 100%;
-    height: 40px;
+.add-user-page .form-group input,
+.add-user-page .form-group select {
     box-sizing: border-box;
-    padding: 0 12px;
-    border: 1px solid #d8d8d8;
-    border-radius: 6px;
-    outline: none;
-    background: white;
+    width: 100%;
+    height: 46px;
+    padding: 0 13px;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    background: #fff;
     color: #333;
+    font-family: inherit;
     font-size: 14px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
 }
 
-.user-form-page .form-group input:focus,
-.user-form-page .form-group select:focus {
-    border-color: #dc3545;
+.add-user-page .form-group input::placeholder {
+    color: #aaa;
 }
 
-.user-form-page .form-actions {
+.add-user-page .form-group input:focus,
+.add-user-page .form-group select:focus {
+    border-color: #c8102e;
+    box-shadow: 0 0 0 3px rgba(200, 16, 46, .09);
+}
+
+.add-user-page .field-error {
+    margin-top: 6px;
+    color: #c8102e;
+    font-size: 12px;
+}
+
+/* BUTTONS */
+.add-user-page .form-footer {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 25px;
-    padding-top: 20px;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 30px;
     border-top: 1px solid #eee;
+    background: #fafafa;
 }
 
-.user-form-page .cancel-button,
-.user-form-page .save-button {
-    padding: 9px 15px;
-    border-radius: 6px;
+.add-user-page .cancel-btn,
+.add-user-page .add-btn {
+    min-width: 120px;
+    min-height: 44px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: inherit;
     font-size: 14px;
+    font-weight: 600;
     text-decoration: none;
-}
-
-.user-form-page .cancel-button {
-    border: 1px solid #ddd;
-    background: white;
-    color: #555;
-}
-
-.user-form-page .save-button {
-    border: none;
-    background: #dc3545;
-    color: white;
     cursor: pointer;
+    transition: background .2s ease;
 }
 
-.user-form-page .save-button:hover {
-    background: #bb2d3b;
+.add-user-page .cancel-btn {
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #444;
 }
 
-@media (max-width: 700px) {
+.add-user-page .cancel-btn:hover {
+    background: #f1f1f1;
+}
 
-    .user-form-page .form-header {
+.add-user-page .add-btn {
+    border: 1px solid #c8102e;
+    background: #c8102e;
+    color: #fff;
+}
+
+.add-user-page .add-btn:hover {
+    border-color: #a70d26;
+    background: #a70d26;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .add-user-page .page-header {
         align-items: flex-start;
         flex-direction: column;
-        gap: 12px;
     }
 
-    .user-form-page .form-grid {
+    .add-user-page .form-card-header {
+        padding: 22px 20px;
+    }
+
+    .add-user-page .form-body {
         grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 22px 20px;
     }
 
-}
+    .add-user-page .full-width {
+        grid-column: auto;
+    }
 
+    .add-user-page .form-footer {
+        padding: 18px 20px;
+    }
+
+    .add-user-page .cancel-btn,
+    .add-user-page .add-btn {
+        flex: 1;
+        min-width: 0;
+    }
+}
 </style>
 
 @endsection

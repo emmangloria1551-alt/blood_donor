@@ -1,64 +1,64 @@
 @extends('admin.layouts.app')
 
+@section('title', 'Reports & Statistics')
+
 @section('content')
 
 <style>
     .reports-page {
-        padding: 28px;
-        background: #f8fafc;
-        min-height: calc(100vh - 70px);
+        width: 100%;
+        max-width: 1500px;
+        margin: 0 auto;
     }
 
-    /* PAGE HEADER */
     .reports-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        gap: 20px;
-        margin-bottom: 24px;
+        gap: 25px;
+        margin-bottom: 25px;
     }
 
-    .reports-title {
+    .reports-title-area {
         display: flex;
         align-items: center;
-        gap: 14px;
+        gap: 16px;
     }
 
     .reports-title-icon {
-        width: 48px;
-        height: 48px;
-        background: #fff1f2;
-        color: #dc2626;
-        border-radius: 12px;
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        background: #fff0f1;
+        color: #e32632;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
+        font-size: 27px;
     }
 
-    .reports-title h1 {
+    .reports-title-area h1 {
         margin: 0;
-        font-size: 26px;
-        font-weight: 700;
-        color: #1f2937;
+        color: #10233f;
+        font-size: 30px;
+        font-weight: 750;
     }
 
-    .reports-title p {
+    .reports-title-area p {
         margin: 5px 0 0;
-        color: #6b7280;
+        color: #718096;
         font-size: 14px;
     }
 
-    /* DATE FILTER */
-    .date-filter {
+    .date-filter-card {
         background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 12px;
+        border: 1px solid #e6e8ec;
+        border-radius: 15px;
+        padding: 15px;
         display: flex;
         align-items: flex-end;
         gap: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 5px 20px rgba(15, 23, 42, .05);
     }
 
     .date-field {
@@ -68,351 +68,405 @@
     }
 
     .date-field label {
+        color: #667085;
         font-size: 11px;
-        font-weight: 600;
-        color: #6b7280;
+        font-weight: 700;
         text-transform: uppercase;
     }
 
     .date-field input {
-        width: 145px;
-        height: 40px;
-        border: 1px solid #d1d5db;
-        border-radius: 8px;
-        padding: 0 10px;
-        font-size: 13px;
-        color: #374151;
+        height: 46px;
+        min-width: 175px;
+        border: 1px solid #d8dde5;
+        border-radius: 10px;
+        padding: 0 12px;
+        color: #344054;
         outline: none;
-        background: #fff;
     }
 
     .date-field input:focus {
-        border-color: #dc2626;
-        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+        border-color: #e32632;
+        box-shadow: 0 0 0 3px rgba(227, 38, 50, .10);
     }
 
-    .btn-filter {
-        height: 40px;
-        padding: 0 18px;
+    .filter-btn {
+        height: 46px;
         border: none;
-        border-radius: 8px;
-        background: #dc2626;
+        border-radius: 10px;
+        padding: 0 20px;
+        background: #e32632;
         color: white;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 7px;
     }
 
-    .btn-filter:hover {
-        background: #b91c1c;
+    .filter-btn:hover {
+        background: #c91d29;
     }
 
-    /* STAT CARDS */
+    .report-alert {
+        background: #ecfdf3;
+        border: 1px solid #abefc6;
+        color: #067647;
+        border-radius: 12px;
+        padding: 13px 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
     .report-stats {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-        margin-bottom: 24px;
+        gap: 22px;
+        margin-bottom: 25px;
     }
 
     .report-stat-card {
-        background: white;
+        background: #ffffff;
         border: 1px solid #e5e7eb;
-        border-radius: 14px;
-        padding: 22px;
+        border-radius: 17px;
+        padding: 24px;
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
-    }
-
-    .stat-info span {
-        display: block;
-        font-size: 13px;
-        color: #6b7280;
-        margin-bottom: 7px;
-    }
-
-    .stat-info h2 {
-        margin: 0;
-        font-size: 30px;
-        color: #111827;
-        font-weight: 700;
-    }
-
-    .stat-info small {
-        display: inline-flex;
         align-items: center;
-        gap: 4px;
-        margin-top: 8px;
-        font-size: 12px;
-        color: #16a34a;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, .045);
+    }
+
+    .report-stat-label {
+        color: #667085;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .report-stat-number {
+        color: #10233f;
+        font-size: 34px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .report-stat-change {
+        margin-top: 10px;
+        color: #12a150;
+        font-size: 13px;
         font-weight: 600;
     }
 
     .report-stat-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 12px;
+        width: 64px;
+        height: 64px;
+        border-radius: 15px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 23px;
+        font-size: 27px;
     }
 
-    .icon-donation {
-        background: #fee2e2;
-        color: #dc2626;
+    .report-stat-icon.red {
+        background: #ffe3e5;
+        color: #e32632;
     }
 
-    .icon-donor {
-        background: #fef2f2;
-        color: #ef4444;
+    .report-stat-icon.pink {
+        background: #fff0f2;
+        color: #ef4b58;
     }
 
-    .icon-request {
-        background: #fff7ed;
-        color: #ea580c;
+    .report-stat-icon.orange {
+        background: #fff4e8;
+        color: #ef7d16;
     }
 
-    /* CONTENT GRID */
-    .reports-grid {
+    .report-two-columns {
         display: grid;
-        grid-template-columns: 1.6fr 1fr;
-        gap: 20px;
-        margin-bottom: 20px;
+        grid-template-columns: 1.45fr 1fr;
+        gap: 24px;
+        margin-bottom: 25px;
     }
 
     .report-card {
         background: #ffffff;
         border: 1px solid #e5e7eb;
-        border-radius: 14px;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+        border-radius: 17px;
         overflow: hidden;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, .045);
     }
 
     .report-card-header {
-        padding: 20px 22px;
-        border-bottom: 1px solid #f1f5f9;
+        padding: 23px 25px;
+        border-bottom: 1px solid #edf0f3;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
-    .report-card-header h3 {
+    .report-card-header h2 {
         margin: 0;
-        font-size: 17px;
-        font-weight: 700;
-        color: #1f2937;
+        color: #10233f;
+        font-size: 19px;
+        font-weight: 750;
     }
 
     .report-card-header p {
-        margin: 4px 0 0;
-        color: #9ca3af;
-        font-size: 12px;
+        margin: 5px 0 0;
+        color: #98a2b3;
+        font-size: 13px;
     }
 
-    .report-card-body {
-        padding: 22px;
+    .report-card-header i {
+        color: #e32632;
+        font-size: 25px;
     }
 
-    /* BLOOD TYPE CHART */
+    .blood-list {
+        padding: 22px 25px 25px;
+    }
+
     .blood-row {
-        margin-bottom: 20px;
+        margin-bottom: 21px;
     }
 
     .blood-row:last-child {
         margin-bottom: 0;
     }
 
-    .blood-info {
+    .blood-row-top {
         display: flex;
         justify-content: space-between;
-        align-items: center;
         margin-bottom: 8px;
     }
 
     .blood-name {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        font-weight: 600;
-        color: #374151;
-        font-size: 13px;
-    }
-
-    .blood-dot {
-        width: 9px;
-        height: 9px;
-        background: #dc2626;
-        border-radius: 50%;
-    }
-
-    .blood-value {
-        font-size: 13px;
-        color: #6b7280;
-        font-weight: 600;
-    }
-
-    .progress-background {
-        height: 10px;
-        background: #f1f5f9;
-        border-radius: 20px;
-        overflow: hidden;
-    }
-
-    .progress-bar {
-        height: 100%;
-        background: linear-gradient(90deg, #dc2626, #ef4444);
-        border-radius: 20px;
-    }
-
-    /* SUMMARY */
-    .summary-list {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
-
-    .summary-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 14px;
-        background: #f8fafc;
-        border-radius: 10px;
-    }
-
-    .summary-item-left {
-        display: flex;
-        align-items: center;
-        gap: 11px;
-    }
-
-    .summary-icon {
-        width: 36px;
-        height: 36px;
-        background: #fff1f2;
-        color: #dc2626;
-        border-radius: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .summary-item strong {
-        display: block;
-        color: #374151;
-        font-size: 13px;
-    }
-
-    .summary-item span {
-        display: block;
-        color: #9ca3af;
-        font-size: 11px;
-        margin-top: 2px;
-    }
-
-    .summary-number {
-        font-size: 18px;
-        font-weight: 700;
-        color: #111827;
-    }
-
-    /* REPORT INFO */
-    .report-info {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-    }
-
-    .info-box {
-        padding: 18px;
-        border: 1px solid #e5e7eb;
-        border-radius: 11px;
-        background: #fafafa;
-    }
-
-    .info-box span {
-        display: block;
-        color: #9ca3af;
-        font-size: 12px;
-        margin-bottom: 6px;
-    }
-
-    .info-box strong {
-        color: #374151;
+        color: #344054;
+        font-weight: 650;
         font-size: 14px;
     }
 
-    /* ACTION BUTTONS */
+    .blood-name::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        background: #e32632;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .blood-count {
+        color: #667085;
+        font-size: 13px;
+    }
+
+    .blood-bar {
+        width: 100%;
+        height: 11px;
+        border-radius: 20px;
+        background: #edf1f5;
+        overflow: hidden;
+    }
+
+    .blood-bar-fill {
+        height: 100%;
+        border-radius: 20px;
+        background: #e32632;
+        transition: width .4s ease;
+    }
+
+    .summary-list {
+        padding: 22px 25px 25px;
+    }
+
+    .summary-item {
+        background: #f8fafc;
+        border-radius: 13px;
+        padding: 17px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 13px;
+    }
+
+    .summary-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .summary-left {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+    }
+
+    .summary-icon {
+        width: 43px;
+        height: 43px;
+        border-radius: 12px;
+        background: #fff0f1;
+        color: #e32632;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .summary-text strong {
+        display: block;
+        color: #24334b;
+        font-size: 14px;
+    }
+
+    .summary-text span {
+        display: block;
+        margin-top: 3px;
+        color: #98a2b3;
+        font-size: 12px;
+    }
+
+    .summary-value {
+        color: #10233f;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .monthly-card {
+        margin-bottom: 25px;
+    }
+
+    .monthly-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .monthly-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .monthly-table th {
+        padding: 14px 22px;
+        background: #fafbfc;
+        color: #667085;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        text-align: left;
+    }
+
+    .monthly-table td {
+        padding: 16px 22px;
+        border-top: 1px solid #eef0f3;
+        color: #344054;
+        font-size: 14px;
+    }
+
+    .monthly-table td strong {
+        color: #10233f;
+    }
+
+    .report-info {
+        margin-bottom: 25px;
+    }
+
+    .report-info-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        padding: 22px 25px;
+    }
+
+    .info-box {
+        border: 1px solid #e4e7ec;
+        border-radius: 12px;
+        padding: 18px;
+        min-height: 100px;
+    }
+
+    .info-label {
+        color: #98a2b3;
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .info-value {
+        color: #10233f;
+        font-size: 17px;
+        font-weight: 750;
+    }
+
     .report-actions {
         display: flex;
         justify-content: flex-end;
-        gap: 10px;
-        margin-top: 22px;
+        gap: 12px;
+        padding: 0 25px 25px;
     }
 
-    .report-btn {
-        height: 42px;
-        padding: 0 17px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
+    .report-action {
+        border: 1px solid;
+        border-radius: 10px;
+        min-height: 45px;
+        padding: 0 18px;
         display: inline-flex;
         align-items: center;
-        gap: 7px;
+        gap: 8px;
         text-decoration: none;
-        border: 1px solid #d1d5db;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
         background: white;
-        color: #374151;
     }
 
-    .report-btn:hover {
-        background: #f9fafb;
-    }
-
-    .report-btn.primary {
-        background: #dc2626;
+    .report-action.generate {
+        background: #e32632;
+        border-color: #e32632;
         color: white;
-        border-color: #dc2626;
     }
 
-    .report-btn.primary:hover {
-        background: #b91c1c;
+    .report-action.generate:hover {
+        background: #c91d29;
+        color: white;
     }
 
-    .report-btn.excel {
-        color: #15803d;
-        border-color: #bbf7d0;
+    .report-action.pdf {
+        color: #e32632;
+        border-color: #f2b7bc;
     }
 
-    .report-btn.pdf {
-        color: #dc2626;
-        border-color: #fecaca;
+    .report-action.pdf:hover {
+        background: #fff5f5;
     }
 
-    /* RESPONSIVE */
-    @media (max-width: 1100px) {
-        .reports-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .report-info {
-            grid-template-columns: repeat(2, 1fr);
-        }
+    .report-action.excel {
+        color: #087443;
+        border-color: #a7e3c2;
     }
 
-    @media (max-width: 850px) {
+    .report-action.excel:hover {
+        background: #f0fdf4;
+    }
+
+    @media (max-width: 1200px) {
         .reports-header {
             flex-direction: column;
             align-items: stretch;
         }
 
-        .date-filter {
+        .date-filter-card {
+            width: fit-content;
+        }
+
+        .report-two-columns {
+            grid-template-columns: 1fr;
+        }
+
+        .report-info-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 800px) {
+        .report-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .date-filter-card {
             width: 100%;
             flex-wrap: wrap;
         }
@@ -423,28 +477,25 @@
 
         .date-field input {
             width: 100%;
+            min-width: 0;
         }
 
-        .report-stats {
-            grid-template-columns: 1fr;
+        .filter-btn {
+            width: 100%;
         }
     }
 
     @media (max-width: 600px) {
-        .reports-page {
-            padding: 18px;
+        .reports-title-area h1 {
+            font-size: 24px;
         }
 
-        .date-filter {
-            flex-direction: column;
-            align-items: stretch;
+        .reports-title-icon {
+            width: 48px;
+            height: 48px;
         }
 
-        .btn-filter {
-            justify-content: center;
-        }
-
-        .report-info {
+        .report-info-grid {
             grid-template-columns: 1fr;
         }
 
@@ -452,51 +503,78 @@
             flex-direction: column;
         }
 
-        .report-btn {
+        .report-action {
             justify-content: center;
+            width: 100%;
         }
     }
 </style>
 
+
 <div class="reports-page">
 
-    <!-- PAGE HEADER -->
+    {{-- =====================================================
+         HEADER
+    ====================================================== --}}
+
     <div class="reports-header">
 
-        <div class="reports-title">
+        <div class="reports-title-area">
+
             <div class="reports-title-icon">
-                <i class="bi bi-bar-chart-line-fill"></i>
+                <i class="bi bi-bar-chart-fill"></i>
             </div>
 
             <div>
                 <h1>Reports & Statistics</h1>
-                <p>Monitor blood donations, donors, and blood requests.</p>
+
+                <p>
+                    Monitor blood donations, donors, and blood requests.
+                </p>
             </div>
+
         </div>
 
-        <!-- DATE FILTER -->
-        <form class="date-filter" method="GET">
+
+        {{-- DATE FILTER --}}
+
+        <form
+            action="{{ route('admin.reports') }}"
+            method="GET"
+            class="date-filter-card"
+        >
 
             <div class="date-field">
-                <label>From</label>
+                <label for="from">From</label>
+
                 <input
                     type="date"
+                    id="from"
                     name="from"
-                    value="{{ request('from', '2026-09-01') }}"
+                    value="{{ $from }}"
+                    required
                 >
             </div>
+
 
             <div class="date-field">
-                <label>To</label>
+                <label for="to">To</label>
+
                 <input
                     type="date"
+                    id="to"
                     name="to"
-                    value="{{ request('to', '2026-09-30') }}"
+                    value="{{ $to }}"
+                    required
                 >
             </div>
 
-            <button type="submit" class="btn-filter">
-                <i class="bi bi-funnel"></i>
+
+            <button
+                type="submit"
+                class="filter-btn"
+            >
+                <i class="bi bi-funnel-fill"></i>
                 Filter
             </button>
 
@@ -505,63 +583,117 @@
     </div>
 
 
-    <!-- STATISTICS -->
+    {{-- SUCCESS MESSAGE --}}
+
+    @if(session('success'))
+
+        <div class="report-alert">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ session('success') }}
+        </div>
+
+    @endif
+
+
+    @if(isset($generated) && $generated)
+
+        <div class="report-alert">
+            <i class="bi bi-check-circle-fill"></i>
+            Report generated successfully for
+            <strong>
+                {{ \Carbon\Carbon::parse($from)->format('F d, Y') }}
+                -
+                {{ \Carbon\Carbon::parse($to)->format('F d, Y') }}
+            </strong>.
+        </div>
+
+    @endif
+
+
+    {{-- =====================================================
+         STATISTICS
+    ====================================================== --}}
+
     <div class="report-stats">
 
-        <!-- DONATIONS -->
+        {{-- DONATIONS --}}
+
         <div class="report-stat-card">
 
-            <div class="stat-info">
-                <span>Total Donations</span>
-                <h2>850</h2>
+            <div>
 
-                <small>
-                    <i class="bi bi-arrow-up"></i>
-                    12.5% this month
-                </small>
+                <div class="report-stat-label">
+                    Total Donations
+                </div>
+
+                <div class="report-stat-number">
+                    {{ number_format($totalDonations) }}
+                </div>
+
+                <div class="report-stat-change">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Completed donations
+                </div>
+
             </div>
 
-            <div class="report-stat-icon icon-donation">
+            <div class="report-stat-icon red">
                 <i class="bi bi-droplet-fill"></i>
             </div>
 
         </div>
 
 
-        <!-- DONORS -->
+        {{-- DONORS --}}
+
         <div class="report-stat-card">
 
-            <div class="stat-info">
-                <span>Registered Donors</span>
-                <h2>450</h2>
+            <div>
 
-                <small>
+                <div class="report-stat-label">
+                    Registered Donors
+                </div>
+
+                <div class="report-stat-number">
+                    {{ number_format($totalDonors) }}
+                </div>
+
+                <div class="report-stat-change">
                     <i class="bi bi-arrow-up"></i>
-                    8.4% this month
-                </small>
+                    {{ number_format($newDonors) }} new in period
+                </div>
+
             </div>
 
-            <div class="report-stat-icon icon-donor">
+            <div class="report-stat-icon pink">
                 <i class="bi bi-people-fill"></i>
             </div>
 
         </div>
 
 
-        <!-- REQUESTS -->
+        {{-- REQUESTS --}}
+
         <div class="report-stat-card">
 
-            <div class="stat-info">
-                <span>Blood Requests</span>
-                <h2>120</h2>
+            <div>
 
-                <small>
-                    <i class="bi bi-arrow-up"></i>
-                    5.2% this month
-                </small>
+                <div class="report-stat-label">
+                    Blood Requests
+                </div>
+
+                <div class="report-stat-number">
+                    {{ number_format($totalRequests) }}
+                </div>
+
+                <div class="report-stat-change">
+                    <i class="bi bi-clipboard2-pulse-fill"></i>
+                    {{ number_format($completedRequests) }} completed
+                </div>
+
             </div>
 
-            <div class="report-stat-icon icon-request">
+            <div class="report-stat-icon orange">
                 <i class="bi bi-clipboard2-pulse-fill"></i>
             </div>
 
@@ -570,248 +702,206 @@
     </div>
 
 
-    <!-- CHART + SUMMARY -->
-    <div class="reports-grid">
+    {{-- =====================================================
+         BLOOD TYPES + MONTHLY SUMMARY
+    ====================================================== --}}
 
-        <!-- BLOOD TYPE CHART -->
+    <div class="report-two-columns">
+
+        {{-- BLOOD TYPE --}}
+
         <div class="report-card">
 
             <div class="report-card-header">
 
                 <div>
-                    <h3>Donations by Blood Type</h3>
-                    <p>Distribution of donations for the selected period</p>
+                    <h2>Donations by Blood Type</h2>
+
+                    <p>
+                        Distribution of donations for the selected period
+                    </p>
                 </div>
 
-                <i class="bi bi-droplet-half"
-                   style="font-size: 20px; color:#dc2626;"></i>
+                <i class="bi bi-droplet-fill"></i>
 
             </div>
 
-            <div class="report-card-body">
 
-                <!-- A+ -->
-                <div class="blood-row">
+            <div class="blood-list">
 
-                    <div class="blood-info">
-                        <div class="blood-name">
-                            <span class="blood-dot"></span>
-                            A+
+                @foreach($bloodTypeStats as $bloodType => $count)
+
+                    @php
+                        $percentage = $maxBloodTypeValue > 0
+                            ? ($count / $maxBloodTypeValue) * 100
+                            : 0;
+                    @endphp
+
+                    <div class="blood-row">
+
+                        <div class="blood-row-top">
+
+                            <span class="blood-name">
+                                {{ $bloodType }}
+                            </span>
+
+                            <span class="blood-count">
+                                {{ number_format($count) }}
+                                {{ $count == 1 ? 'donation' : 'donations' }}
+                            </span>
+
                         </div>
 
-                        <span class="blood-value">120 donations</span>
-                    </div>
+                        <div class="blood-bar">
 
-                    <div class="progress-background">
-                        <div class="progress-bar" style="width: 80%;"></div>
-                    </div>
+                            <div
+                                class="blood-bar-fill"
+                                style="width: {{ $percentage }}%;"
+                            ></div>
 
-                </div>
-
-
-                <!-- O+ -->
-                <div class="blood-row">
-
-                    <div class="blood-info">
-                        <div class="blood-name">
-                            <span class="blood-dot"></span>
-                            O+
                         </div>
 
-                        <span class="blood-value">150 donations</span>
                     </div>
 
-                    <div class="progress-background">
-                        <div class="progress-bar" style="width: 100%;"></div>
-                    </div>
-
-                </div>
-
-
-                <!-- B+ -->
-                <div class="blood-row">
-
-                    <div class="blood-info">
-                        <div class="blood-name">
-                            <span class="blood-dot"></span>
-                            B+
-                        </div>
-
-                        <span class="blood-value">80 donations</span>
-                    </div>
-
-                    <div class="progress-background">
-                        <div class="progress-bar" style="width: 53%;"></div>
-                    </div>
-
-                </div>
-
-
-                <!-- AB+ -->
-                <div class="blood-row">
-
-                    <div class="blood-info">
-                        <div class="blood-name">
-                            <span class="blood-dot"></span>
-                            AB+
-                        </div>
-
-                        <span class="blood-value">40 donations</span>
-                    </div>
-
-                    <div class="progress-background">
-                        <div class="progress-bar" style="width: 27%;"></div>
-                    </div>
-
-                </div>
-
-
-                <!-- A- -->
-                <div class="blood-row">
-
-                    <div class="blood-info">
-                        <div class="blood-name">
-                            <span class="blood-dot"></span>
-                            A-
-                        </div>
-
-                        <span class="blood-value">35 donations</span>
-                    </div>
-
-                    <div class="progress-background">
-                        <div class="progress-bar" style="width: 23%;"></div>
-                    </div>
-
-                </div>
-
-
-                <!-- O- -->
-                <div class="blood-row">
-
-                    <div class="blood-info">
-                        <div class="blood-name">
-                            <span class="blood-dot"></span>
-                            O-
-                        </div>
-
-                        <span class="blood-value">25 donations</span>
-                    </div>
-
-                    <div class="progress-background">
-                        <div class="progress-bar" style="width: 17%;"></div>
-                    </div>
-
-                </div>
+                @endforeach
 
             </div>
 
         </div>
 
 
-        <!-- QUICK SUMMARY -->
+        {{-- MONTHLY SUMMARY --}}
+
         <div class="report-card">
 
             <div class="report-card-header">
 
                 <div>
-                    <h3>Monthly Summary</h3>
-                    <p>September 2026</p>
+                    <h2>Monthly Summary</h2>
+
+                    <p>
+                        Selected reporting period
+                    </p>
                 </div>
 
-                <i class="bi bi-graph-up-arrow"
-                   style="font-size: 20px; color:#dc2626;"></i>
+                <i class="bi bi-graph-up-arrow"></i>
 
             </div>
 
-            <div class="report-card-body">
 
-                <div class="summary-list">
+            <div class="summary-list">
 
-                    <div class="summary-item">
+                <div class="summary-item">
 
-                        <div class="summary-item-left">
+                    <div class="summary-left">
 
-                            <div class="summary-icon">
-                                <i class="bi bi-droplet-fill"></i>
-                            </div>
-
-                            <div>
-                                <strong>Successful Donations</strong>
-                                <span>Completed donations</span>
-                            </div>
-
+                        <div class="summary-icon">
+                            <i class="bi bi-droplet-fill"></i>
                         </div>
 
-                        <div class="summary-number">
-                            850
-                        </div>
+                        <div class="summary-text">
 
-                    </div>
+                            <strong>
+                                Successful Donations
+                            </strong>
 
+                            <span>
+                                Completed donations
+                            </span>
 
-                    <div class="summary-item">
-
-                        <div class="summary-item-left">
-
-                            <div class="summary-icon">
-                                <i class="bi bi-person-plus-fill"></i>
-                            </div>
-
-                            <div>
-                                <strong>New Donors</strong>
-                                <span>Newly registered</span>
-                            </div>
-
-                        </div>
-
-                        <div class="summary-number">
-                            75
                         </div>
 
                     </div>
 
+                    <div class="summary-value">
+                        {{ number_format($totalDonations) }}
+                    </div>
 
-                    <div class="summary-item">
+                </div>
 
-                        <div class="summary-item-left">
 
-                            <div class="summary-icon">
-                                <i class="bi bi-clipboard2-pulse-fill"></i>
-                            </div>
+                <div class="summary-item">
 
-                            <div>
-                                <strong>Blood Requests</strong>
-                                <span>Total requests</span>
-                            </div>
+                    <div class="summary-left">
 
+                        <div class="summary-icon">
+                            <i class="bi bi-person-plus-fill"></i>
                         </div>
 
-                        <div class="summary-number">
-                            120
+                        <div class="summary-text">
+
+                            <strong>
+                                New Donors
+                            </strong>
+
+                            <span>
+                                Newly registered
+                            </span>
+
                         </div>
 
                     </div>
 
+                    <div class="summary-value">
+                        {{ number_format($newDonors) }}
+                    </div>
 
-                    <div class="summary-item">
+                </div>
 
-                        <div class="summary-item-left">
 
-                            <div class="summary-icon">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </div>
+                <div class="summary-item">
 
-                            <div>
-                                <strong>Completed Requests</strong>
-                                <span>Successfully fulfilled</span>
-                            </div>
+                    <div class="summary-left">
+
+                        <div class="summary-icon">
+                            <i class="bi bi-clipboard2-pulse-fill"></i>
+                        </div>
+
+                        <div class="summary-text">
+
+                            <strong>
+                                Blood Requests
+                            </strong>
+
+                            <span>
+                                Total requests
+                            </span>
 
                         </div>
 
-                        <div class="summary-number">
-                            96
+                    </div>
+
+                    <div class="summary-value">
+                        {{ number_format($totalRequests) }}
+                    </div>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <div class="summary-left">
+
+                        <div class="summary-icon">
+                            <i class="bi bi-check-circle-fill"></i>
                         </div>
 
+                        <div class="summary-text">
+
+                            <strong>
+                                Completed Requests
+                            </strong>
+
+                            <span>
+                                Successfully fulfilled
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-value">
+                        {{ number_format($completedRequests) }}
                     </div>
 
                 </div>
@@ -823,70 +913,224 @@
     </div>
 
 
-    <!-- REPORT INFORMATION -->
-    <div class="report-card">
+    {{-- =====================================================
+         MONTHLY BREAKDOWN
+    ====================================================== --}}
+
+    <div class="report-card monthly-card">
 
         <div class="report-card-header">
 
             <div>
-                <h3>Report Information</h3>
-                <p>Details of the currently selected report period</p>
+                <h2>Monthly Breakdown</h2>
+
+                <p>
+                    Activity during the selected reporting period
+                </p>
+            </div>
+
+            <i class="bi bi-calendar3"></i>
+
+        </div>
+
+
+        <div class="monthly-table-wrapper">
+
+            <table class="monthly-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Month</th>
+                        <th>Donations</th>
+                        <th>New Donors</th>
+                        <th>Blood Requests</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @forelse($monthlyStats as $month)
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ $month['month'] }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ number_format($month['donations']) }}
+                            </td>
+
+                            <td>
+                                {{ number_format($month['new_donors']) }}
+                            </td>
+
+                            <td>
+                                {{ number_format($month['requests']) }}
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td
+                                colspan="4"
+                                style="text-align:center;padding:30px;"
+                            >
+                                No data available for this period.
+                            </td>
+
+                        </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    {{-- =====================================================
+         REPORT INFORMATION
+    ====================================================== --}}
+
+    <div class="report-card report-info">
+
+        <div class="report-card-header">
+
+            <div>
+                <h2>Report Information</h2>
+
+                <p>
+                    Details of the currently selected report period
+                </p>
+            </div>
+
+            <i class="bi bi-file-earmark-bar-graph"></i>
+
+        </div>
+
+
+        <div class="report-info-grid">
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Report Period
+                </div>
+
+                <div class="info-value">
+
+                    {{ \Carbon\Carbon::parse($from)->format('M d, Y') }}
+
+                    -
+
+                    {{ \Carbon\Carbon::parse($to)->format('M d, Y') }}
+
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Total Donations
+                </div>
+
+                <div class="info-value">
+                    {{ number_format($totalDonations) }}
+                    Donations
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Total Donors
+                </div>
+
+                <div class="info-value">
+                    {{ number_format($totalDonors) }}
+                    Donors
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Total Requests
+                </div>
+
+                <div class="info-value">
+                    {{ number_format($totalRequests) }}
+                    Requests
+                </div>
+
             </div>
 
         </div>
 
-        <div class="report-card-body">
 
-            <div class="report-info">
+        {{-- ACTIONS --}}
 
-                <div class="info-box">
-                    <span>Report Period</span>
-                    <strong>September 1 – September 30, 2026</strong>
-                </div>
+        <div class="report-actions">
 
-                <div class="info-box">
-                    <span>Total Donations</span>
-                    <strong>850 Donations</strong>
-                </div>
+            {{-- GENERATE --}}
 
-                <div class="info-box">
-                    <span>Total Donors</span>
-                    <strong>450 Donors</strong>
-                </div>
-
-                <div class="info-box">
-                    <span>Total Requests</span>
-                    <strong>120 Requests</strong>
-                </div>
-
-            </div>
+            <a
+                href="{{ route('admin.reports.generate', [
+                    'from' => $from,
+                    'to' => $to
+                ]) }}"
+                class="report-action generate"
+            >
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                Generate Report
+            </a>
 
 
-            <!-- ACTION BUTTONS -->
-            <div class="report-actions">
+            {{-- PDF --}}
 
-                <button type="button"
-                        class="report-btn primary"
-                        onclick="window.print()">
-                    <i class="bi bi-file-earmark-text"></i>
-                    Generate Report
-                </button>
+            <a
+                href="{{ route('admin.reports.pdf', [
+                    'from' => $from,
+                    'to' => $to
+                ]) }}"
+                target="_blank"
+                class="report-action pdf"
+            >
+                <i class="bi bi-file-earmark-pdf"></i>
+                Export PDF
+            </a>
 
-                <button type="button"
-                        class="report-btn pdf"
-                        onclick="window.print()">
-                    <i class="bi bi-file-earmark-pdf"></i>
-                    Export PDF
-                </button>
 
-                <button type="button"
-                        class="report-btn excel"
-                        onclick="alert('Excel export will be connected to Laravel next.')">
-                    <i class="bi bi-file-earmark-excel"></i>
-                    Export Excel
-                </button>
+            {{-- EXCEL --}}
 
-            </div>
+            <a
+                href="{{ route('admin.reports.excel', [
+                    'from' => $from,
+                    'to' => $to
+                ]) }}"
+                class="report-action excel"
+            >
+                <i class="bi bi-file-earmark-excel"></i>
+                Export Excel
+            </a>
 
         </div>
 

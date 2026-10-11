@@ -9,6 +9,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\BloodRequestController;
 use App\Http\Controllers\Admin\AppointmentController;
 use App\Http\Controllers\Admin\DonationCenterController;
+use App\Http\Controllers\Admin\ForgotPasswordController;
+use App\Http\Controllers\Admin\ResetPasswordController;
+use App\Http\Controllers\Admin\ReportsController;
 
 
 
@@ -179,4 +182,61 @@ Route::delete('/centers/{center}', [DonationCenterController::class, 'destroy'])
         return view('admin.settings.index');
     })->name('admin.settings');
 
+
+// =====================================================
+// ADMIN FORGOT PASSWORD
+// =====================================================
+
+Route::get('/forgot-password', [
+    ForgotPasswordController::class,
+    'showForgotPasswordForm'
+])->name('admin.password.request');
+
+Route::post('/forgot-password', [
+    ForgotPasswordController::class,
+    'sendResetLink'
+])->name('admin.password.email');
+
+
+// =====================================================
+// PASSWORD RESET
+// =====================================================
+
+Route::get('/reset-password/{token}', [
+    ForgotPasswordController::class,
+    'showResetForm'
+])->name('password.reset');
+
+Route::post('/reset-password', [
+    ForgotPasswordController::class,
+    'resetPassword'
+])->name('password.update');
+
+
+
+ /*
+|--------------------------------------------------------------------------
+| Reports & Statistics
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/reports', [
+    ReportsController::class,
+    'index'
+])->name('admin.reports');
+
+Route::get('/reports/generate', [
+    ReportsController::class,
+    'generate'
+])->name('admin.reports.generate');
+
+Route::get('/reports/export-excel', [
+    ReportsController::class,
+    'exportExcel'
+])->name('admin.reports.excel');
+
+Route::get('/reports/export-pdf', [
+    ReportsController::class,
+    'exportPdf'
+])->name('admin.reports.pdf');
 });

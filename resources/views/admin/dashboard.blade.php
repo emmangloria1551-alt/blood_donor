@@ -1,390 +1,227 @@
-@extends('admin.layouts.app')
+ @extends('admin.layouts.app')
+
+@section('title', 'Dashboard')
 
 @section('content')
 
-<div class="dashboard-container">
+@php
+    /*
+    |--------------------------------------------------------------------------
+    | Safely prepare recent activity dates
+    |--------------------------------------------------------------------------
+    | Activity dates may arrive as strings, Carbon objects, or null values.
+    | Convert valid dates to Carbon and safely handle missing/invalid dates.
+    */
+    $safeRecentActivities = collect($recentActivities ?? [])->map(function ($activity) {
+        $activity = (array) $activity;
 
-    <!-- PAGE HEADER -->
+        try {
+            $date = $activity['date'] ?? null;
+
+            $activity['parsed_date'] = filled($date)
+                ? \Illuminate\Support\Carbon::parse($date)
+                : null;
+        } catch (\Throwable $exception) {
+            $activity['parsed_date'] = null;
+        }
+
+        return $activity;
+    });
+@endphp
+
+<div class="dashboard-page">
+
+    {{-- PAGE HEADER --}}
     <div class="dashboard-header">
         <div>
-            <h1 class="page-title">Dashboard</h1>
-            <p class="page-subtitle">
+            <h1 class="dashboard-title">Dashboard</h1>
+
+            <p class="dashboard-subtitle">
                 Welcome back, Administrator. Here's what's happening today.
             </p>
         </div>
     </div>
 
-
-    <!-- STATISTICS -->
+    {{-- STATISTICS --}}
     <div class="stats-grid">
 
-        <!-- USERS -->
+        {{-- USERS --}}
         <div class="stat-card">
             <div class="stat-top">
-                <div class="stat-icon users">
+                <div class="stat-icon users-icon">
                     <i class="bi bi-people-fill"></i>
                 </div>
 
-                <span class="stat-trend">
-                    <i class="bi bi-arrow-up"></i> 8.2%
-                </span>
+                <div class="stat-badge">
+                    <i class="bi bi-database"></i>
+                    Live
+                </div>
             </div>
 
             <div class="stat-number">
-                {{ number_format($totalUsers) }}
+                {{ number_format($totalUsers ?? 0) }}
             </div>
 
-            <div class="stat-title">
-                Total Users
-            </div>
-
-            <div class="stat-footer">
-                <span>Registered users</span>
-            </div>
+            <div class="stat-label">Total Users</div>
+            <div class="stat-description">Registered users</div>
         </div>
 
-
-        <!-- DONORS -->
+        {{-- DONORS --}}
         <div class="stat-card">
             <div class="stat-top">
-                <div class="stat-icon donors">
+                <div class="stat-icon donors-icon">
                     <i class="bi bi-heart-pulse-fill"></i>
                 </div>
 
-                <span class="stat-trend">
-                    <i class="bi bi-arrow-up"></i> 5.4%
-                </span>
+                <div class="stat-badge">
+                    <i class="bi bi-database"></i>
+                    Live
+                </div>
             </div>
 
             <div class="stat-number">
-                {{ number_format($totalDonors) }}
+                {{ number_format($totalDonors ?? 0) }}
             </div>
 
-            <div class="stat-title">
-                Total Donors
-            </div>
-
-            <div class="stat-footer">
-                <span>Active blood donors</span>
-            </div>
+            <div class="stat-label">Total Donors</div>
+            <div class="stat-description">Registered blood donors</div>
         </div>
 
-
-        <!-- REQUESTS -->
+        {{-- BLOOD REQUESTS --}}
         <div class="stat-card">
             <div class="stat-top">
-                <div class="stat-icon requests">
+                <div class="stat-icon requests-icon">
                     <i class="bi bi-droplet-fill"></i>
                 </div>
 
-                <span class="stat-trend">
-                    <i class="bi bi-arrow-up"></i> 3.8%
-                </span>
+                <div class="stat-badge">
+                    <i class="bi bi-database"></i>
+                    Live
+                </div>
             </div>
 
             <div class="stat-number">
-                24
+                {{ number_format($totalBloodRequests ?? 0) }}
             </div>
 
-            <div class="stat-title">
-                Blood Requests
-            </div>
-
-            <div class="stat-footer">
-                <span>Current requests</span>
-            </div>
+            <div class="stat-label">Blood Requests</div>
+            <div class="stat-description">Current blood requests</div>
         </div>
 
-
-        <!-- DONATIONS -->
+        {{-- DONATIONS --}}
         <div class="stat-card">
             <div class="stat-top">
-                <div class="stat-icon donations">
+                <div class="stat-icon donations-icon">
                     <i class="bi bi-droplet-half"></i>
                 </div>
 
-                <span class="stat-trend">
-                    <i class="bi bi-arrow-up"></i> 12.5%
-                </span>
+                <div class="stat-badge">
+                    <i class="bi bi-database"></i>
+                    Live
+                </div>
             </div>
 
             <div class="stat-number">
-                850
+                {{ number_format($totalDonations ?? 0) }}
             </div>
 
-            <div class="stat-title">
-                Total Donations
-            </div>
-
-            <div class="stat-footer">
-                <span>Successful donations</span>
-            </div>
+            <div class="stat-label">Total Donations</div>
+            <div class="stat-description">Recorded donations</div>
         </div>
 
     </div>
 
-
-    <!-- MAIN CONTENT -->
+    {{-- LOWER DASHBOARD --}}
     <div class="dashboard-grid">
 
-        <!-- DONATION STATISTICS -->
-        <div class="dashboard-card statistics-card">
+        {{-- DONATION CHART --}}
+        <div class="dashboard-card chart-card">
 
             <div class="card-header">
                 <div>
-                    <h3>Donation Statistics</h3>
+                    <h2>Donation Statistics</h2>
                     <p>Monthly blood donation overview</p>
                 </div>
 
-                <select class="period-select">
-                    <option>Last 6 Months</option>
-                    <option>Last 12 Months</option>
-                    <option>This Year</option>
-                </select>
+                <div class="chart-period">Last 6 Months</div>
             </div>
 
-
-            <!-- CHART -->
             <div class="chart-container">
-
-                <div class="chart-y-axis">
-                    <span>200</span>
-                    <span>150</span>
-                    <span>100</span>
-                    <span>50</span>
-                    <span>0</span>
-                </div>
-
-                <div class="chart-area">
-
-                    <div class="chart-grid-line line-1"></div>
-                    <div class="chart-grid-line line-2"></div>
-                    <div class="chart-grid-line line-3"></div>
-                    <div class="chart-grid-line line-4"></div>
-                    <div class="chart-grid-line line-5"></div>
-
-                    <svg
-                        class="donation-chart"
-                        viewBox="0 0 700 260"
-                        preserveAspectRatio="none"
-                    >
-
-                        <defs>
-
-                            <linearGradient
-                                id="chartGradient"
-                                x1="0"
-                                y1="0"
-                                x2="0"
-                                y2="1"
-                            >
-
-                                <stop
-                                    offset="0%"
-                                    stop-color="#c9002b"
-                                    stop-opacity="0.25"
-                                />
-
-                                <stop
-                                    offset="100%"
-                                    stop-color="#c9002b"
-                                    stop-opacity="0"
-                                />
-
-                            </linearGradient>
-
-                        </defs>
-
-
-                        <!-- AREA -->
-                        <path
-                            d="
-                            M0,190
-                            C50,175 70,150 115,165
-                            C160,180 175,110 220,125
-                            C270,140 285,95 330,110
-                            C375,125 395,70 440,90
-                            C490,110 510,50 555,75
-                            C600,100 630,45 700,60
-                            L700,260
-                            L0,260
-                            Z
-                            "
-                            fill="url(#chartGradient)"
-                        />
-
-
-                        <!-- LINE -->
-                        <path
-                            d="
-                            M0,190
-                            C50,175 70,150 115,165
-                            C160,180 175,110 220,125
-                            C270,140 285,95 330,110
-                            C375,125 395,70 440,90
-                            C490,110 510,50 555,75
-                            C600,100 630,45 700,60
-                            "
-                            fill="none"
-                            stroke="#c9002b"
-                            stroke-width="4"
-                            stroke-linecap="round"
-                        />
-
-
-                        <!-- POINTS -->
-                        <circle cx="115" cy="165" r="5"/>
-                        <circle cx="220" cy="125" r="5"/>
-                        <circle cx="330" cy="110" r="5"/>
-                        <circle cx="440" cy="90" r="5"/>
-                        <circle cx="555" cy="75" r="5"/>
-                        <circle cx="700" cy="60" r="5"/>
-
-                    </svg>
-
-
-                    <!-- MONTHS -->
-                    <div class="chart-labels">
-                        <span>Apr</span>
-                        <span>May</span>
-                        <span>Jun</span>
-                        <span>Jul</span>
-                        <span>Aug</span>
-                        <span>Sep</span>
-                    </div>
-
-                </div>
-
+                <canvas id="donationChart"></canvas>
             </div>
 
         </div>
 
-
-        <!-- RECENT ACTIVITIES -->
-        <div class="dashboard-card activity-card">
+        {{-- RECENT ACTIVITIES --}}
+        <div class="dashboard-card activities-card">
 
             <div class="card-header">
-
                 <div>
-                    <h3>Recent Activities</h3>
+                    <h2>Recent Activities</h2>
                     <p>Latest system activities</p>
                 </div>
 
-                <button class="more-btn">
-                    <i class="bi bi-three-dots"></i>
-                </button>
+                <i class="bi bi-three-dots more-icon"></i>
+            </div>
+
+            <div class="activities-list">
+
+                @forelse($safeRecentActivities as $activity)
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon {{ $activity['class'] ?? 'activity-user' }}">
+                            <i class="bi {{ $activity['icon'] ?? 'bi-activity' }}"></i>
+                        </div>
+
+                        <div class="activity-content">
+
+                            <div class="activity-title">
+                                {{ $activity['title'] ?? 'System Activity' }}
+                            </div>
+
+                            <div class="activity-description">
+                                {{ $activity['description'] ?? 'A system activity occurred.' }}
+                            </div>
+
+                            <div class="activity-time">
+                                <i class="bi bi-clock"></i>
+
+                                @if (!empty($activity['parsed_date']))
+                                    {{ $activity['parsed_date']->diffForHumans() }}
+                                @else
+                                    <span>Date unavailable</span>
+                                @endif
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                @empty
+
+                    <div class="empty-activities">
+                        <div class="empty-icon">
+                            <i class="bi bi-inbox"></i>
+                        </div>
+
+                        <h3>No recent activities</h3>
+
+                        <p>
+                            New system activities will appear here.
+                        </p>
+                    </div>
+
+                @endforelse
 
             </div>
 
-
-            <div class="activity-list">
-
-                <!-- ACTIVITY 1 -->
-                <div class="activity-item">
-
-                    <div class="activity-icon donor">
-                        <i class="bi bi-person-plus-fill"></i>
-                    </div>
-
-                    <div class="activity-content">
-
-                        <h4>New donor registered</h4>
-
-                        <p>
-                            Pedro Garcia registered as a new donor.
-                        </p>
-
-                        <span>
-                            <i class="bi bi-clock"></i>
-                            10 minutes ago
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ACTIVITY 2 -->
-                <div class="activity-item">
-
-                    <div class="activity-icon request">
-                        <i class="bi bi-droplet-fill"></i>
-                    </div>
-
-                    <div class="activity-content">
-
-                        <h4>Blood request submitted</h4>
-
-                        <p>
-                            A new O+ blood request was submitted.
-                        </p>
-
-                        <span>
-                            <i class="bi bi-clock"></i>
-                            35 minutes ago
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ACTIVITY 3 -->
-                <div class="activity-item">
-
-                    <div class="activity-icon appointment">
-                        <i class="bi bi-calendar-check-fill"></i>
-                    </div>
-
-                    <div class="activity-content">
-
-                        <h4>Donation completed</h4>
-
-                        <p>
-                            Ana Reyes completed a blood donation.
-                        </p>
-
-                        <span>
-                            <i class="bi bi-clock"></i>
-                            1 hour ago
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ACTIVITY 4 -->
-                <div class="activity-item">
-
-                    <div class="activity-icon user">
-                        <i class="bi bi-person-check-fill"></i>
-                    </div>
-
-                    <div class="activity-content">
-
-                        <h4>User account verified</h4>
-
-                        <p>
-                            A new user account was successfully verified.
-                        </p>
-
-                        <span>
-                            <i class="bi bi-clock"></i>
-                            2 hours ago
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <button class="view-all-btn">
-                View All Activities
-                <i class="bi bi-arrow-right"></i>
-            </button>
+            @if (\Illuminate\Support\Facades\Route::has('admin.notifications'))
+                <a href="{{ route('admin.notifications') }}" class="view-activities">
+                    View All Activities
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            @endif
 
         </div>
 
@@ -392,282 +229,307 @@
 
 </div>
 
+{{-- CHART.JS --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const canvas = document.getElementById('donationChart');
+
+    if (!canvas || typeof Chart === 'undefined') {
+        return;
+    }
+
+    const labels = @json($chartLabels ?? []);
+    const data = @json($chartData ?? []);
+
+    // Prevent creating duplicate charts on the same canvas.
+    const existingChart = Chart.getChart(canvas);
+
+    if (existingChart) {
+        existingChart.destroy();
+    }
+
+    new Chart(canvas, {
+        type: 'line',
+
+        data: {
+            labels: labels,
+
+            datasets: [{
+                label: 'Donations',
+                data: data,
+                borderColor: '#c8102e',
+                backgroundColor: 'rgba(200, 16, 46, 0.12)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: '#c8102e',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    display: false
+                },
+
+                tooltip: {
+                    backgroundColor: '#222',
+                    padding: 12,
+                    displayColors: false,
+
+                    callbacks: {
+                        label: function (context) {
+                            return ' Donations: ' + (context.parsed.y ?? 0);
+                        }
+                    }
+                }
+            },
+
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+
+                    ticks: {
+                        color: '#888'
+                    }
+                },
+
+                y: {
+                    beginAtZero: true,
+
+                    ticks: {
+                        precision: 0,
+                        color: '#888'
+                    },
+
+                    grid: {
+                        color: '#eeeeee',
+                        borderDash: [4, 4]
+                    }
+                }
+            }
+        }
+    });
+
+});
+</script>
 
 <style>
-
-/* ================================
+/* =========================================================
    DASHBOARD
-================================ */
+========================================================= */
 
-.dashboard-container {
+.dashboard-page {
     width: 100%;
+    min-width: 0;
 }
-
-
-/* HEADER */
 
 .dashboard-header {
     margin-bottom: 28px;
 }
 
-.page-title {
+.dashboard-title {
     margin: 0;
-    font-size: 30px;
-    font-weight: 800;
-    color: #202124;
-    letter-spacing: -0.5px;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #171717;
 }
 
-.page-subtitle {
-    margin: 7px 0 0;
+.dashboard-subtitle {
+    margin: 8px 0 0;
+    font-size: 16px;
     color: #777;
-    font-size: 14px;
 }
 
-
-/* ================================
+/* =========================================================
    STATISTICS
-================================ */
+========================================================= */
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    margin-bottom: 24px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    margin-bottom: 30px;
 }
 
 .stat-card {
-    background: #ffffff;
-    border: 1px solid #eeeeee;
-    border-radius: 18px;
-    padding: 22px;
-    transition: 0.25s;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+    min-width: 0;
+    min-height: 220px;
+    padding: 28px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, .04);
+    transition: transform .2s ease, box-shadow .2s ease;
 }
 
 .stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .07);
 }
 
 .stat-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
 }
 
 .stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 21px;
+    border-radius: 16px;
+    font-size: 25px;
 }
 
-.stat-icon.users {
+.users-icon,
+.donors-icon,
+.requests-icon,
+.donations-icon {
     background: #fff0f3;
-    color: #c9002b;
+    color: #c8102e;
 }
 
-.stat-icon.donors {
-    background: #fff4f4;
-    color: #d62839;
-}
-
-.stat-icon.requests {
-    background: #fff0f0;
-    color: #b00020;
-}
-
-.stat-icon.donations {
-    background: #fff6f7;
-    color: #e63950;
-}
-
-.stat-trend {
+.stat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 10px;
+    border-radius: 20px;
+    background: #eafaf1;
+    color: #16834b;
     font-size: 12px;
     font-weight: 700;
-    color: #1b9a59;
-    background: #edfff5;
-    padding: 5px 8px;
-    border-radius: 20px;
 }
 
 .stat-number {
-    margin-top: 18px;
-    font-size: 31px;
-    font-weight: 800;
-    color: #202124;
+    margin-top: 28px;
+    font-size: 36px;
+    line-height: 1.1;
+    font-weight: 750;
+    color: #151515;
+    overflow-wrap: anywhere;
 }
 
-.stat-title {
-    margin-top: 4px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #555;
-}
-
-.stat-footer {
+.stat-label {
     margin-top: 14px;
-    font-size: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.stat-description {
+    margin-top: 9px;
+    font-size: 13px;
     color: #999;
 }
 
-
-/* ================================
-   MAIN GRID
-================================ */
+/* =========================================================
+   LOWER GRID
+========================================================= */
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1.65fr 1fr;
-    gap: 24px;
+    grid-template-columns: minmax(0, 1.65fr) minmax(0, .9fr);
+    gap: 28px;
+    align-items: stretch;
 }
 
-
-/* ================================
-   CARDS
-================================ */
-
 .dashboard-card {
-    background: white;
-    border: 1px solid #eeeeee;
-    border-radius: 18px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+    min-width: 0;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, .04);
     overflow: hidden;
 }
 
+.chart-card,
+.activities-card {
+    min-height: 520px;
+}
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
 .card-header {
-    padding: 22px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #f0f0f0;
+    gap: 20px;
+    padding: 30px 30px 22px;
+    border-bottom: 1px solid #eee;
 }
 
-.card-header h3 {
+.card-header h2 {
     margin: 0;
-    font-size: 17px;
-    font-weight: 750;
-    color: #222;
+    font-size: 21px;
+    font-weight: 700;
+    color: #181818;
 }
 
 .card-header p {
-    margin: 5px 0 0;
+    margin: 7px 0 0;
+    font-size: 13px;
     color: #999;
-    font-size: 12px;
 }
 
-
-/* ================================
-   SELECT
-================================ */
-
-.period-select {
-    border: 1px solid #e5e5e5;
-    background: white;
+.chart-period {
+    padding: 10px 15px;
+    border: 1px solid #dedede;
     border-radius: 9px;
-    padding: 8px 12px;
-    font-size: 12px;
+    background: #fff;
     color: #555;
-    outline: none;
+    font-size: 13px;
+    white-space: nowrap;
 }
 
+.more-icon {
+    font-size: 20px;
+    color: #999;
+}
 
-/* ================================
+/* =========================================================
    CHART
-================================ */
+========================================================= */
 
 .chart-container {
-    display: flex;
-    padding: 25px 25px 20px;
-    height: 330px;
-}
-
-.chart-y-axis {
-    width: 35px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding-bottom: 30px;
-    color: #aaa;
-    font-size: 11px;
-}
-
-.chart-area {
-    flex: 1;
     position: relative;
-    padding-bottom: 30px;
+    height: 390px;
+    padding: 25px 30px 30px;
 }
 
-.chart-grid-line {
-    position: absolute;
-    left: 0;
-    right: 0;
-    border-top: 1px dashed #eeeeee;
-}
+/* =========================================================
+   RECENT ACTIVITIES
+========================================================= */
 
-.line-1 {
-    top: 0;
-}
-
-.line-2 {
-    top: 25%;
-}
-
-.line-3 {
-    top: 50%;
-}
-
-.line-4 {
-    top: 75%;
-}
-
-.line-5 {
-    top: 100%;
-}
-
-.donation-chart {
-    width: 100%;
-    height: calc(100% - 30px);
-    position: relative;
-    z-index: 2;
-    overflow: visible;
-}
-
-.donation-chart circle {
-    fill: #c9002b;
-    stroke: white;
-    stroke-width: 3;
-}
-
-.chart-labels {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-    color: #999;
-    font-size: 11px;
-}
-
-
-/* ================================
-   ACTIVITIES
-================================ */
-
-.activity-list {
-    padding: 8px 22px;
+.activities-list {
+    padding: 10px 28px 0;
 }
 
 .activity-item {
     display: flex;
-    gap: 14px;
-    padding: 17px 0;
-    border-bottom: 1px solid #f1f1f1;
+    gap: 15px;
+    padding: 21px 0;
+    border-bottom: 1px solid #eee;
 }
 
 .activity-item:last-child {
@@ -675,94 +537,145 @@
 }
 
 .activity-icon {
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-    border-radius: 12px;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    border-radius: 14px;
+    font-size: 19px;
 }
 
-.activity-icon.donor {
+.activity-user,
+.activity-request {
     background: #fff0f3;
-    color: #c9002b;
+    color: #c8102e;
 }
 
-.activity-icon.request {
-    background: #fff4f4;
-    color: #d62839;
+.activity-appointment {
+    background: #fff5e8;
+    color: #e68a00;
 }
 
-.activity-icon.appointment {
-    background: #fff7ed;
-    color: #e67e22;
-}
-
-.activity-icon.user {
-    background: #f1f4ff;
-    color: #536dfe;
+.activity-donation {
+    background: #eef2ff;
+    color: #5267d8;
 }
 
 .activity-content {
     min-width: 0;
+    overflow-wrap: anywhere;
 }
 
-.activity-content h4 {
-    margin: 0;
+.activity-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #222;
+}
+
+.activity-description {
+    margin-top: 5px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #888;
+}
+
+.activity-time {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 7px;
+    font-size: 11px;
+    color: #999;
+}
+
+.view-activities {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 15px 28px 28px;
+    padding: 14px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    color: #c8102e;
+    text-decoration: none;
     font-size: 13px;
     font-weight: 700;
-    color: #333;
+    transition: background .2s ease, color .2s ease;
 }
 
-.activity-content p {
-    margin: 4px 0;
-    font-size: 12px;
-    color: #888;
-    line-height: 1.5;
+.view-activities:hover {
+    background: #fff5f6;
+    color: #a70d26;
 }
 
-.activity-content span {
-    font-size: 10px;
-    color: #aaa;
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-activities {
+    padding: 55px 20px;
+    text-align: center;
 }
 
-.more-btn {
-    border: none;
-    background: transparent;
+.empty-icon {
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #f5f5f5;
     color: #999;
-    font-size: 18px;
-    cursor: pointer;
+    font-size: 22px;
 }
 
-.view-all-btn {
-    width: calc(100% - 44px);
-    margin: 5px 22px 20px;
-    height: 40px;
-    border: 1px solid #eee;
-    background: white;
-    color: #c9002b;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s;
+.empty-activities h3 {
+    margin: 0;
+    font-size: 15px;
+    color: #444;
 }
 
-.view-all-btn:hover {
-    background: #fff4f6;
+.empty-activities p {
+    margin: 7px 0 0;
+    font-size: 13px;
+    color: #999;
 }
 
-
-/* ================================
+/* =========================================================
    RESPONSIVE
-================================ */
+========================================================= */
 
-@media (max-width: 1200px) {
-
+@media (max-width: 1400px) {
     .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .stat-card {
+        padding: 22px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        gap: 20px;
+    }
+
+    .card-header {
+        padding: 24px 22px 20px;
+    }
+
+    .activities-list {
+        padding-right: 22px;
+        padding-left: 22px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .dashboard-grid {
@@ -770,32 +683,65 @@
     }
 }
 
-
 @media (max-width: 700px) {
-
     .stats-grid {
         grid-template-columns: 1fr;
     }
 
-    .page-title {
-        font-size: 24px;
+    .dashboard-title {
+        font-size: 26px;
     }
 
-    .chart-container {
-        height: 280px;
-        padding: 20px 15px;
+    .dashboard-subtitle {
+        font-size: 14px;
+    }
+
+    .stat-card {
+        min-height: auto;
+    }
+
+    .chart-card,
+    .activities-card {
+        min-height: auto;
     }
 
     .card-header {
-        padding: 18px;
+        padding: 22px 20px;
+        gap: 12px;
     }
 
-    .period-select {
-        display: none;
+    .card-header h2 {
+        font-size: 18px;
     }
 
+    .chart-period {
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+
+    .chart-container {
+        height: 320px;
+        padding: 20px;
+    }
+
+    .activities-list {
+        padding: 5px 20px 0;
+    }
+
+    .activity-item {
+        gap: 12px;
+    }
+
+    .activity-icon {
+        flex-basis: 42px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .view-activities {
+        margin: 15px 20px 20px;
+    }
 }
-
 </style>
 
 @endsection

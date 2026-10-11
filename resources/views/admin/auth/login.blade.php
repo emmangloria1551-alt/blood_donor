@@ -893,11 +893,10 @@
 
 
                         <a
-                            href="#"
+                            href="{{ route('admin.password.request') }}"
                             class="forgot-link"
-                            onclick="alert('Please contact the system administrator to reset your password.'); return false;"
                         >
-                            Forgot password?
+                            Forgot your password?
                         </a>
 
                     </div>
@@ -912,7 +911,7 @@
                         <i class="bi bi-box-arrow-in-right"></i>
 
                         <span>
-                            Sign In to Admin Panel
+                            Login to Admin Panel
                         </span>
 
                     </button>

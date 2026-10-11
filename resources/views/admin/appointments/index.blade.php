@@ -6,51 +6,128 @@
 
 <div class="appointment-page">
 
-    {{-- PAGE HEADER --}}
-    <div class="appointment-header">
+    {{-- =========================================================
+         PAGE HEADER
+    ========================================================== --}}
+    <div class="page-header">
 
-        <div>
-            <h1 class="page-title">
+        <div class="page-title-area">
+            <div class="page-icon">
                 <i class="bi bi-calendar-check-fill"></i>
-                Appointment Management
-            </h1>
+            </div>
 
-            <p class="page-subtitle">
-                Manage donor appointments and schedules.
-            </p>
+            <div>
+                <h1>Appointment Management</h1>
+                <p>Manage donor appointments and schedules.</p>
+            </div>
         </div>
 
     </div>
 
 
-    {{-- SUCCESS MESSAGE --}}
+    {{-- =========================================================
+         SUCCESS MESSAGE
+    ========================================================== --}}
     @if(session('success'))
-        <div class="alert-box success-alert">
+        <div class="alert-message success-message">
             <i class="bi bi-check-circle-fill"></i>
 
             <span>
                 {{ session('success') }}
             </span>
+
+            <button type="button" onclick="this.parentElement.remove()">
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
     @endif
 
 
-    {{-- ERROR MESSAGE --}}
+    {{-- =========================================================
+         ERROR MESSAGE
+    ========================================================== --}}
     @if(session('error'))
-        <div class="alert-box error-alert">
+        <div class="alert-message error-message">
             <i class="bi bi-exclamation-circle-fill"></i>
 
             <span>
                 {{ session('error') }}
             </span>
+
+            <button type="button" onclick="this.parentElement.remove()">
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
     @endif
 
 
-    {{-- STATISTICS --}}
+    {{-- =========================================================
+         VALIDATION ERRORS
+    ========================================================== --}}
+    @if($errors->any())
+        <div class="alert-message error-message">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <div>
+                @foreach($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+
+            <button type="button" onclick="this.parentElement.remove()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+    @endif
+
+
+    {{-- =========================================================
+         APPOINTMENT ANNOUNCEMENT
+    ========================================================== --}}
+    <div class="appointment-announcement">
+
+        <div class="announcement-icon">
+            <i class="bi bi-megaphone-fill"></i>
+        </div>
+
+        <div class="announcement-content">
+
+            <div class="announcement-top">
+
+                <span class="announcement-label">
+                    IMPORTANT ANNOUNCEMENT
+                </span>
+
+                <span class="announcement-date">
+                    {{ now()->format('F d, Y') }}
+                </span>
+
+            </div>
+
+            <h3>
+                Blood Donation Appointment Reminder
+            </h3>
+
+            <p>
+                Donors are reminded to arrive at least
+                <strong>15 minutes before their scheduled appointment</strong>.
+                Please bring a valid ID and make sure you are in good health
+                before donating blood.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    {{-- =========================================================
+         STATISTICS
+    ========================================================== --}}
     <div class="stats-grid">
 
-        {{-- TOTAL --}}
+        {{-- Total --}}
         <div class="stat-card">
 
             <div class="stat-icon total-icon">
@@ -59,20 +136,20 @@
 
             <div class="stat-content">
 
-                <div class="stat-label">
+                <span class="stat-label">
                     Total Appointments
-                </div>
+                </span>
 
-                <div class="stat-number">
-                    {{ $totalAppointments }}
-                </div>
+                <strong class="stat-number">
+                    {{ $totalAppointments ?? 0 }}
+                </strong>
 
             </div>
 
         </div>
 
 
-        {{-- PENDING --}}
+        {{-- Pending --}}
         <div class="stat-card">
 
             <div class="stat-icon pending-icon">
@@ -81,20 +158,20 @@
 
             <div class="stat-content">
 
-                <div class="stat-label">
+                <span class="stat-label">
                     Pending
-                </div>
+                </span>
 
-                <div class="stat-number">
-                    {{ $pendingAppointments }}
-                </div>
+                <strong class="stat-number">
+                    {{ $pendingAppointments ?? 0 }}
+                </strong>
 
             </div>
 
         </div>
 
 
-        {{-- CONFIRMED --}}
+        {{-- Confirmed --}}
         <div class="stat-card">
 
             <div class="stat-icon confirmed-icon">
@@ -103,20 +180,20 @@
 
             <div class="stat-content">
 
-                <div class="stat-label">
+                <span class="stat-label">
                     Confirmed
-                </div>
+                </span>
 
-                <div class="stat-number">
-                    {{ $confirmedAppointments }}
-                </div>
+                <strong class="stat-number">
+                    {{ $confirmedAppointments ?? 0 }}
+                </strong>
 
             </div>
 
         </div>
 
 
-        {{-- COMPLETED --}}
+        {{-- Completed --}}
         <div class="stat-card">
 
             <div class="stat-icon completed-icon">
@@ -125,13 +202,13 @@
 
             <div class="stat-content">
 
-                <div class="stat-label">
+                <span class="stat-label">
                     Completed
-                </div>
+                </span>
 
-                <div class="stat-number">
-                    {{ $completedAppointments }}
-                </div>
+                <strong class="stat-number">
+                    {{ $completedAppointments ?? 0 }}
+                </strong>
 
             </div>
 
@@ -140,23 +217,25 @@
     </div>
 
 
-    {{-- FILTER AREA --}}
+    {{-- =========================================================
+         FILTER SECTION
+    ========================================================== --}}
     <div class="filter-card">
 
         <form
-            method="GET"
             action="{{ route('admin.appointments') }}"
+            method="GET"
             class="filter-form"
         >
 
-            {{-- SEARCH --}}
+            {{-- Search --}}
             <div class="filter-group search-group">
 
                 <label for="search">
                     Search
                 </label>
 
-                <div class="search-wrapper">
+                <div class="input-wrapper">
 
                     <i class="bi bi-search"></i>
 
@@ -173,73 +252,81 @@
             </div>
 
 
-            {{-- DATE --}}
-            <div class="filter-group">
+            {{-- Date --}}
+            <div class="filter-group date-group">
 
                 <label for="date">
                     Date
                 </label>
 
-                <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    value="{{ request('date') }}"
-                >
+                <div class="input-wrapper">
+
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        value="{{ request('date') }}"
+                    >
+
+                </div>
 
             </div>
 
 
-            {{-- STATUS --}}
-            <div class="filter-group">
+            {{-- Status --}}
+            <div class="filter-group status-group">
 
                 <label for="status">
                     Status
                 </label>
 
-                <select
-                    id="status"
-                    name="status"
-                >
+                <div class="input-wrapper">
 
-                    <option value="">
-                        All Status
-                    </option>
-
-                    <option
-                        value="pending"
-                        {{ request('status') === 'pending' ? 'selected' : '' }}
+                    <select
+                        id="status"
+                        name="status"
                     >
-                        Pending
-                    </option>
 
-                    <option
-                        value="confirmed"
-                        {{ request('status') === 'confirmed' ? 'selected' : '' }}
-                    >
-                        Confirmed
-                    </option>
+                        <option value="">
+                            All Status
+                        </option>
 
-                    <option
-                        value="completed"
-                        {{ request('status') === 'completed' ? 'selected' : '' }}
-                    >
-                        Completed
-                    </option>
+                        <option
+                            value="pending"
+                            {{ request('status') === 'pending' ? 'selected' : '' }}
+                        >
+                            Pending
+                        </option>
 
-                    <option
-                        value="cancelled"
-                        {{ request('status') === 'cancelled' ? 'selected' : '' }}
-                    >
-                        Cancelled
-                    </option>
+                        <option
+                            value="confirmed"
+                            {{ request('status') === 'confirmed' ? 'selected' : '' }}
+                        >
+                            Confirmed
+                        </option>
 
-                </select>
+                        <option
+                            value="completed"
+                            {{ request('status') === 'completed' ? 'selected' : '' }}
+                        >
+                            Completed
+                        </option>
+
+                        <option
+                            value="cancelled"
+                            {{ request('status') === 'cancelled' ? 'selected' : '' }}
+                        >
+                            Cancelled
+                        </option>
+
+                    </select>
+
+                </div>
 
             </div>
 
 
-            {{-- BUTTONS --}}
+            {{-- Buttons --}}
             <div class="filter-buttons">
 
                 <button
@@ -264,10 +351,11 @@
     </div>
 
 
-    {{-- APPOINTMENTS TABLE --}}
-    <div class="table-card">
+    {{-- =========================================================
+         APPOINTMENTS TABLE
+    ========================================================== --}}
+    <div class="appointments-card">
 
-        {{-- TABLE HEADER --}}
         <div class="table-header">
 
             <div>
@@ -277,8 +365,8 @@
                 </h2>
 
                 <p>
-                    {{ $appointments->total() }}
-                    appointment{{ $appointments->total() == 1 ? '' : 's' }}
+                    {{ $appointments->total() ?? 0 }}
+                    appointment{{ (($appointments->total() ?? 0) == 1) ? '' : 's' }}
                     found
                 </p>
 
@@ -287,294 +375,297 @@
         </div>
 
 
-        {{-- TABLE --}}
-        <div class="table-wrapper">
+        @if(isset($appointments) && $appointments->count() > 0)
 
-            <table class="appointments-table">
+            <div class="table-container">
 
-                <thead>
+                <table class="appointments-table">
 
-                    <tr>
-
-                        <th>
-                            User
-                        </th>
-
-                        <th>
-                            Donor
-                        </th>
-
-                        <th>
-                            Center
-                        </th>
-
-                        <th>
-                            Date
-                        </th>
-
-                        <th>
-                            Time
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
-                        <th>
-                            Actions
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                    @forelse($appointments as $appointment)
+                    <thead>
 
                         <tr>
 
-                            {{-- USER --}}
-                            <td>
+                            <th>
+                                User
+                            </th>
 
-                                <div class="user-info">
+                            <th>
+                                Donor
+                            </th>
 
-                                    <div class="user-avatar">
+                            <th>
+                                Center
+                            </th>
 
-                                        {{ strtoupper(
-                                            substr(
-                                                $appointment->user->name ?? 'U',
-                                                0,
-                                                1
-                                            )
-                                        ) }}
+                            <th>
+                                Date
+                            </th>
 
-                                    </div>
+                            <th>
+                                Time
+                            </th>
 
-                                    <div class="user-details">
+                            <th>
+                                Status
+                            </th>
 
-                                        <div class="user-name">
-                                            {{ $appointment->user->name ?? 'Unknown User' }}
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @foreach($appointments as $appointment)
+
+                            <tr>
+
+                                {{-- USER --}}
+                                <td>
+
+                                    <div class="person-cell">
+
+                                        <div class="person-avatar">
+                                            {{ strtoupper(substr($appointment->user->name ?? 'U', 0, 1)) }}
                                         </div>
 
-                                        <div class="user-email">
-                                            {{ $appointment->user->email ?? 'No email' }}
+                                        <div class="person-info">
+
+                                            <strong>
+                                                {{ $appointment->user->name ?? 'Unknown User' }}
+                                            </strong>
+
+                                            @if($appointment->user)
+                                                <small>
+                                                    {{ $appointment->user->email }}
+                                                </small>
+                                            @endif
+
                                         </div>
 
                                     </div>
 
-                                </div>
-
-                            </td>
+                                </td>
 
 
-                            {{-- DONOR --}}
-                            <td>
+                                {{-- DONOR --}}
+                                <td>
 
-                                @if($appointment->donor)
+                                    @if($appointment->donor)
 
-                                    <div class="donor-info">
+                                        <div class="donor-cell">
 
-                                        <span class="blood-badge">
-                                            {{ $appointment->donor->blood_type }}
+                                            <strong>
+                                                {{ $appointment->donor->user->name ?? 'Donor' }}
+                                            </strong>
+
+                                            @if($appointment->donor->blood_type)
+                                                <span class="blood-badge">
+                                                    {{ $appointment->donor->blood_type }}
+                                                </span>
+                                            @endif
+
+                                        </div>
+
+                                    @else
+
+                                        <span class="empty-value">
+                                            No donor
                                         </span>
 
-                                        <span class="donor-phone">
-                                            {{ $appointment->donor->phone ?? 'No phone' }}
+                                    @endif
+
+                                </td>
+
+
+                                {{-- CENTER --}}
+                                <td>
+
+                                    <div class="center-cell">
+
+                                        <i class="bi bi-geo-alt-fill"></i>
+
+                                        <span>
+                                            {{ $appointment->center }}
                                         </span>
 
                                     </div>
 
-                                @else
+                                </td>
 
-                                    <span class="not-available">
-                                        No donor
+
+                                {{-- DATE --}}
+                                <td>
+
+                                    @if($appointment->appointment_date)
+
+                                        <div class="date-cell">
+
+                                            <strong>
+                                                {{ \Carbon\Carbon::parse($appointment->appointment_date)->format('M d, Y') }}
+                                            </strong>
+
+                                        </div>
+
+                                    @else
+
+                                        <span class="empty-value">
+                                            —
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- TIME --}}
+                                <td>
+
+                                    @if($appointment->appointment_time)
+
+                                        <div class="time-cell">
+
+                                            <i class="bi bi-clock"></i>
+
+                                            {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}
+
+                                        </div>
+
+                                    @else
+
+                                        <span class="empty-value">
+                                            —
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- STATUS --}}
+                                <td>
+
+                                    @php
+                                        $status = strtolower($appointment->status ?? 'pending');
+                                    @endphp
+
+                                    <span class="status-badge status-{{ $status }}">
+
+                                        @if($status === 'pending')
+                                            <i class="bi bi-clock-fill"></i>
+                                        @elseif($status === 'confirmed')
+                                            <i class="bi bi-check-circle-fill"></i>
+                                        @elseif($status === 'completed')
+                                            <i class="bi bi-check2-all"></i>
+                                        @elseif($status === 'cancelled')
+                                            <i class="bi bi-x-circle-fill"></i>
+                                        @else
+                                            <i class="bi bi-circle-fill"></i>
+                                        @endif
+
+                                        {{ ucfirst($status) }}
+
                                     </span>
 
-                                @endif
-
-                            </td>
+                                </td>
 
 
-                            {{-- CENTER --}}
-                            <td>
+                                {{-- ACTIONS --}}
+                                <td>
 
-                                <div class="center-info">
+                                    <div class="action-buttons">
 
-                                    <i class="bi bi-geo-alt-fill"></i>
-
-                                    <span>
-                                        {{ $appointment->center }}
-                                    </span>
-
-                                </div>
-
-                            </td>
-
-
-                            {{-- DATE --}}
-                            <td>
-
-                                <div class="date-info">
-
-                                    <strong>
-                                        {{ $appointment->appointment_date->format('M d, Y') }}
-                                    </strong>
-
-                                    <span>
-                                        {{ $appointment->appointment_date->format('l') }}
-                                    </span>
-
-                                </div>
-
-                            </td>
+                                        {{-- View --}}
+                                        <a
+                                            href="{{ route('admin.appointments.show', $appointment) }}"
+                                            class="action-button view-button"
+                                            title="View Appointment"
+                                        >
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
 
 
-                            {{-- TIME --}}
-                            <td>
-
-                                <div class="time-info">
-
-                                    <i class="bi bi-clock"></i>
-
-                                    <span>
-                                        {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}
-                                    </span>
-
-                                </div>
-
-                            </td>
-
-
-                            {{-- STATUS --}}
-                            <td>
-
-                                @if($appointment->status === 'pending')
-
-                                    <span class="status-badge status-pending">
-                                        <i class="bi bi-clock-fill"></i>
-                                        Pending
-                                    </span>
-
-                                @elseif($appointment->status === 'confirmed')
-
-                                    <span class="status-badge status-confirmed">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                        Confirmed
-                                    </span>
-
-                                @elseif($appointment->status === 'completed')
-
-                                    <span class="status-badge status-completed">
-                                        <i class="bi bi-check2-all"></i>
-                                        Completed
-                                    </span>
-
-                                @elseif($appointment->status === 'cancelled')
-
-                                    <span class="status-badge status-cancelled">
-                                        <i class="bi bi-x-circle-fill"></i>
-                                        Cancelled
-                                    </span>
-
-                                @else
-
-                                    <span class="status-badge status-default">
-                                        {{ ucfirst($appointment->status) }}
-                                    </span>
-
-                                @endif
-
-                            </td>
-
-
-                            {{-- ACTIONS --}}
-                            <td>
-
-                                <div class="appointment-actions">
-
-                                    {{-- VIEW --}}
-                                    <a
-                                        href="{{ route('admin.appointments.show', $appointment) }}"
-                                        class="action-btn view-btn"
-                                        title="View Appointment"
-                                    >
-                                        <i class="bi bi-eye-fill"></i>
-                                    </a>
-
-
-                                    {{-- DELETE --}}
-                                    <form
-                                        method="POST"
-                                        action="{{ route('admin.appointments.destroy', $appointment) }}"
-                                        onsubmit="return confirm('Are you sure you want to delete this appointment?');"
-                                    >
-
-                                        @csrf
-
-                                        @method('DELETE')
-
+                                        {{-- Status --}}
                                         <button
-                                            type="submit"
-                                            class="action-btn delete-btn"
+                                            type="button"
+                                            class="action-button status-button"
+                                            title="Update Status"
+                                            onclick="openStatusModal(
+                                                {{ $appointment->id }},
+                                                '{{ $status }}'
+                                            )"
+                                        >
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </button>
+
+
+                                        {{-- Delete --}}
+                                        <button
+                                            type="button"
+                                            class="action-button delete-button"
                                             title="Delete Appointment"
+                                            onclick="openDeleteModal(
+                                                {{ $appointment->id }}
+                                            )"
                                         >
                                             <i class="bi bi-trash-fill"></i>
                                         </button>
 
-                                    </form>
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-                    @empty
-
-                        <tr>
-
-                            <td
-                                colspan="7"
-                                class="empty-cell"
-                            >
-
-                                <div class="empty-state">
-
-                                    <div class="empty-icon">
-                                        <i class="bi bi-calendar-x"></i>
                                     </div>
 
-                                    <h3>
-                                        No appointments found
-                                    </h3>
+                                </td>
 
-                                    <p>
-                                        There are no appointments matching your search or filters.
-                                    </p>
+                            </tr>
 
-                                </div>
+                        @endforeach
 
-                            </td>
+                    </tbody>
 
-                        </tr>
+                </table>
 
-                    @endforelse
-
-                </tbody>
-
-            </table>
-
-        </div>
+            </div>
 
 
-        {{-- PAGINATION --}}
-        @if($appointments->hasPages())
+            {{-- =====================================================
+                 PAGINATION
+            ====================================================== --}}
+            <div class="pagination-container">
 
-            <div class="pagination-area">
+                {{ $appointments->withQueryString()->links() }}
 
-                {{ $appointments->links() }}
+            </div>
+
+        @else
+
+            {{-- EMPTY STATE --}}
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    <i class="bi bi-calendar-x"></i>
+                </div>
+
+                <h3>
+                    No Appointments Found
+                </h3>
+
+                <p>
+                    There are currently no appointments matching your search.
+                </p>
+
+                @if(request()->hasAny(['search', 'date', 'status']))
+
+                    <a
+                        href="{{ route('admin.appointments') }}"
+                        class="empty-reset-button"
+                    >
+                        Clear Filters
+                    </a>
+
+                @endif
 
             </div>
 
@@ -585,46 +676,265 @@
 </div>
 
 
+{{-- =============================================================
+     STATUS MODAL
+============================================================= --}}
+<div
+    id="statusModal"
+    class="modal-overlay"
+>
+
+    <div class="custom-modal">
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+
+                <div class="modal-icon edit-modal-icon">
+                    <i class="bi bi-pencil-fill"></i>
+                </div>
+
+                <div>
+                    <h3>
+                        Update Appointment
+                    </h3>
+
+                    <p>
+                        Change the appointment status.
+                    </p>
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeStatusModal()"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+
+
+        <form
+            id="statusForm"
+            method="POST"
+        >
+
+            @csrf
+            @method('PATCH')
+
+            <div class="modal-body">
+
+                <label for="modalStatus">
+                    Appointment Status
+                </label>
+
+                <select
+                    id="modalStatus"
+                    name="status"
+                    required
+                >
+
+                    <option value="pending">
+                        Pending
+                    </option>
+
+                    <option value="confirmed">
+                        Confirmed
+                    </option>
+
+                    <option value="completed">
+                        Completed
+                    </option>
+
+                    <option value="cancelled">
+                        Cancelled
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="modal-cancel"
+                    onclick="closeStatusModal()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="modal-save"
+                >
+                    <i class="bi bi-check-lg"></i>
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+{{-- =============================================================
+     DELETE MODAL
+============================================================= --}}
+<div
+    id="deleteModal"
+    class="modal-overlay"
+>
+
+    <div class="custom-modal delete-modal">
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+
+                <div class="modal-icon delete-modal-icon">
+                    <i class="bi bi-trash-fill"></i>
+                </div>
+
+                <div>
+
+                    <h3>
+                        Delete Appointment
+                    </h3>
+
+                    <p>
+                        This action cannot be undone.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeDeleteModal()"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <p class="delete-warning">
+
+                Are you sure you want to delete this appointment?
+
+                <br>
+
+                All appointment information will be permanently removed.
+
+            </p>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="modal-cancel"
+                onclick="closeDeleteModal()"
+            >
+                Cancel
+            </button>
+
+            <form
+                id="deleteForm"
+                method="POST"
+            >
+
+                @csrf
+                @method('DELETE')
+
+                <button
+                    type="submit"
+                    class="modal-delete"
+                >
+                    <i class="bi bi-trash-fill"></i>
+                    Delete Appointment
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <style>
 
 /* =========================================================
-   APPOINTMENT PAGE
+   MAIN PAGE
 ========================================================= */
 
 .appointment-page {
     width: 100%;
     max-width: 100%;
-    color: #172033;
+    padding: 32px 36px 50px;
+    box-sizing: border-box;
 }
 
 
 /* =========================================================
-   HEADER
+   PAGE HEADER
 ========================================================= */
 
-.appointment-header {
-    margin-bottom: 24px;
-}
-
-.appointment-page .page-title {
-    margin: 0;
-    font-size: 30px;
-    font-weight: 700;
-    color: #172033;
+.page-header {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
+    margin-bottom: 25px;
 }
 
-.appointment-page .page-title i {
-    color: #e32929;
-    font-size: 28px;
+.page-title-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
-.appointment-page .page-subtitle {
-    margin: 7px 0 0;
-    color: #718096;
-    font-size: 14px;
+.page-icon {
+    width: 48px;
+    height: 48px;
+    background: #ffe5e5;
+    color: #e9272f;
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+.page-title-area h1 {
+    margin: 0;
+    color: #14213d;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.page-title-area p {
+    margin: 6px 0 0;
+    color: #667085;
+    font-size: 16px;
 }
 
 
@@ -632,27 +942,142 @@
    ALERTS
 ========================================================= */
 
-.appointment-page .alert-box {
-    width: 100%;
-    padding: 13px 16px;
-    border-radius: 9px;
-    margin-bottom: 20px;
+.alert-message {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+
+    padding: 14px 18px;
+    margin-bottom: 20px;
+
+    border-radius: 10px;
     font-size: 14px;
 }
 
-.appointment-page .success-alert {
-    background: #ecfdf3;
-    color: #087443;
-    border: 1px solid #bbf7d0;
+.alert-message button {
+    margin-left: auto;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
 }
 
-.appointment-page .error-alert {
-    background: #fff1f2;
-    color: #be123c;
-    border: 1px solid #fecdd3;
+.success-message {
+    background: #ecfdf3;
+    color: #027a48;
+    border: 1px solid #abefc6;
+}
+
+.success-message button {
+    color: #027a48;
+}
+
+.error-message {
+    background: #fff1f3;
+    color: #c01048;
+    border: 1px solid #fecdd6;
+}
+
+.error-message button {
+    color: #c01048;
+}
+
+
+/* =========================================================
+   ANNOUNCEMENT
+========================================================= */
+
+.appointment-announcement {
+    width: 100%;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+
+    margin-bottom: 28px;
+    padding: 22px 24px;
+
+    box-sizing: border-box;
+
+    background: linear-gradient(
+        135deg,
+        #fff5f5,
+        #ffffff
+    );
+
+    border: 1px solid #f5caca;
+    border-left: 5px solid #e9272f;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.announcement-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ffe3e5;
+    color: #e9272f;
+
+    border-radius: 12px;
+
+    font-size: 23px;
+}
+
+.announcement-content {
+    flex: 1;
+}
+
+.announcement-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+    margin-bottom: 5px;
+}
+
+.announcement-label {
+    font-size: 12px;
+    font-weight: 700;
+
+    color: #e9272f;
+
+    letter-spacing: 0.8px;
+}
+
+.announcement-date {
+    font-size: 12px;
+    color: #777;
+}
+
+.announcement-content h3 {
+    margin: 3px 0 7px;
+
+    color: #14213d;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.announcement-content p {
+    margin: 0;
+
+    color: #667085;
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.announcement-content strong {
+    color: #14213d;
 }
 
 
@@ -660,293 +1085,400 @@
    STATISTICS
 ========================================================= */
 
-.appointment-page .stats-grid {
+.stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-    margin-bottom: 22px;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 22px;
+
+    margin-bottom: 28px;
 }
 
-.appointment-page .stat-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 11px;
-    padding: 22px;
-    min-height: 112px;
+.stat-card {
+    min-height: 120px;
+
     display: flex;
     align-items: center;
-    gap: 16px;
+
+    gap: 20px;
+
+    padding: 22px 28px;
+
+    background: #ffffff;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 15px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 2px 7px rgba(16, 24, 40, 0.03);
 }
 
-.appointment-page .stat-icon {
-    width: 50px;
-    height: 50px;
-    min-width: 50px;
-    border-radius: 10px;
+.stat-icon {
+    width: 64px;
+    height: 64px;
+
+    min-width: 64px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 21px;
+
+    border-radius: 13px;
+
+    font-size: 25px;
 }
 
-.appointment-page .total-icon {
-    color: #ef4444;
-    background: #fee2e2;
+.total-icon {
+    background: #ffe1e1;
+    color: #f04444;
 }
 
-.appointment-page .pending-icon {
-    color: #ea580c;
-    background: #fff7ed;
+.pending-icon {
+    background: #fff4e5;
+    color: #ef5b00;
 }
 
-.appointment-page .confirmed-icon {
-    color: #2563eb;
-    background: #eff6ff;
+.confirmed-icon {
+    background: #eaf2ff;
+    color: #2864dc;
 }
 
-.appointment-page .completed-icon {
-    color: #059669;
-    background: #ecfdf5;
+.completed-icon {
+    background: #e9fbf3;
+    color: #00a878;
 }
 
-.appointment-page .stat-label {
-    color: #718096;
-    font-size: 13px;
-    margin-bottom: 5px;
+.stat-content {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
 }
 
-.appointment-page .stat-number {
-    color: #172033;
-    font-size: 27px;
-    font-weight: 700;
+.stat-label {
+    color: #667085;
+    font-size: 14px;
+}
+
+.stat-number {
+    color: #111827;
+    font-size: 32px;
+    line-height: 1;
 }
 
 
 /* =========================================================
-   FILTER
+   FILTER CARD
 ========================================================= */
 
-.appointment-page .filter-card {
+.filter-card {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 11px;
-    padding: 22px;
-    margin-bottom: 22px;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 15px;
+
+    padding: 26px 28px;
+
+    margin-bottom: 28px;
+
+    box-shadow:
+        0 2px 7px rgba(16, 24, 40, 0.03);
 }
 
-.appointment-page .filter-form {
+.filter-form {
     display: grid;
-    grid-template-columns: minmax(260px, 1.5fr) 200px 200px auto;
-    gap: 14px;
+
+    grid-template-columns:
+        minmax(280px, 1fr)
+        250px
+        250px
+        auto;
+
+    gap: 18px;
+
     align-items: end;
 }
 
-.appointment-page .filter-group {
+.filter-group {
     min-width: 0;
 }
 
-.appointment-page .filter-group label {
+.filter-group label {
     display: block;
-    font-size: 13px;
+
+    margin-bottom: 8px;
+
+    color: #344054;
+
+    font-size: 14px;
     font-weight: 600;
-    color: #374151;
-    margin-bottom: 7px;
 }
 
-.appointment-page .search-wrapper {
+.input-wrapper {
     position: relative;
 }
 
-.appointment-page .search-wrapper i {
+.input-wrapper > i {
     position: absolute;
-    left: 13px;
+
+    left: 15px;
     top: 50%;
+
     transform: translateY(-50%);
-    color: #9ca3af;
-    font-size: 16px;
+
+    color: #98a2b3;
+
+    pointer-events: none;
 }
 
-.appointment-page .filter-group input,
-.appointment-page .filter-group select {
+.input-wrapper input,
+.input-wrapper select {
     width: 100%;
-    height: 46px;
-    border: 1px solid #d7dce2;
-    border-radius: 8px;
-    background: #ffffff;
-    color: #374151;
-    font-size: 14px;
-    outline: none;
+    height: 58px;
+
+    padding: 0 15px;
+
     box-sizing: border-box;
-    transition: 0.2s ease;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #344054;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.2s;
 }
 
-.appointment-page .search-wrapper input {
-    padding: 0 14px 0 40px;
+.input-wrapper input[type="text"] {
+    padding-left: 48px;
 }
 
-.appointment-page .filter-group input:not(.search-wrapper input) {
-    padding: 0 13px;
+.input-wrapper input:focus,
+.input-wrapper select:focus {
+    border-color: #e9272f;
+
+    box-shadow:
+        0 0 0 3px rgba(233, 39, 47, 0.08);
 }
 
-.appointment-page .filter-group select {
-    padding: 0 13px;
+.input-wrapper select {
+    cursor: pointer;
 }
 
-.appointment-page .filter-group input:focus,
-.appointment-page .filter-group select:focus {
-    border-color: #ef4444;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
-}
-
-.appointment-page .filter-buttons {
+.filter-buttons {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
-.appointment-page .search-button,
-.appointment-page .reset-button {
-    height: 46px;
-    border-radius: 8px;
-    padding: 0 17px;
+.search-button,
+.reset-button {
+    height: 58px;
+
+    border-radius: 10px;
+
+    padding: 0 22px;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    font-size: 14px;
+
+    gap: 8px;
+
+    font-size: 15px;
     font-weight: 600;
+
     cursor: pointer;
+
     text-decoration: none;
+
     white-space: nowrap;
+
+    box-sizing: border-box;
 }
 
-.appointment-page .search-button {
-    border: 1px solid #e32929;
-    background: #e32929;
+.search-button {
+    border: 1px solid #e9272f;
+
+    background: #e9272f;
+
     color: #ffffff;
 }
 
-.appointment-page .search-button:hover {
-    background: #c91f1f;
-    border-color: #c91f1f;
+.search-button:hover {
+    background: #c91e25;
+    border-color: #c91e25;
 }
 
-.appointment-page .reset-button {
-    border: 1px solid #d7dce2;
+.reset-button {
+    border: 1px solid #d0d5dd;
+
     background: #ffffff;
-    color: #374151;
+
+    color: #344054;
 }
 
-.appointment-page .reset-button:hover {
+.reset-button:hover {
     background: #f9fafb;
 }
 
 
 /* =========================================================
-   TABLE CARD
+   APPOINTMENTS CARD
 ========================================================= */
 
-.appointment-page .table-card {
+.appointments-card {
+    width: 100%;
+
     background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 11px;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 15px;
+
     overflow: hidden;
+
+    box-shadow:
+        0 2px 7px rgba(16, 24, 40, 0.03);
 }
 
-.appointment-page .table-header {
-    padding: 21px 22px;
-    border-bottom: 1px solid #e5e7eb;
+.table-header {
+    padding: 26px 28px;
+
+    border-bottom: 1px solid #eaecf0;
 }
 
-.appointment-page .table-header h2 {
+.table-header h2 {
     margin: 0;
-    font-size: 18px;
+
+    color: #14213d;
+
+    font-size: 21px;
     font-weight: 700;
-    color: #172033;
 }
 
-.appointment-page .table-header p {
-    margin: 5px 0 0;
-    font-size: 13px;
-    color: #718096;
-}
+.table-header p {
+    margin: 6px 0 0;
 
+    color: #667085;
 
-/* =========================================================
-   TABLE
-========================================================= */
-
-.appointment-page .table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.appointment-page .appointments-table {
-    width: 100%;
-    min-width: 1050px;
-    border-collapse: collapse;
-}
-
-.appointment-page .appointments-table th {
-    background: #f8fafc;
-    color: #5b6472;
-    font-size: 12px;
-    font-weight: 700;
-    text-align: left;
-    padding: 14px 20px;
-    border-bottom: 1px solid #e5e7eb;
-    white-space: nowrap;
-}
-
-.appointment-page .appointments-table td {
-    padding: 17px 20px;
-    border-bottom: 1px solid #edf0f3;
-    vertical-align: middle;
-}
-
-.appointment-page .appointments-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.appointment-page .appointments-table tbody tr:hover {
-    background: #fafafa;
-}
-
-
-/* =========================================================
-   USER
-========================================================= */
-
-.appointment-page .user-info {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    min-width: 190px;
-}
-
-.appointment-page .user-avatar {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    border-radius: 50%;
-    background: #fee2e2;
-    color: #dc2626;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
     font-size: 14px;
 }
 
-.appointment-page .user-name {
-    color: #172033;
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 3px;
+.table-container {
+    width: 100%;
+
+    overflow-x: auto;
 }
 
-.appointment-page .user-email {
-    color: #8a94a3;
+.appointments-table {
+    width: 100%;
+
+    min-width: 1050px;
+
+    border-collapse: collapse;
+}
+
+.appointments-table thead {
+    background: #f8f9fb;
+}
+
+.appointments-table th {
+    padding: 18px 25px;
+
+    text-align: left;
+
+    color: #475467;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    border-bottom: 1px solid #eaecf0;
+}
+
+.appointments-table td {
+    padding: 18px 25px;
+
+    color: #344054;
+
+    font-size: 14px;
+
+    border-bottom: 1px solid #f0f2f5;
+
+    vertical-align: middle;
+}
+
+.appointments-table tbody tr {
+    transition: 0.15s;
+}
+
+.appointments-table tbody tr:hover {
+    background: #fcfcfd;
+}
+
+.appointments-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* =========================================================
+   PERSON
+========================================================= */
+
+.person-cell {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+.person-avatar {
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #ffe5e5;
+
+    color: #d92128;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.person-info {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.person-info strong {
+    color: #1d2939;
+    font-size: 14px;
+}
+
+.person-info small {
+    color: #98a2b3;
     font-size: 12px;
 }
 
@@ -955,31 +1487,31 @@
    DONOR
 ========================================================= */
 
-.appointment-page .donor-info {
+.donor-cell {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+
     gap: 5px;
 }
 
-.appointment-page .blood-badge {
+.donor-cell strong {
+    color: #1d2939;
+}
+
+.blood-badge {
     display: inline-flex;
-    width: fit-content;
+
     padding: 4px 8px;
+
     border-radius: 6px;
-    background: #fff1f2;
-    color: #dc2626;
-    font-size: 12px;
+
+    background: #fff0f0;
+
+    color: #d92128;
+
+    font-size: 11px;
     font-weight: 700;
-}
-
-.appointment-page .donor-phone {
-    color: #8a94a3;
-    font-size: 12px;
-}
-
-.appointment-page .not-available {
-    color: #9ca3af;
-    font-size: 13px;
 }
 
 
@@ -987,57 +1519,40 @@
    CENTER
 ========================================================= */
 
-.appointment-page .center-info {
+.center-cell {
     display: flex;
     align-items: center;
+
     gap: 8px;
-    color: #4b5563;
-    font-size: 13px;
-    white-space: nowrap;
+
+    color: #475467;
 }
 
-.appointment-page .center-info i {
-    color: #ef4444;
-}
-
-
-/* =========================================================
-   DATE
-========================================================= */
-
-.appointment-page .date-info {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    white-space: nowrap;
-}
-
-.appointment-page .date-info strong {
-    color: #172033;
-    font-size: 13px;
-}
-
-.appointment-page .date-info span {
-    color: #8a94a3;
-    font-size: 12px;
+.center-cell i {
+    color: #e9272f;
 }
 
 
 /* =========================================================
-   TIME
+   DATE / TIME
 ========================================================= */
 
-.appointment-page .time-info {
+.date-cell strong {
+    color: #344054;
+    font-weight: 600;
+}
+
+.time-cell {
     display: flex;
     align-items: center;
+
     gap: 7px;
-    color: #374151;
-    font-size: 13px;
-    white-space: nowrap;
+
+    color: #475467;
 }
 
-.appointment-page .time-info i {
-    color: #9ca3af;
+.time-cell i {
+    color: #98a2b3;
 }
 
 
@@ -1045,40 +1560,40 @@
    STATUS
 ========================================================= */
 
-.appointment-page .status-badge {
+.status-badge {
     display: inline-flex;
     align-items: center;
+
     gap: 6px;
-    padding: 6px 10px;
-    border-radius: 20px;
+
+    padding: 7px 11px;
+
+    border-radius: 999px;
+
     font-size: 12px;
     font-weight: 600;
+
     white-space: nowrap;
 }
 
-.appointment-page .status-pending {
-    background: #fff7ed;
-    color: #c2410c;
+.status-pending {
+    background: #fff4e5;
+    color: #b54708;
 }
 
-.appointment-page .status-confirmed {
-    background: #eff6ff;
-    color: #2563eb;
+.status-confirmed {
+    background: #eaf2ff;
+    color: #175cd3;
 }
 
-.appointment-page .status-completed {
-    background: #ecfdf5;
-    color: #047857;
+.status-completed {
+    background: #e9fbf3;
+    color: #027a48;
 }
 
-.appointment-page .status-cancelled {
-    background: #fef2f2;
-    color: #dc2626;
-}
-
-.appointment-page .status-default {
-    background: #f3f4f6;
-    color: #4b5563;
+.status-cancelled {
+    background: #fef3f2;
+    color: #b42318;
 }
 
 
@@ -1086,48 +1601,64 @@
    ACTION BUTTONS
 ========================================================= */
 
-.appointment-page .appointment-actions {
+.action-buttons {
     display: flex;
     align-items: center;
+
     gap: 7px;
 }
 
-.appointment-page .appointment-actions form {
-    margin: 0;
-    padding: 0;
-}
-
-.appointment-page .action-btn {
+.action-button {
     width: 36px;
     height: 36px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    background: #ffffff;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-decoration: none;
+
+    border-radius: 8px;
+
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
+
+    text-decoration: none;
+
+    transition: 0.2s;
 }
 
-.appointment-page .view-btn {
-    color: #2563eb;
+.view-button {
+    border: 1px solid #d0d5dd;
+
+    background: #ffffff;
+
+    color: #475467;
 }
 
-.appointment-page .view-btn:hover {
-    background: #eff6ff;
-    border-color: #bfdbfe;
+.view-button:hover {
+    background: #f2f4f7;
 }
 
-.appointment-page .delete-btn {
-    color: #dc2626;
+.status-button {
+    border: 1px solid #d6e4ff;
+
+    background: #f5f8ff;
+
+    color: #2864dc;
 }
 
-.appointment-page .delete-btn:hover {
-    background: #fef2f2;
-    border-color: #fecaca;
+.status-button:hover {
+    background: #eaf2ff;
+}
+
+.delete-button {
+    border: 1px solid #fecdca;
+
+    background: #fff7f6;
+
+    color: #d92d20;
+}
+
+.delete-button:hover {
+    background: #fef3f2;
 }
 
 
@@ -1135,38 +1666,66 @@
    EMPTY STATE
 ========================================================= */
 
-.appointment-page .empty-cell {
-    padding: 0 !important;
-}
+.empty-state {
+    padding: 70px 30px;
 
-.appointment-page .empty-state {
-    padding: 60px 20px;
     text-align: center;
 }
 
-.appointment-page .empty-icon {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 14px;
-    border-radius: 50%;
-    background: #f3f4f6;
-    color: #9ca3af;
+.empty-icon {
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 18px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 25px;
+
+    background: #f2f4f7;
+
+    color: #98a2b3;
+
+    border-radius: 50%;
+
+    font-size: 28px;
 }
 
-.appointment-page .empty-state h3 {
-    margin: 0 0 6px;
-    font-size: 17px;
-    color: #374151;
+.empty-state h3 {
+    margin: 0 0 8px;
+
+    color: #344054;
+
+    font-size: 19px;
 }
 
-.appointment-page .empty-state p {
-    margin: 0;
-    color: #9ca3af;
-    font-size: 13px;
+.empty-state p {
+    margin: 0 0 20px;
+
+    color: #98a2b3;
+
+    font-size: 14px;
+}
+
+.empty-reset-button {
+    display: inline-flex;
+
+    padding: 10px 18px;
+
+    border-radius: 8px;
+
+    background: #e9272f;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.empty-reset-button:hover {
+    background: #c91e25;
 }
 
 
@@ -1174,18 +1733,267 @@
    PAGINATION
 ========================================================= */
 
-.appointment-page .pagination-area {
-    padding: 18px 22px;
-    border-top: 1px solid #e5e7eb;
+.pagination-container {
+    padding: 20px 25px;
+
+    border-top: 1px solid #eaecf0;
 }
 
-.appointment-page .pagination-area nav {
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(16, 24, 40, 0.55);
+
+    backdrop-filter: blur(3px);
+}
+
+.modal-overlay.show {
     display: flex;
-    justify-content: flex-end;
 }
 
-.appointment-page .pagination-area .pagination {
+.custom-modal {
+    width: 100%;
+    max-width: 520px;
+
+    background: #ffffff;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 20px 50px rgba(16, 24, 40, 0.2);
+
+    overflow: hidden;
+
+    animation: modalAppear 0.18s ease;
+}
+
+@keyframes modalAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+.modal-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 22px 24px;
+
+    border-bottom: 1px solid #eaecf0;
+}
+
+.modal-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+}
+
+.modal-icon {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    font-size: 18px;
+}
+
+.edit-modal-icon {
+    background: #eaf2ff;
+    color: #2864dc;
+}
+
+.delete-modal-icon {
+    background: #fef3f2;
+    color: #d92d20;
+}
+
+.modal-title h3 {
     margin: 0;
+
+    color: #1d2939;
+
+    font-size: 17px;
+}
+
+.modal-title p {
+    margin: 4px 0 0;
+
+    color: #98a2b3;
+
+    font-size: 12px;
+}
+
+.modal-close {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+
+    background: transparent;
+
+    color: #667085;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    background: #f2f4f7;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-body label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #344054;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.modal-body select {
+    width: 100%;
+
+    height: 50px;
+
+    padding: 0 14px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #344054;
+
+    outline: none;
+
+    font-size: 14px;
+}
+
+.modal-body select:focus {
+    border-color: #e9272f;
+
+    box-shadow:
+        0 0 0 3px rgba(233, 39, 47, 0.08);
+}
+
+.delete-warning {
+    margin: 0;
+
+    color: #475467;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+.modal-footer {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding: 18px 24px;
+
+    background: #f9fafb;
+
+    border-top: 1px solid #eaecf0;
+}
+
+.modal-cancel,
+.modal-save,
+.modal-delete {
+    min-height: 42px;
+
+    padding: 0 17px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.modal-cancel {
+    border: 1px solid #d0d5dd;
+
+    background: #ffffff;
+
+    color: #344054;
+}
+
+.modal-cancel:hover {
+    background: #f2f4f7;
+}
+
+.modal-save {
+    border: 1px solid #e9272f;
+
+    background: #e9272f;
+
+    color: #ffffff;
+}
+
+.modal-save:hover {
+    background: #c91e25;
+}
+
+.modal-delete {
+    border: 1px solid #d92d20;
+
+    background: #d92d20;
+
+    color: #ffffff;
+}
+
+.modal-delete:hover {
+    background: #b42318;
 }
 
 
@@ -1195,49 +2003,232 @@
 
 @media (max-width: 1200px) {
 
-    .appointment-page .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .stats-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
-    .appointment-page .filter-form {
-        grid-template-columns: 1fr 1fr;
+    .filter-form {
+        grid-template-columns:
+            1fr 1fr;
+
+        align-items: end;
     }
 
-    .appointment-page .search-group {
-        grid-column: 1 / -1;
+    .search-group {
+        grid-column: span 2;
+    }
+
+    .filter-buttons {
+        justify-content: flex-start;
     }
 
 }
 
-@media (max-width: 700px) {
 
-    .appointment-page .stats-grid {
+@media (max-width: 768px) {
+
+    .appointment-page {
+        padding: 22px 16px 40px;
+    }
+
+    .page-title-area h1 {
+        font-size: 25px;
+    }
+
+    .page-title-area p {
+        font-size: 14px;
+    }
+
+    .appointment-announcement {
+        padding: 18px;
+
+        gap: 13px;
+    }
+
+    .announcement-top {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 4px;
+    }
+
+    .stats-grid {
         grid-template-columns: 1fr;
     }
 
-    .appointment-page .filter-form {
+    .filter-form {
         grid-template-columns: 1fr;
     }
 
-    .appointment-page .search-group {
+    .search-group {
         grid-column: auto;
     }
 
-    .appointment-page .filter-buttons {
+    .filter-buttons {
         width: 100%;
     }
 
-    .appointment-page .search-button,
-    .appointment-page .reset-button {
+    .search-button,
+    .reset-button {
         flex: 1;
     }
 
-    .appointment-page .page-title {
-        font-size: 24px;
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    .modal-footer button,
+    .modal-footer form {
+        width: 100%;
+    }
+
+    .modal-footer form button {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .appointment-announcement {
+        flex-direction: column;
+    }
+
+    .page-title-area {
+        align-items: flex-start;
+    }
+
+    .page-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .page-title-area h1 {
+        font-size: 22px;
     }
 
 }
 
 </style>
+
+
+<script>
+
+/* =========================================================
+   STATUS MODAL
+========================================================= */
+
+function openStatusModal(id, currentStatus) {
+
+    const modal = document.getElementById('statusModal');
+
+    const form = document.getElementById('statusForm');
+
+    const select = document.getElementById('modalStatus');
+
+    form.action =
+        "{{ url('/admin/appointments') }}/"
+        + id
+        + "/status";
+
+    select.value = currentStatus;
+
+    modal.classList.add('show');
+
+    document.body.style.overflow = 'hidden';
+}
+
+
+function closeStatusModal() {
+
+    const modal = document.getElementById('statusModal');
+
+    modal.classList.remove('show');
+
+    document.body.style.overflow = '';
+
+}
+
+
+/* =========================================================
+   DELETE MODAL
+========================================================= */
+
+function openDeleteModal(id) {
+
+    const modal = document.getElementById('deleteModal');
+
+    const form = document.getElementById('deleteForm');
+
+    form.action =
+        "{{ url('/admin/appointments') }}/"
+        + id;
+
+    modal.classList.add('show');
+
+    document.body.style.overflow = 'hidden';
+}
+
+
+function closeDeleteModal() {
+
+    const modal = document.getElementById('deleteModal');
+
+    modal.classList.remove('show');
+
+    document.body.style.overflow = '';
+
+}
+
+
+/* =========================================================
+   CLOSE MODALS WHEN CLICKING BACKDROP
+========================================================= */
+
+document.addEventListener('click', function(event) {
+
+    const statusModal =
+        document.getElementById('statusModal');
+
+    const deleteModal =
+        document.getElementById('deleteModal');
+
+
+    if (event.target === statusModal) {
+
+        closeStatusModal();
+
+    }
+
+
+    if (event.target === deleteModal) {
+
+        closeDeleteModal();
+
+    }
+
+});
+
+
+/* =========================================================
+   ESCAPE KEY
+========================================================= */
+
+document.addEventListener('keydown', function(event) {
+
+    if (event.key === 'Escape') {
+
+        closeStatusModal();
+
+        closeDeleteModal();
+
+    }
+
+});
+
+</script>
 
 @endsection

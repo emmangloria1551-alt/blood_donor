@@ -8,23 +8,55 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('donors', function (Blueprint $table) {
-            $table->date('date_of_birth')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('address')->nullable();
-            $table->boolean('is_active')->default(true);
-        });
+        if (!Schema::hasColumn('donors', 'date_of_birth')) {
+            Schema::table('donors', function (Blueprint $table) {
+                $table->date('date_of_birth')->nullable();
+            });
+        }
+
+        if (!Schema::hasColumn('donors', 'phone')) {
+            Schema::table('donors', function (Blueprint $table) {
+                $table->string('phone')->nullable();
+            });
+        }
+
+        if (!Schema::hasColumn('donors', 'address')) {
+            Schema::table('donors', function (Blueprint $table) {
+                $table->string('address')->nullable();
+            });
+        }
+
+        if (!Schema::hasColumn('donors', 'is_active')) {
+            Schema::table('donors', function (Blueprint $table) {
+                $table->boolean('is_active')->default(true);
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('donors', function (Blueprint $table) {
-            $table->dropColumn([
-                'date_of_birth',
-                'phone',
-                'address',
-                'is_active',
-            ]);
-        });
+        if (Schema::hasColumn('donors', 'is_active')) {
+            Schema::table('donors', function (Blueprint $table) {
+                $table->dropColumn('is_active');
+            });
+        }
+
+        if (Schema::hasColumn('donors', 'address')) {
+            Schema::table('donors', function (Blueprint $table) {
+                $table->dropColumn('address');
+            });
+        }
+
+        if (Schema::hasColumn('donors', 'phone')) {
+            Schema::table('donors', function (Blueprint $table) {
+                $table->dropColumn('phone');
+            });
+        }
+
+        if (Schema::hasColumn('donors', 'date_of_birth')) {
+            Schema::table('donors', function (Blueprint $table) {
+                $table->dropColumn('date_of_birth');
+            });
+        }
     }
 };
