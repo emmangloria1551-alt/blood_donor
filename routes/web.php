@@ -102,27 +102,32 @@ Route::delete('/users/{user}', [UserController::class, 'destroy'])
     ->name('admin.requests');
 
 
-    /*
+ /*
     |--------------------------------------------------------------------------
-    | APPOINTMENTS
+    | Appointment Management
     |--------------------------------------------------------------------------
     */
 
-      Route::get('/appointments', [AppointmentController::class, 'index'])
-    ->name('admin.appointments');
+    Route::get('/appointments', [AppointmentController::class, 'index'])
+        ->name('appointments');
 
-Route::get('/appointments/{appointment}', [AppointmentController::class, 'show'])
-    ->name('admin.appointments.show');
+    // IMPORTANT: Create route must be before {appointment}
+    Route::get('/appointments/create', [AppointmentController::class, 'create'])
+        ->name('appointments.create');
 
-Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy'])
-    ->name('admin.appointments.destroy');
+    Route::post('/appointments', [AppointmentController::class, 'store'])
+        ->name('appointments.store');
 
-    Route::patch(
-    '/appointments/{appointment}/status',
-    [AppointmentController::class, 'updateStatus']
-)->name('admin.appointments.status');
+    Route::get('/appointments/{appointment}', [AppointmentController::class, 'show'])
+        ->name('appointments.show');
 
+    Route::patch('/appointments/{appointment}/status', [AppointmentController::class, 'updateStatus'])
+        ->name('appointments.status');
 
+    Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy'])
+        ->name('appointments.destroy');
+
+        
     /*
     |--------------------------------------------------------------------------
     | DONATION CENTERS
