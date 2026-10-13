@@ -1,21 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Blood Request Management')
-
 @section('content')
 
 <style>
     .request-page {
-        padding: 28px;
-        background: #f6f7fb;
-        min-height: calc(100vh - 70px);
+        padding: 25px;
+        color: #263248;
     }
 
-    .request-page * {
-        box-sizing: border-box;
-    }
-
-    /* HEADER */
     .request-header {
         display: flex;
         justify-content: space-between;
@@ -26,57 +18,49 @@
     .request-title-area {
         display: flex;
         align-items: center;
-        gap: 14px;
+        gap: 15px;
     }
 
     .request-title-icon {
         width: 52px;
         height: 52px;
-        border-radius: 14px;
+        border-radius: 13px;
         background: #fff0f1;
         color: #dc3545;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        font-size: 25px;
     }
 
     .request-title {
-        margin: 0;
-        font-size: 26px;
+        font-size: 25px;
         font-weight: 700;
-        color: #1f2937;
+        margin: 0 0 5px;
     }
 
     .request-subtitle {
-        margin: 4px 0 0;
-        color: #6b7280;
+        color: #8b95a7;
+        margin: 0;
         font-size: 14px;
     }
 
-    /* STAT CARDS */
     .request-stats {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 18px;
         margin-bottom: 24px;
     }
 
     .request-stat {
-        background: #ffffff;
+        background: white;
         border: 1px solid #eceef2;
         border-radius: 14px;
         padding: 20px;
         display: flex;
         align-items: center;
         gap: 15px;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.035);
-        transition: .2s ease;
-    }
-
-    .request-stat:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 15px rgba(0,0,0,.025);
     }
 
     .request-stat-icon {
@@ -86,381 +70,250 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
-        flex-shrink: 0;
+        font-size: 21px;
     }
 
-    .icon-red {
-        background: #fff0f1;
-        color: #dc3545;
-    }
-
-    .icon-yellow {
-        background: #fff8df;
-        color: #d39e00;
-    }
-
-    .icon-green {
-        background: #eaf8f0;
-        color: #198754;
-    }
-
-    .icon-blue {
-        background: #edf4ff;
-        color: #0d6efd;
-    }
+    .icon-red { background: #fff0f1; color: #dc3545; }
+    .icon-yellow { background: #fff5dc; color: #c58a00; }
+    .icon-green { background: #e8f8ee; color: #198754; }
+    .icon-blue { background: #eaf1ff; color: #3468ce; }
 
     .request-stat-label {
+        color: #8b95a7;
         font-size: 13px;
-        color: #6b7280;
-        margin-bottom: 3px;
+        margin-bottom: 5px;
     }
 
     .request-stat-value {
+        color: #263248;
         font-size: 25px;
-        line-height: 1;
         font-weight: 700;
-        color: #1f2937;
     }
 
-    /* MAIN CARD */
     .request-card {
-        background: #ffffff;
-        border: 1px solid #e8eaf0;
-        border-radius: 15px;
+        background: #fff;
+        border: 1px solid #e8ebf1;
+        border-radius: 17px;
         overflow: hidden;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.035);
+        box-shadow: 0 7px 22px rgba(0,0,0,.035);
     }
 
-    /* TOOLBAR */
     .request-toolbar {
-        padding: 18px 20px;
-        border-bottom: 1px solid #eceef2;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        flex-wrap: wrap;
+        padding: 20px;
     }
 
     .request-search-form {
         display: flex;
         align-items: center;
-        gap: 10px;
-        width: 100%;
+        gap: 12px;
         flex-wrap: wrap;
     }
 
     .request-search {
-        position: relative;
-        flex: 1;
-        min-width: 260px;
-    }
-
-    .request-search i {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #9ca3af;
+        flex: 2 1 240px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid #dfe4ec;
+        border-radius: 11px;
+        padding: 0 14px;
+        min-height: 45px;
+        color: #8b95a7;
     }
 
     .request-search input {
         width: 100%;
-        height: 43px;
-        border: 1px solid #dfe2e8;
-        border-radius: 9px;
-        padding: 0 15px 0 40px;
-        font-size: 14px;
+        min-width: 0;
+        border: 0;
         outline: none;
-        color: #374151;
-        background: #fff;
-        transition: .2s;
-    }
-
-    .request-search input:focus {
-        border-color: #dc3545;
-        box-shadow: 0 0 0 3px rgba(220, 53, 69, .08);
+        background: transparent;
+        color: #263248;
     }
 
     .request-filter {
-        height: 43px;
-        min-width: 150px;
-        border: 1px solid #dfe2e8;
-        border-radius: 9px;
-        padding: 0 13px;
-        background: #fff;
-        color: #374151;
-        font-size: 14px;
-        outline: none;
-        cursor: pointer;
+        flex: 1 1 145px;
+        min-height: 45px;
+        padding: 0 12px;
+        border: 1px solid #dfe4ec;
+        border-radius: 11px;
+        background: white;
+        color: #344054;
     }
 
-    .request-filter:focus {
-        border-color: #dc3545;
-        box-shadow: 0 0 0 3px rgba(220, 53, 69, .08);
+    .request-search-btn,
+    .request-reset-btn {
+        min-height: 44px;
+        padding: 10px 17px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        text-decoration: none;
+        white-space: nowrap;
+        cursor: pointer;
     }
 
     .request-search-btn {
-        height: 43px;
-        padding: 0 18px;
-        border: none;
-        border-radius: 9px;
         background: #dc3545;
-        color: #fff;
-        font-size: 14px;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        cursor: pointer;
-        transition: .2s;
+        color: white;
+        border: 1px solid #dc3545;
     }
 
     .request-search-btn:hover {
-        background: #c82333;
+        background: #bb2d3b;
+        color: white;
     }
 
     .request-reset-btn {
-        height: 43px;
-        padding: 0 15px;
-        border: 1px solid #dfe2e8;
-        border-radius: 9px;
-        background: #fff;
-        color: #6b7280;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        font-size: 14px;
-        transition: .2s;
+        background: #f3f5f8;
+        color: #475467;
+        border: 1px solid #e5e7eb;
     }
 
-    .request-reset-btn:hover {
-        background: #f8f9fa;
-        color: #374151;
-    }
-
-    /* TABS */
     .request-tabs {
-        padding: 0 20px;
-        border-bottom: 1px solid #eceef2;
         display: flex;
-        gap: 5px;
+        gap: 28px;
+        padding: 0 25px;
+        border-top: 1px solid #eceef2;
+        border-bottom: 1px solid #eceef2;
         overflow-x: auto;
     }
 
     .request-tab {
-        position: relative;
-        padding: 15px 14px;
-        color: #6b7280;
+        display: inline-block;
+        padding: 17px 4px;
+        border-bottom: 2px solid transparent;
         text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
+        color: #64748b;
         white-space: nowrap;
     }
 
-    .request-tab:hover {
-        color: #dc3545;
-    }
-
+    .request-tab:hover,
     .request-tab.active {
         color: #dc3545;
+        border-bottom-color: #dc3545;
     }
 
-    .request-tab.active::after {
-        content: "";
-        position: absolute;
-        left: 10px;
-        right: 10px;
-        bottom: -1px;
-        height: 2px;
-        background: #dc3545;
-        border-radius: 5px 5px 0 0;
-    }
-
-    /* TABLE */
     .request-table-wrapper {
+        width: 100%;
         overflow-x: auto;
     }
 
     .request-table {
         width: 100%;
+        min-width: 850px;
         border-collapse: collapse;
-        min-width: 950px;
     }
 
     .request-table th {
         background: #fafbfc;
-        color: #6b7280;
-        font-size: 11px;
+        color: #64748b;
+        font-size: 12px;
         font-weight: 700;
+        letter-spacing: .35px;
         text-transform: uppercase;
-        letter-spacing: .5px;
-        padding: 14px 20px;
+        padding: 17px 20px;
         text-align: left;
-        border-bottom: 1px solid #eceef2;
+        white-space: nowrap;
     }
 
     .request-table td {
-        padding: 17px 20px;
-        border-bottom: 1px solid #f0f1f4;
-        color: #374151;
-        font-size: 14px;
+        padding: 18px 20px;
+        border-top: 1px solid #edf0f4;
         vertical-align: middle;
-    }
-
-    .request-table tbody tr {
-        transition: .15s;
     }
 
     .request-table tbody tr:hover {
         background: #fffafb;
     }
 
-    /* PATIENT */
-    .patient-info {
-        display: flex;
-        align-items: center;
-        gap: 11px;
-    }
-
-    .patient-avatar {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background: #fff0f1;
-        color: #dc3545;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 13px;
-        flex-shrink: 0;
-    }
-
     .patient-name {
+        color: #263248;
         font-weight: 600;
-        color: #1f2937;
-        margin-bottom: 2px;
     }
 
-    .patient-email {
+    .patient-email,
+    .request-muted {
+        color: #929bad;
         font-size: 12px;
-        color: #9ca3af;
+        margin-top: 5px;
     }
 
-    /* BLOOD TYPE */
-    .blood-type {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 48px;
-        height: 31px;
-        padding: 0 9px;
-        border-radius: 8px;
+    .blood-badge {
+        display: inline-block;
+        padding: 9px 13px;
+        border-radius: 9px;
         background: #fff0f1;
         color: #dc3545;
         font-weight: 700;
-        font-size: 13px;
     }
 
-    /* UNITS */
-    .units-value {
-        font-weight: 600;
-        color: #374151;
-    }
-
-    /* HOSPITAL */
-    .hospital-name {
-        color: #374151;
-        font-weight: 500;
-    }
-
-    .hospital-notes {
-        color: #9ca3af;
-        font-size: 12px;
-        max-width: 190px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin-top: 3px;
-    }
-
-    /* STATUS */
-    .status-badge {
+    .request-status {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 6px 11px;
-        border-radius: 20px;
+        padding: 8px 12px;
+        border-radius: 25px;
         font-size: 12px;
         font-weight: 700;
-        text-transform: capitalize;
-    }
-
-    .status-pending {
-        background: #fff7df;
-        color: #a87500;
-    }
-
-    .status-approved {
-        background: #eaf8f0;
-        color: #198754;
-    }
-
-    .status-rejected {
-        background: #fff0f1;
-        color: #dc3545;
-    }
-
-    .status-default {
-        background: #f1f3f5;
-        color: #6b7280;
-    }
-
-    /* DATE */
-    .request-date {
-        color: #374151;
-        font-weight: 500;
         white-space: nowrap;
     }
 
-    .request-time {
-        color: #9ca3af;
-        font-size: 12px;
-        margin-top: 2px;
+    .status-pending {
+        color: #a86b00;
+        background: #fff5d9;
     }
 
-    /* ACTION */
+    .status-approved {
+        color: #167345;
+        background: #e5f7ec;
+    }
+
+    .status-fulfilled {
+        color: #225bc1;
+        background: #e9f0ff;
+    }
+
+    .status-cancelled,
+    .status-rejected {
+        color: #b42332;
+        background: #ffeaec;
+    }
+
+    .status-default {
+        color: #667085;
+        background: #f1f3f5;
+    }
+
     .request-view-btn {
-        width: 35px;
-        height: 35px;
-        border: 1px solid #e1e4e9;
-        border-radius: 8px;
+        width: 43px;
+        height: 43px;
+        border: 1px solid #dfe4ec;
+        border-radius: 10px;
         background: #fff;
-        color: #6b7280;
+        color: #64748b;
+        font-size: 18px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        transition: .2s;
     }
 
     .request-view-btn:hover {
+        background: #fff0f1;
         color: #dc3545;
-        border-color: #dc3545;
-        background: #fff5f5;
+        border-color: #f0c3c8;
     }
 
-    /* EMPTY */
     .request-empty {
-        padding: 70px 20px;
+        padding: 55px 20px !important;
         text-align: center;
+        color: #929bad;
     }
 
     .request-empty-icon {
-        width: 65px;
-        height: 65px;
+        width: 60px;
+        height: 60px;
         margin: 0 auto 15px;
         border-radius: 50%;
         background: #f3f4f6;
@@ -468,24 +321,18 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 27px;
+        font-size: 25px;
     }
 
     .request-empty-title {
-        font-size: 16px;
+        font-size: 17px;
         font-weight: 600;
         color: #374151;
         margin-bottom: 5px;
     }
 
-    .request-empty-text {
-        font-size: 13px;
-        color: #9ca3af;
-    }
-
-    /* FOOTER */
     .request-footer {
-        padding: 16px 20px;
+        padding: 17px 22px;
         border-top: 1px solid #eceef2;
         display: flex;
         justify-content: space-between;
@@ -514,9 +361,15 @@
         color: #fff;
     }
 
-    /* MODAL */
+    .request-modal {
+        border: 0;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
     .request-modal-header {
         border-bottom: 1px solid #eee;
+        padding: 20px 25px;
     }
 
     .request-modal-icon {
@@ -531,11 +384,34 @@
         margin-right: 10px;
     }
 
+    .request-modal-body {
+        padding: 25px;
+    }
+
+    .modal-patient-name {
+        font-size: 23px;
+        font-weight: 700;
+        margin: 3px 0 5px;
+        overflow-wrap: anywhere;
+    }
+
+    .modal-patient-email {
+        color: #6b7280;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin: 22px 0 14px;
+    }
+
     .detail-box {
         background: #f8f9fa;
-        border-radius: 10px;
-        padding: 13px;
-        height: 100%;
+        border-radius: 11px;
+        padding: 15px;
+        min-width: 0;
     }
 
     .detail-label {
@@ -543,13 +419,22 @@
         color: #9ca3af;
         text-transform: uppercase;
         letter-spacing: .4px;
-        margin-bottom: 4px;
+        margin-bottom: 7px;
     }
 
     .detail-value {
         color: #374151;
         font-weight: 600;
         font-size: 14px;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-blood {
+        color: #dc3545;
+    }
+
+    .detail-wide {
+        margin-bottom: 17px;
     }
 
     .notes-box {
@@ -559,769 +444,634 @@
         color: #6b7280;
         font-size: 14px;
         line-height: 1.6;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        min-height: 50px;
     }
 
-    /* RESPONSIVE */
+    .request-modal-footer {
+        border-top: 1px solid #eee;
+        padding: 18px 25px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .request-action-form {
+        display: none;
+        margin: 0;
+    }
+
+    .request-action-btn,
+    .request-close-btn {
+        border: 0;
+        border-radius: 9px;
+        padding: 10px 15px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .request-approve-btn {
+        background: #198754;
+        color: white;
+    }
+
+    .request-cancel-btn {
+        background: #dc3545;
+        color: white;
+    }
+
+    .request-fulfill-btn {
+        background: #315fca;
+        color: white;
+    }
+
+    .request-close-btn {
+        background: #f3f5f8;
+        color: #344054;
+        padding: 11px 22px;
+    }
+
+    .request-action-btn:hover {
+        filter: brightness(.93);
+    }
+
     @media (max-width: 1100px) {
         .request-stats {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 
     @media (max-width: 768px) {
         .request-page {
-            padding: 18px;
-        }
-
-        .request-header {
-            align-items: flex-start;
+            padding: 16px;
         }
 
         .request-title {
-            font-size: 22px;
+            font-size: 21px;
+        }
+
+        .request-toolbar {
+            padding: 14px;
         }
 
         .request-search {
-            min-width: 100%;
+            flex-basis: 100%;
         }
 
         .request-filter {
-            flex: 1;
+            flex: 1 1 130px;
         }
 
-        .request-search-btn,
-        .request-reset-btn {
-            flex: 1;
-            justify-content: center;
+        .request-tabs {
+            padding: 0 15px;
+            gap: 22px;
+        }
+
+        .request-modal-body {
+            padding: 20px;
+        }
+
+        .request-modal-header,
+        .request-modal-footer {
+            padding: 16px 20px;
         }
     }
 
-    @media (max-width: 576px) {
+    @media (max-width: 480px) {
         .request-stats {
             grid-template-columns: 1fr;
         }
 
         .request-title-icon {
-            width: 45px;
-            height: 45px;
+            width: 44px;
+            height: 44px;
         }
 
-        .request-toolbar {
-            padding: 15px;
-        }
-
-        .request-tabs {
-            padding: 0 15px;
+        .detail-grid {
+            grid-template-columns: 1fr;
         }
     }
 </style>
 
-
 <div class="request-page">
 
-    {{-- HEADER --}}
+    {{-- PAGE HEADER --}}
     <div class="request-header">
-
         <div class="request-title-area">
-
             <div class="request-title-icon">
                 <i class="bi bi-droplet-half"></i>
             </div>
 
             <div>
-                <h1 class="request-title">
-                    Blood Request Management
-                </h1>
-
+                <h1 class="request-title">Blood Request Management</h1>
                 <p class="request-subtitle">
                     Review and manage blood requests from your database.
                 </p>
             </div>
-
         </div>
-
     </div>
 
+    {{-- ALERT MESSAGES --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger" role="alert">
+            @foreach($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
 
     {{-- STATISTICS --}}
     <div class="request-stats">
 
         <div class="request-stat">
-
             <div class="request-stat-icon icon-red">
                 <i class="bi bi-clipboard2-pulse"></i>
             </div>
-
             <div>
-                <div class="request-stat-label">
-                    Total Requests
-                </div>
-
+                <div class="request-stat-label">Total Requests</div>
                 <div class="request-stat-value">
                     {{ number_format($totalRequests) }}
                 </div>
             </div>
-
         </div>
 
-
         <div class="request-stat">
-
             <div class="request-stat-icon icon-yellow">
                 <i class="bi bi-clock-history"></i>
             </div>
-
             <div>
-                <div class="request-stat-label">
-                    Pending
-                </div>
-
+                <div class="request-stat-label">Pending</div>
                 <div class="request-stat-value">
                     {{ number_format($pendingRequests) }}
                 </div>
             </div>
-
         </div>
 
-
         <div class="request-stat">
-
             <div class="request-stat-icon icon-green">
                 <i class="bi bi-check-circle"></i>
             </div>
-
             <div>
-                <div class="request-stat-label">
-                    Approved
-                </div>
-
+                <div class="request-stat-label">Approved</div>
                 <div class="request-stat-value">
                     {{ number_format($approvedRequests) }}
                 </div>
             </div>
-
         </div>
 
-
         <div class="request-stat">
-
             <div class="request-stat-icon icon-blue">
-                <i class="bi bi-box-seam"></i>
+                <i class="bi bi-droplet"></i>
             </div>
-
             <div>
-                <div class="request-stat-label">
-                    Blood Units
-                </div>
-
+                <div class="request-stat-label">Total Units Needed</div>
                 <div class="request-stat-value">
                     {{ number_format($totalUnits) }}
                 </div>
             </div>
-
         </div>
 
     </div>
 
-
     {{-- MAIN CARD --}}
     <div class="request-card">
 
-        {{-- SEARCH --}}
+        {{-- SEARCH AND FILTERS --}}
         <div class="request-toolbar">
-
-            <form
-                action="{{ route('admin.requests') }}"
-                method="GET"
-                class="request-search-form"
-            >
+            <form action="{{ route('admin.requests') }}"
+                  method="GET"
+                  class="request-search-form">
 
                 <div class="request-search">
-
                     <i class="bi bi-search"></i>
-
                     <input
                         type="text"
                         name="search"
                         value="{{ request('search') }}"
                         placeholder="Search patient or hospital..."
                     >
-
                 </div>
 
-
-                <select
-                    name="blood_type"
-                    class="request-filter"
-                >
-                    <option value="">
-                        All Blood Types
-                    </option>
+                <select name="blood_type" class="request-filter">
+                    <option value="">All Blood Types</option>
 
                     @foreach(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as $type)
-
-                        <option
-                            value="{{ $type }}"
-                            {{ request('blood_type') === $type ? 'selected' : '' }}
-                        >
+                        <option value="{{ $type }}"
+                            {{ request('blood_type') === $type ? 'selected' : '' }}>
                             {{ $type }}
                         </option>
-
                     @endforeach
-
                 </select>
 
+                <select name="status" class="request-filter">
+                    <option value="">All Statuses</option>
 
-                <select
-                    name="status"
-                    class="request-filter"
-                >
-                    <option value="">
-                        All Statuses
-                    </option>
-
-                    @php
-                        $statuses = \App\Models\BloodRequest::query()
-                            ->select('status')
-                            ->whereNotNull('status')
-                            ->distinct()
-                            ->orderBy('status')
-                            ->pluck('status');
-                    @endphp
-
-                    @foreach($statuses as $status)
-
-                        <option
-                            value="{{ $status }}"
-                            {{ request('status') === $status ? 'selected' : '' }}
-                        >
+                    @foreach(['pending', 'approved', 'fulfilled', 'cancelled'] as $status)
+                        <option value="{{ $status }}"
+                            {{ request('status') === $status ? 'selected' : '' }}>
                             {{ ucfirst($status) }}
                         </option>
-
                     @endforeach
-
                 </select>
 
-
-                <button
-                    type="submit"
-                    class="request-search-btn"
-                >
+                <button type="submit" class="request-search-btn">
                     <i class="bi bi-search"></i>
                     Search
                 </button>
 
-
                 @if(request()->hasAny(['search', 'blood_type', 'status']))
-
-                    <a
-                        href="{{ route('admin.requests') }}"
-                        class="request-reset-btn"
-                    >
+                    <a href="{{ route('admin.requests') }}" class="request-reset-btn">
                         <i class="bi bi-arrow-counterclockwise"></i>
                         Reset
                     </a>
-
                 @endif
-
             </form>
-
         </div>
-
 
         {{-- STATUS TABS --}}
         <div class="request-tabs">
-
             <a
-                href="{{ route('admin.requests') }}"
-                class="request-tab {{ !request('status') ? 'active' : '' }}"
-            >
+                href="{{ route('admin.requests', request()->except('status', 'page')) }}"
+                class="request-tab {{ !request('status') ? 'active' : '' }}">
                 All
             </a>
 
-
-            <a
-                href="{{ route('admin.requests', ['status' => 'pending']) }}"
-                class="request-tab {{ request('status') === 'pending' ? 'active' : '' }}"
-            >
-                Pending
-            </a>
-
-
-            <a
-                href="{{ route('admin.requests', ['status' => 'approved']) }}"
-                class="request-tab {{ request('status') === 'approved' ? 'active' : '' }}"
-            >
-                Approved
-            </a>
-
-
-            @if($statuses->contains('rejected'))
-
+            @foreach(['pending', 'approved', 'fulfilled', 'cancelled'] as $tab)
                 <a
-                    href="{{ route('admin.requests', ['status' => 'rejected']) }}"
-                    class="request-tab {{ request('status') === 'rejected' ? 'active' : '' }}"
-                >
-                    Rejected
+                    href="{{ route('admin.requests', array_merge(request()->except('status', 'page'), ['status' => $tab])) }}"
+                    class="request-tab {{ request('status') === $tab ? 'active' : '' }}">
+                    {{ ucfirst($tab) }}
                 </a>
-
-            @endif
-
+            @endforeach
         </div>
 
-
-        {{-- TABLE --}}
+        {{-- REQUESTS TABLE --}}
         <div class="request-table-wrapper">
 
-            @if($requests->count())
+            <table class="request-table">
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Blood Type</th>
+                        <th>Units</th>
+                        <th>Hospital</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
 
-                <table class="request-table">
+                <tbody>
+                    @forelse($requests as $requestItem)
 
-                    <thead>
+                        @php
+                            $status = strtolower($requestItem->status ?? 'unknown');
+
+                            $statusClass = match($status) {
+                                'pending' => 'status-pending',
+                                'approved' => 'status-approved',
+                                'fulfilled' => 'status-fulfilled',
+                                'cancelled', 'rejected' => 'status-cancelled',
+                                default => 'status-default',
+                            };
+
+                            $patientName = $requestItem->patient_name ?: 'N/A';
+                            $patientEmail = $requestItem->user?->email ?? 'No email available';
+                            $hospital = $requestItem->hospital ?: 'Not specified';
+                            $notes = $requestItem->notes ?: 'No notes provided';
+                        @endphp
 
                         <tr>
-                            <th>Patient</th>
-                            <th>Blood Type</th>
-                            <th>Units</th>
-                            <th>Hospital</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                        </tr>
+                            <td>
+                                <div class="patient-name">
+                                    {{ $patientName }}
+                                </div>
+                                <div class="patient-email">
+                                    {{ $patientEmail }}
+                                </div>
+                            </td>
 
-                    </thead>
+                            <td>
+                                <span class="blood-badge">
+                                    {{ $requestItem->blood_type }}
+                                </span>
+                            </td>
 
+                            <td>
+                                {{ $requestItem->units_needed }}
+                                {{ $requestItem->units_needed == 1 ? 'Unit' : 'Units' }}
+                            </td>
 
-                    <tbody>
-
-                        @foreach($requests as $requestItem)
-
-                            @php
-
-                                $status = strtolower(
-                                    $requestItem->status ?? 'unknown'
-                                );
-
-                                $statusClass = match($status) {
-
-                                    'pending' =>
-                                        'status-pending',
-
-                                    'approved' =>
-                                        'status-approved',
-
-                                    'rejected' =>
-                                        'status-rejected',
-
-                                    default =>
-                                        'status-default',
-
-                                };
-
-                                $patientName =
-                                    $requestItem->patient_name ?: 'N/A';
-
-                                $initials =
-                                    collect(
-                                        explode(' ', trim($patientName))
-                                    )
-                                    ->filter()
-                                    ->take(2)
-                                    ->map(
-                                        fn($word) =>
-                                            strtoupper(substr($word, 0, 1))
-                                    )
-                                    ->implode('');
-
-                            @endphp
-
-
-                            <tr>
-
-                                {{-- PATIENT --}}
-                                <td>
-
-                                    <div class="patient-info">
-
-                                        <div class="patient-avatar">
-                                            {{ $initials ?: '?' }}
-                                        </div>
-
-                                        <div>
-
-                                            <div class="patient-name">
-                                                {{ $patientName }}
-                                            </div>
-
-                                            @if($requestItem->user)
-
-                                                <div class="patient-email">
-                                                    {{ $requestItem->user->email }}
-                                                </div>
-
-                                            @endif
-
-                                        </div>
-
+                            <td>
+                                <div>{{ $hospital }}</div>
+                                @if($requestItem->notes)
+                                    <div class="request-muted">
+                                        {{ \Illuminate\Support\Str::limit($requestItem->notes, 35) }}
                                     </div>
+                                @endif
+                            </td>
 
-                                </td>
-
-
-                                {{-- BLOOD TYPE --}}
-                                <td>
-
-                                    <span class="blood-type">
-                                        {{ $requestItem->blood_type ?: 'N/A' }}
-                                    </span>
-
-                                </td>
-
-
-                                {{-- UNITS --}}
-                                <td>
-
-                                    <span class="units-value">
-
-                                        {{ $requestItem->units_needed }}
-
-                                        {{ $requestItem->units_needed == 1
-                                            ? 'Unit'
-                                            : 'Units'
-                                        }}
-
-                                    </span>
-
-                                </td>
-
-
-                                {{-- HOSPITAL --}}
-                                <td>
-
-                                    <div class="hospital-name">
-                                        {{ $requestItem->hospital ?: 'N/A' }}
-                                    </div>
-
-                                    @if($requestItem->notes)
-
-                                        <div
-                                            class="hospital-notes"
-                                            title="{{ $requestItem->notes }}"
-                                        >
-                                            {{ $requestItem->notes }}
-                                        </div>
-
+                            <td>
+                                <span class="request-status {{ $statusClass }}">
+                                    @if($status === 'pending')
+                                        <i class="bi bi-clock"></i>
+                                    @elseif($status === 'approved')
+                                        <i class="bi bi-check-circle"></i>
+                                    @elseif($status === 'fulfilled')
+                                        <i class="bi bi-check2-all"></i>
+                                    @else
+                                        <i class="bi bi-x-circle"></i>
                                     @endif
 
-                                </td>
-
-
-                                {{-- STATUS --}}
-                                <td>
-
-                                    <span class="status-badge {{ $statusClass }}">
-
-                                        @if($status === 'pending')
-
-                                            <i class="bi bi-clock"></i>
-
-                                        @elseif($status === 'approved')
-
-                                            <i class="bi bi-check-circle"></i>
-
-                                        @elseif($status === 'rejected')
-
-                                            <i class="bi bi-x-circle"></i>
-
-                                        @else
-
-                                            <i class="bi bi-info-circle"></i>
-
-                                        @endif
-
-                                        {{ $requestItem->status ?: 'Unknown' }}
-
-                                    </span>
-
-                                </td>
-
-
-                                {{-- DATE --}}
-                                <td>
-
-                                    <div class="request-date">
-                                        {{ $requestItem->created_at?->format('M d, Y') }}
-                                    </div>
-
-                                    <div class="request-time">
-                                        {{ $requestItem->created_at?->format('h:i A') }}
-                                    </div>
-
-                                </td>
-
-
-                                {{-- ACTION --}}
-                                <td>
-
-                                    <button
-                                        type="button"
-                                        class="request-view-btn"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#requestModal{{ $requestItem->id }}"
-                                        title="View Request"
-                                    >
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-
-                                </td>
-
-                            </tr>
-
-
-                            {{-- DETAILS MODAL --}}
-                            <div
-                                class="modal fade"
-                                id="requestModal{{ $requestItem->id }}"
-                                tabindex="-1"
-                                aria-hidden="true"
-                            >
-
-                                <div class="modal-dialog modal-dialog-centered">
-
-                                    <div class="modal-content border-0 shadow">
-
-                                        <div class="modal-header request-modal-header">
-
-                                            <div class="d-flex align-items-center">
-
-                                                <div class="request-modal-icon">
-                                                    <i class="bi bi-droplet-half"></i>
-                                                </div>
-
-                                                <div>
-
-                                                    <h5 class="modal-title mb-0">
-                                                        Blood Request
-                                                    </h5>
-
-                                                    <small class="text-muted">
-                                                        Request #{{ $requestItem->id }}
-                                                    </small>
-
-                                                </div>
-
-                                            </div>
-
-
-                                            <button
-                                                type="button"
-                                                class="btn-close"
-                                                data-bs-dismiss="modal"
-                                            ></button>
-
-                                        </div>
-
-
-                                        <div class="modal-body p-4">
-
-                                            <div class="mb-4">
-
-                                                <div class="text-muted small mb-1">
-                                                    Patient
-                                                </div>
-
-                                                <h5 class="mb-0">
-                                                    {{ $requestItem->patient_name ?: 'N/A' }}
-                                                </h5>
-
-                                                @if($requestItem->user)
-
-                                                    <div class="text-muted small mt-1">
-                                                        {{ $requestItem->user->email }}
-                                                    </div>
-
-                                                @endif
-
-                                            </div>
-
-
-                                            <div class="row g-3 mb-3">
-
-                                                <div class="col-6">
-
-                                                    <div class="detail-box">
-
-                                                        <div class="detail-label">
-                                                            Blood Type
-                                                        </div>
-
-                                                        <div class="detail-value text-danger">
-                                                            {{ $requestItem->blood_type ?: 'N/A' }}
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-
-
-                                                <div class="col-6">
-
-                                                    <div class="detail-box">
-
-                                                        <div class="detail-label">
-                                                            Units Needed
-                                                        </div>
-
-                                                        <div class="detail-value">
-                                                            {{ $requestItem->units_needed }}
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-
-
-                                                <div class="col-6">
-
-                                                    <div class="detail-box">
-
-                                                        <div class="detail-label">
-                                                            Status
-                                                        </div>
-
-                                                        <div class="detail-value text-capitalize">
-                                                            {{ $requestItem->status ?: 'Unknown' }}
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-
-
-                                                <div class="col-6">
-
-                                                    <div class="detail-box">
-
-                                                        <div class="detail-label">
-                                                            Date
-                                                        </div>
-
-                                                        <div class="detail-value">
-                                                            {{ $requestItem->created_at?->format('M d, Y') }}
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-
-                                            </div>
-
-
-                                            <div class="detail-box mb-3">
-
-                                                <div class="detail-label">
-                                                    Hospital
-                                                </div>
-
-                                                <div class="detail-value">
-                                                    {{ $requestItem->hospital ?: 'N/A' }}
-                                                </div>
-
-                                            </div>
-
-
-                                            <div>
-
-                                                <div class="detail-label mb-2">
-                                                    Notes
-                                                </div>
-
-                                                <div class="notes-box">
-                                                    {{ $requestItem->notes ?: 'No additional notes provided.' }}
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="modal-footer border-top">
-
-                                            <button
-                                                type="button"
-                                                class="btn btn-light px-4"
-                                                data-bs-dismiss="modal"
-                                            >
-                                                Close
-                                            </button>
-
-                                        </div>
-
-                                    </div>
-
+                                    {{ ucfirst($status) }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ $requestItem->created_at?->format('M d, Y') ?? '—' }}
+                                <div class="request-muted">
+                                    {{ $requestItem->created_at?->format('h:i A') ?? '' }}
                                 </div>
+                            </td>
 
-                            </div>
+                            <td>
+                                <button
+                                    type="button"
+                                    class="request-view-btn"
+                                    title="View request details"
+                                    aria-label="View request details"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#requestDetailsModal"
 
-                        @endforeach
+                                    data-id="{{ $requestItem->id }}"
+                                    data-patient="{{ $patientName }}"
+                                    data-email="{{ $patientEmail }}"
+                                    data-blood="{{ $requestItem->blood_type }}"
+                                    data-units="{{ $requestItem->units_needed }}"
+                                    data-hospital="{{ $hospital }}"
+                                    data-notes="{{ $notes }}"
+                                    data-status="{{ $status }}"
+                                    data-date="{{ $requestItem->created_at?->format('M d, Y') ?? '—' }}"
 
-                    </tbody>
+                                    data-approve-url="{{ route('admin.requests.approve', $requestItem->id) }}"
+                                    data-cancel-url="{{ route('admin.requests.reject', $requestItem->id) }}"
+                                    data-fulfill-url="{{ route('admin.requests.fulfill', $requestItem->id) }}"
+                                >
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
 
-                </table>
-
-            @else
-
-                <div class="request-empty">
-
-                    <div class="request-empty-icon">
-                        <i class="bi bi-inbox"></i>
-                    </div>
-
-                    <div class="request-empty-title">
-                        No blood requests found
-                    </div>
-
-                    <div class="request-empty-text">
-                        Try changing your search or filters.
-                    </div>
-
-                </div>
-
-            @endif
+                    @empty
+                        <tr>
+                            <td colspan="7" class="request-empty">
+                                <div class="request-empty-icon">
+                                    <i class="bi bi-inbox"></i>
+                                </div>
+                                <div class="request-empty-title">
+                                    No blood requests found
+                                </div>
+                                <div>
+                                    Try changing your search or filters.
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
 
         </div>
 
+        {{-- TABLE FOOTER --}}
+        <div class="request-footer">
+            <div class="request-count">
+                Showing {{ $requests->firstItem() ?? 0 }}
+                – {{ $requests->lastItem() ?? 0 }}
+                of {{ $requests->total() }} requests
+            </div>
 
-        {{-- FOOTER --}}
-        @if($requests->count())
+            <div class="request-pagination">
+                {{ $requests->links() }}
+            </div>
+        </div>
 
-            <div class="request-footer">
+    </div>
+</div>
 
-                <div class="request-count">
+{{-- REQUEST DETAILS MODAL --}}
+<div
+    class="modal fade"
+    id="requestDetailsModal"
+    tabindex="-1"
+    aria-labelledby="requestDetailsModalTitle"
+    aria-hidden="true">
 
-                    Showing
-                    <strong>{{ $requests->firstItem() }}</strong>
-                    –
-                    <strong>{{ $requests->lastItem() }}</strong>
-                    of
-                    <strong>{{ $requests->total() }}</strong>
-                    requests
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content request-modal">
 
+            <div class="modal-header request-modal-header">
+                <div class="d-flex align-items-center">
+                    <div class="request-modal-icon">
+                        <i class="bi bi-droplet-half"></i>
+                    </div>
+                    <div>
+                        <div class="request-subtitle">Request Information</div>
+                        <h5 class="modal-title fw-bold" id="requestDetailsModalTitle">
+                            Blood Request Details
+                        </h5>
+                    </div>
                 </div>
 
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
 
-                <div class="request-pagination">
+            <div class="modal-body request-modal-body">
 
-                    {{ $requests->withQueryString()->links() }}
+                <div class="mb-3">
+                    <div class="detail-label">Patient</div>
+                    <div class="modal-patient-name" id="detailPatient">—</div>
+                    <div class="modal-patient-email" id="detailEmail">—</div>
+                </div>
 
+                <div class="detail-grid">
+                    <div class="detail-box">
+                        <div class="detail-label">Blood Type</div>
+                        <div class="detail-value detail-blood" id="detailBlood">—</div>
+                    </div>
+
+                    <div class="detail-box">
+                        <div class="detail-label">Units Needed</div>
+                        <div class="detail-value" id="detailUnits">—</div>
+                    </div>
+
+                    <div class="detail-box">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value" id="detailStatus">—</div>
+                    </div>
+
+                    <div class="detail-box">
+                        <div class="detail-label">Date</div>
+                        <div class="detail-value" id="detailDate">—</div>
+                    </div>
+                </div>
+
+                <div class="detail-box detail-wide">
+                    <div class="detail-label">Hospital</div>
+                    <div class="detail-value" id="detailHospital">—</div>
+                </div>
+
+                <div>
+                    <div class="detail-label">Notes</div>
+                    <div class="notes-box" id="detailNotes">—</div>
                 </div>
 
             </div>
 
-        @endif
+            <div class="modal-footer request-modal-footer">
 
+                {{-- Approve form --}}
+                <form id="approveRequestForm"
+                      method="POST"
+                      class="request-action-form">
+                    @csrf
+                    @method('PATCH')
+
+                    <button type="submit"
+                            class="request-action-btn request-approve-btn">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Approve
+                    </button>
+                </form>
+
+                {{-- Cancel form --}}
+                <form id="cancelRequestForm"
+                      method="POST"
+                      class="request-action-form"
+                      onsubmit="return confirm('Are you sure you want to cancel this request?')">
+                    @csrf
+                    @method('PATCH')
+
+                    <button type="submit"
+                            class="request-action-btn request-cancel-btn">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancel Request
+                    </button>
+                </form>
+
+                {{-- Fulfill form --}}
+                <form id="fulfillRequestForm"
+                      method="POST"
+                      class="request-action-form"
+                      onsubmit="return confirm('Mark this request as fulfilled?')">
+                    @csrf
+                    @method('PATCH')
+
+                    <button type="submit"
+                            class="request-action-btn request-fulfill-btn">
+                        <i class="bi bi-check2-all me-1"></i>
+                        Mark Fulfilled
+                    </button>
+                </form>
+
+                <button type="button"
+                        class="request-close-btn"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
+
+            </div>
+        </div>
     </div>
-
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('requestDetailsModal');
+
+    if (!modal) {
+        return;
+    }
+
+    modal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+
+        if (!button) {
+            return;
+        }
+
+        const data = button.dataset;
+
+        // Fill request details safely using textContent.
+        document.getElementById('detailPatient').textContent =
+            data.patient || 'N/A';
+
+        document.getElementById('detailEmail').textContent =
+            data.email || 'No email available';
+
+        document.getElementById('detailBlood').textContent =
+            data.blood || '—';
+
+        const units = Number(data.units || 0);
+
+        document.getElementById('detailUnits').textContent =
+            units + (units === 1 ? ' Unit' : ' Units');
+
+        document.getElementById('detailHospital').textContent =
+            data.hospital || 'Not specified';
+
+        document.getElementById('detailNotes').textContent =
+            data.notes || 'No notes provided';
+
+        document.getElementById('detailStatus').textContent =
+            data.status
+                ? data.status.charAt(0).toUpperCase() + data.status.slice(1)
+                : 'Unknown';
+
+        document.getElementById('detailDate').textContent =
+            data.date || '—';
+
+        // Connect forms to the correct Laravel routes.
+        const approveForm = document.getElementById('approveRequestForm');
+        const cancelForm = document.getElementById('cancelRequestForm');
+        const fulfillForm = document.getElementById('fulfillRequestForm');
+
+        approveForm.action = data.approveUrl;
+        cancelForm.action = data.cancelUrl;
+        fulfillForm.action = data.fulfillUrl;
+
+        // Show only the actions allowed for the current status.
+        approveForm.style.display =
+            data.status === 'pending' ? 'block' : 'none';
+
+        cancelForm.style.display =
+            ['pending', 'approved'].includes(data.status) ? 'block' : 'none';
+
+        fulfillForm.style.display =
+            data.status === 'approved' ? 'block' : 'none';
+    });
+});
+</script>
 
 @endsection

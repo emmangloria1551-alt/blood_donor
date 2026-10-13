@@ -21,7 +21,7 @@
         </div>
 
         <a href="{{ route('admin.users.create') }}" class="add-user-btn">
-            <i class="bi bi-plus-lg"></i>
+             <i class="bi bi-person-plus-fill"></i>
             Add User
         </a>
 

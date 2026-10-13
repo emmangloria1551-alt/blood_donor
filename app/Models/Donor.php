@@ -2,33 +2,37 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\User;
 
 class Donor extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'blood_type',
-        'date_of_birth',
         'phone',
         'address',
+        'last_donation',
+        'availability',
         'is_active',
     ];
 
-    protected $casts = [
-        'date_of_birth' => 'date',
-        'is_active' => 'boolean',
-    ];
-
-    public function user(): BelongsTo
+    protected function casts(): array
     {
-        return $this->belongsTo(User::class);
+        return [
+            'last_donation' => 'date',
+            'is_active' => 'boolean',
+        ];
     }
 
-    public function donations(): HasMany
+    /**
+     * A donor profile belongs to one user account.
+     */
+    public function user()
     {
-        return $this->hasMany(Donation::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\DonationCenterController;
 use App\Http\Controllers\Admin\ForgotPasswordController;
 use App\Http\Controllers\Admin\ResetPasswordController;
 use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\Admin\DonationController;
+
 
 
 
@@ -88,8 +90,29 @@ Route::delete('/users/{user}', [UserController::class, 'destroy'])
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/donors', [DonorController::class, 'index'])
-        ->name('admin.donors');
+// Donor Management Routes
+// Keep these inside your existing admin prefix group.
+
+Route::get('/donors', [DonorController::class, 'index'])
+    ->name('admin.donors');
+
+Route::get('/donors/create', [DonorController::class, 'create'])
+    ->name('admin.donors.create');
+
+Route::post('/donors', [DonorController::class, 'store'])
+    ->name('admin.donors.store');
+
+Route::get('/donors/{donor}', [DonorController::class, 'show'])
+    ->name('admin.donors.show');
+
+Route::get('/donors/{donor}/edit', [DonorController::class, 'edit'])
+    ->name('admin.donors.edit');
+
+Route::put('/donors/{donor}', [DonorController::class, 'update'])
+    ->name('admin.donors.update');
+
+Route::delete('/donors/{donor}', [DonorController::class, 'destroy'])
+    ->name('admin.donors.destroy');
 
 
     /*
@@ -99,7 +122,19 @@ Route::delete('/users/{user}', [UserController::class, 'destroy'])
     */
 
     Route::get('/requests', [BloodRequestController::class, 'index'])
-    ->name('admin.requests');
+        ->name('admin.requests');
+
+    Route::get('/requests/{bloodRequest}', [BloodRequestController::class, 'show'])
+        ->name('admin.requests.show');
+
+    Route::patch('/requests/{bloodRequest}/approve', [BloodRequestController::class, 'approve'])
+        ->name('admin.requests.approve');
+
+    Route::patch('/requests/{bloodRequest}/reject', [BloodRequestController::class, 'reject'])
+        ->name('admin.requests.reject');
+
+    Route::patch('/requests/{bloodRequest}/fulfill', [BloodRequestController::class, 'fulfill'])
+        ->name('admin.requests.fulfill');
 
 
  /*
@@ -244,4 +279,13 @@ Route::get('/reports/export-pdf', [
     ReportsController::class,
     'exportPdf'
 ])->name('admin.reports.pdf');
+
+
+/*
+|--------------------------------------------------------------------------
+| DONATION RECORDS
+|--------------------------------------------------------------------------
+*/
+
+ 
 });

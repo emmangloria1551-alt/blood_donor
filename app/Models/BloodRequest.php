@@ -17,9 +17,12 @@ class BloodRequest extends Model
         'notes',
     ];
 
-    protected $casts = [
-        'units_needed' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'units_needed' => 'integer',
+        ];
+    }
 
     public function user(): BelongsTo
     {
